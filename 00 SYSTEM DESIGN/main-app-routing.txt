@@ -1,0 +1,15 @@
+
+
+
+├───(auth)
+├───(home)
+│   └───app
+└───api
+    └───auth
+        └───[...nextauth]
+
+(home)
+    /
+
+(auth)
+    /fist-sign-in-Page!
