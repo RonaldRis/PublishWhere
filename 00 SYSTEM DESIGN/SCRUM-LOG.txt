@@ -1,0 +1,6 @@
+
+
+Sprint 1
+    TFG-5: Iniciar sesión en la aplicación
+        Para este apartado se ha hecho en el microservicio de "main-app". Se ha usado las librerías de Next-Auth para iniciar sesión por medio de Google como proveerdor.
+        Esto dará cavida al posterior uso de autentificación con sessiones en base de datos que serán usado para validar 
