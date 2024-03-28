@@ -16,26 +16,24 @@ import { useSession } from 'next-auth/react';
 import { postCrearMarca } from '@/lib/actions/marcas.actions';
 import { MisMarcasContext } from '@/contexts/MisMarcasContext';
 import { revalidatePath } from 'next/cache';
-import { useRouter } from 'next/router';
 
-function MarcaNueva() {
+function MarcaNueva({ isOpenModalNuevaMarca, setIsOpenModalNuevaMarca }: { isOpenModalNuevaMarca: boolean, setIsOpenModalNuevaMarca: React.Dispatch<React.SetStateAction<boolean>> }) {
 
 
-    const{data: session} = useSession();
-    const {fetchRefreshMarcas} = React.useContext(MisMarcasContext);
-    
-    
+    const { data: session } = useSession();
+    const { fetchRefreshMarcas } = React.useContext(MisMarcasContext);
+
+
     const [nuevaMarca, setNuevaMarca] = React.useState<string>("");
-    const [isOpenModalMarcaNueva, setIsOpenModalMarcaNueva] = React.useState<boolean>(false);
 
     const handlerGuardarMarca = async () => {
 
         //TODO: NOW MANEJAR ERROR DE SI YA EXISTE LA MARCA
         if (nuevaMarca === '') return;
         if (!session) return;
-         const result = await postCrearMarca(session.user.id, nuevaMarca);
-        
-         console.log(result);
+        const result = await postCrearMarca(session.user.id, nuevaMarca);
+
+        console.log(result);
         fetchRefreshMarcas(); //TODO: Now: decidir si refresh all o solo agregar el actual
 
 
@@ -43,7 +41,8 @@ function MarcaNueva() {
         //TODO: Guardar en la base de datos
         //TODO: Actualizar el contexto global
         ///TOOD: revalidar la pagina actual
-        setIsOpenModalMarcaNueva(false);
+        setIsOpenModalNuevaMarca(false);
+        setNuevaMarca("")
 
         toast.success('Marca creada correctamente');
     }
@@ -51,10 +50,10 @@ function MarcaNueva() {
 
     return (
 
-        <Dialog open={isOpenModalMarcaNueva} onOpenChange={setIsOpenModalMarcaNueva}
+        <Dialog open={isOpenModalNuevaMarca} onOpenChange={setIsOpenModalNuevaMarca}
         >
             <DialogTrigger asChild>
-                <Button className='w-full' onClick={() => setIsOpenModalMarcaNueva(!isOpenModalMarcaNueva)}>Nueva marca</Button>
+                <Button className=' hidden w-full' onClick={() => setIsOpenModalNuevaMarca(!isOpenModalNuevaMarca)}>Nueva marca</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>

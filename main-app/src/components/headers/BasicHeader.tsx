@@ -18,6 +18,7 @@ import { Session } from "next-auth";
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from "../ui/navigation-menu";
 import { useContext } from "react";
 import { MisMarcasContext } from "@/contexts/MisMarcasContext";
+import MarcaNueva from "../marcas/MarcaNueva";
 
 interface marcas {
   id: string,
@@ -34,7 +35,7 @@ const marcas: marcas[] = [
 export default function BasicHeader() {
 
 
-  const { marcas, isMarcaLoading, setMarcaGlobalSeleccionada, marcaGlobalSeleccionada } = useContext(MisMarcasContext);
+  const { marcas, isMarcaLoading, setMarcaGlobalSeleccionada, marcaGlobalSeleccionada, isOpenModalNuevaMarca, setIsOpenModalNuevaMarca } = useContext(MisMarcasContext);
 
   const { data: session, status } = useSession()
 
@@ -65,8 +66,10 @@ export default function BasicHeader() {
 
 
   return (
-    <nav className="fixed h-20 w-full top-0 start-0  bg-slate-900 ">
+    <nav className="fixed h-20 w-full top-0 start-0 bg-slate-900">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+
+        {/* Nombre de la app */}
         <Link href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
           {/* <img src={Logo.src} className="h-8" alt="Kibo Logo" /> */}
           <h1 className="self-center text-2xl font-semibold whitespace-nowrap text-slate-100">PublishWhere</h1>
@@ -109,7 +112,7 @@ export default function BasicHeader() {
             }
 
           </div>
-        }
+        } 
 
 
 
@@ -126,13 +129,13 @@ export default function BasicHeader() {
               <HoverCardTrigger href="/perfil/mis-datos">
                 <CircleFadingPlus className="m-4 p-0" size={24} color="#ffffff" absoluteStrokeWidth />
               </HoverCardTrigger>
-              <HoverCardContent className="m-0 p-0" >
+              <HoverCardContent className="m-0 p-0 z-[1000]" >
                 <div>
                   <Button className="m-0 w-full gap-1 " variant={"ghost"}>
                     <CircleFadingPlus size={16} absoluteStrokeWidth />
                     Publicación
                   </Button>
-                  <Button className="m-0 w-full gap-1" variant={"ghost"}>
+                  <Button className="m-0 w-full gap-1" variant={"ghost"} onClick={() => setIsOpenModalNuevaMarca(true)}>
                     <CircleFadingPlus size={16} absoluteStrokeWidth />
                     marca
                   </Button>
@@ -195,6 +198,8 @@ export default function BasicHeader() {
 
         </div>
       </div>
-    </nav >
+      <MarcaNueva isOpenModalNuevaMarca={isOpenModalNuevaMarca} setIsOpenModalNuevaMarca={setIsOpenModalNuevaMarca}/>
+
+    </nav>
   );
 }

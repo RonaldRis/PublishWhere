@@ -20,27 +20,21 @@ import { IUser } from '@/lib/models/user.model';
 
 function PerfilMarcasPage() {
 
-  const { marcas, setMarcas } = useContext(MisMarcasContext);
+  const { marcas, setMarcas, marcaGlobalSeleccionada} = useContext(MisMarcasContext);
 
-  const [marcaSeleccionadaId, setMarcaSeleccionadaId] = React.useState("");
   const [marcaSeleccionada, setMarcaSeleccionada] = React.useState<IMarca | null>(null);
 
 
 
-  //Encuentro el objeto de la marca por su id (busco por id porque podría cambiar el nombre)
+
+
   useEffect(() => {
-    if (marcaSeleccionadaId) {
-      const marca = marcas.find(marca => marca._id === marcaSeleccionadaId);
-      if (marca) {
-        setMarcaSeleccionada(marca);
-      }
-    } else {
-      setMarcaSeleccionada(null);
-    }
+    if (!marcaGlobalSeleccionada) return;
+    setMarcaSeleccionada(marcaGlobalSeleccionada);
 
-  }, [marcaSeleccionadaId, marcas]);
+  }, [marcaGlobalSeleccionada]);
 
-
+  
 
 
   return (
@@ -50,7 +44,7 @@ function PerfilMarcasPage() {
 
         <MarcaSeleccionadaBuscador
           hasNewBotton={true}
-          marcaSeleccionadaId={marcaSeleccionadaId} setMarcaSeleccionadaId={setMarcaSeleccionadaId}
+          marcaSeleccionada={marcaSeleccionada} setMarcaSeleccionada={setMarcaSeleccionada}
         />
       </div>
 
@@ -100,7 +94,7 @@ function PerfilMarcasPage() {
                   </TabsContent>
                   <TabsContent value="equipo">
                     <h1 className='font-bold' >Equipo</h1>
-                    <h1>Admin: {marcaSeleccionada.admin.name}</h1>
+                    <h1>Admin: {marcaSeleccionada.admin?.name}</h1>
 
 
                     <Separator className='my-2' />

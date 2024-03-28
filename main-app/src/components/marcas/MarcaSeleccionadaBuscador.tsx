@@ -23,16 +23,16 @@ import { MisMarcasContext } from '@/contexts/MisMarcasContext';
 
 interface Props {
     hasNewBotton: boolean;
-    marcaSeleccionadaId: string;
-    setMarcaSeleccionadaId: React.Dispatch<React.SetStateAction<string>>;
+    marcaSeleccionada: IMarca|null;
+    setMarcaSeleccionada: React.Dispatch<React.SetStateAction<IMarca|null>>;
 }
 
-function MarcaSeleccionadaBuscador({ hasNewBotton, marcaSeleccionadaId, setMarcaSeleccionadaId }: Props) {
+function MarcaSeleccionadaBuscador({ hasNewBotton, marcaSeleccionada, setMarcaSeleccionada }: Props) {
     // Aquí puedes usar las props para renderizar tu componente.
     // Este es solo un ejemplo básico, tendrás que adaptarlo a tus necesidades.
 
     const { data: session } = useSession();
-    const { marcas, isMarcaLoading } = useContext(MisMarcasContext);
+    const { marcas, isMarcaLoading, setIsOpenModalNuevaMarca } = useContext(MisMarcasContext);
 
     const [marcasFiltro, setMarcasFiltro] = React.useState<IMarca[]>(marcas)
 
@@ -76,9 +76,9 @@ function MarcaSeleccionadaBuscador({ hasNewBotton, marcaSeleccionadaId, setMarca
                             marcasFiltro?.map((marca, index) => (
 
 
-                                <div key={marca._id} className={`flex flex-col justify-between ${marca._id == marcaSeleccionadaId ? "bg-slate-200" : ""}`}>
+                                <div key={marca._id} className={`flex flex-col justify-between ${marca._id == marcaSeleccionada?._id ? "bg-slate-200" : ""}`}>
 
-                                    <Button className='w-full text-left' variant={"ghost"} onClick={() => setMarcaSeleccionadaId(marca._id)}>
+                                    <Button className='w-full text-left' variant={"ghost"} onClick={() => setMarcaSeleccionada(marca)}>
                                         {marca.name}
                                     </Button>
 
@@ -95,12 +95,7 @@ function MarcaSeleccionadaBuscador({ hasNewBotton, marcaSeleccionadaId, setMarca
 
             {hasNewBotton &&
                 <CardFooter>
-
-                    <MarcaNueva />
-
-
-                    {/* <Button className='place-content-center w-full bottom-0' onClick={() => console.log("Crear nueva carta")}>Nueva Marca</Button> */}
-
+                    <Button className='w-full' onClick={() => setIsOpenModalNuevaMarca(true)}>Nueva marca</Button>
                 </CardFooter>
             }
 

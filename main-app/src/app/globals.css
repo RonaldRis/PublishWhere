@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+
+nav{
+  z-index: 1001;
+
+}
+
+
+
+
 @layer base {
   :root {
     --background: 0 0% 100%;

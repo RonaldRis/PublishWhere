@@ -16,6 +16,8 @@ interface IGlobalContextProps {
     isMarcaLoading: boolean;
     setIsMarcaLoading: React.Dispatch<React.SetStateAction<boolean>>;
     fetchRefreshMarcas:  () => void; 
+    isOpenModalNuevaMarca: boolean;
+    setIsOpenModalNuevaMarca: React.Dispatch<React.SetStateAction<boolean>>;
 
 }
 
@@ -30,7 +32,9 @@ const MisMarcasContext = React.createContext<IGlobalContextProps>
         setMarcas: () => { },
         isMarcaLoading: false,
         setIsMarcaLoading: () => { },
-        fetchRefreshMarcas: async () =>{}
+        fetchRefreshMarcas: async () =>{},
+        isOpenModalNuevaMarca: false,
+        setIsOpenModalNuevaMarca: () => {},
     });
 
 
@@ -44,6 +48,7 @@ const MisMarcasProvider = ({ children }: { children: ReactNode }) => {
     const [marcas, setMarcas] = React.useState<IMarca[]>([]); 
     const [marcaGlobalSeleccionada, setMarcaGlobalSeleccionada] = useLocalStorage<IMarca | null>("marcaGlobalSeleccionada", null);
     const [isMarcaLoading, setIsMarcaLoading] = React.useState<boolean>(false);
+    const [isOpenModalNuevaMarca, setIsOpenModalNuevaMarca] = React.useState<boolean>(false);
 
     const fetchRefreshMarcas = async () => {
         setIsMarcaLoading(true);
@@ -80,7 +85,9 @@ const MisMarcasProvider = ({ children }: { children: ReactNode }) => {
             setMarcas: setMarcas,
             isMarcaLoading: isMarcaLoading,
             setIsMarcaLoading: setIsMarcaLoading,
-            fetchRefreshMarcas: fetchRefreshMarcas
+            fetchRefreshMarcas: fetchRefreshMarcas,
+            isOpenModalNuevaMarca: isOpenModalNuevaMarca,
+            setIsOpenModalNuevaMarca: setIsOpenModalNuevaMarca,
         }}>
             {children}
         </MisMarcasContext.Provider>
