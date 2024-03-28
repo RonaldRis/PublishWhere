@@ -1,0 +1,11 @@
+
+SPRINT 1
+    Día 1: Conexión con la base de datos y esquemas minimalistas de las entidades 
+    Día 2: Integración de Google login y conexión a la base de datos 
+    Día 3: Diseño web, manejo del estado de la sesión y obtener marcas
+    Día 4: Definición de contexto global del cliente y crear  marcas
+    Día   
+    Día   
+    Día   
+    Día   
+    Día   

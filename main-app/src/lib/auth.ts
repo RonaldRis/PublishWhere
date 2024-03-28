@@ -37,7 +37,6 @@ export const authOptions: NextAuthOptions = {
         session.user.email = user.email;
         session.user.name = user.name;
         session.user.image = user.image;
-        session.user.token = token.accessToken as string;
       }
 
 

@@ -3,13 +3,13 @@
 import { FilterQuery, SortOrder } from "mongoose";
 import { revalidatePath } from "next/cache";
 
-import User from "../models/user.model";
 
 import { connectToDB } from "../mongoose";
+import { User } from "../models";
 
 export async function fetchUser(userId: string) {
   try {
-    connectToDB();
+    // connectToDB();
 
     return await User.findOne({ id: userId })
   } catch (error: any) {
@@ -35,7 +35,7 @@ export async function updateUser({
   image,
 }: Params): Promise<void> {
   try {
-    connectToDB();
+    // connectToDB();
 
     await User.findOneAndUpdate(
       { id: userId },

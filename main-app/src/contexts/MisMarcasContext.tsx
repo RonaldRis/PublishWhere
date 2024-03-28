@@ -1,0 +1,95 @@
+"use client"
+
+import { fetchAllMarcas, fetchMisMarcas } from '@/lib/actions/marcas.actions';
+import { IMarca } from '@/lib/models/marca.model';
+import { useSession } from 'next-auth/react';
+import React, { useState, useEffect, Context, createContext, ReactNode } from 'react';
+import { useLocalStorage } from "usehooks-ts"
+
+
+
+interface IGlobalContextProps {
+    marcaGlobalSeleccionada: IMarca | null;
+    setMarcaGlobalSeleccionada: React.Dispatch<React.SetStateAction<IMarca | null>>;
+    marcas: IMarca[];
+    setMarcas: React.Dispatch<React.SetStateAction<IMarca[]>>;
+    isMarcaLoading: boolean;
+    setIsMarcaLoading: React.Dispatch<React.SetStateAction<boolean>>;
+    fetchRefreshMarcas:  () => void; 
+
+}
+
+
+
+// Contexto
+const MisMarcasContext = React.createContext<IGlobalContextProps>
+    ({
+        marcaGlobalSeleccionada: null,
+        setMarcaGlobalSeleccionada: () => { },
+        marcas: [],
+        setMarcas: () => { },
+        isMarcaLoading: false,
+        setIsMarcaLoading: () => { },
+        fetchRefreshMarcas: async () =>{}
+    });
+
+
+
+// Proveedor
+const MisMarcasProvider = ({ children }: { children: ReactNode }) => {
+
+
+    const {data: session} = useSession();
+
+    const [marcas, setMarcas] = React.useState<IMarca[]>([]); 
+    const [marcaGlobalSeleccionada, setMarcaGlobalSeleccionada] = useLocalStorage<IMarca | null>("marcaGlobalSeleccionada", null);
+    const [isMarcaLoading, setIsMarcaLoading] = React.useState<boolean>(false);
+
+    const fetchRefreshMarcas = async () => {
+        setIsMarcaLoading(true);
+
+        const result = await fetchMisMarcas(session?.user.id as string); //TODO: Cambiar por el fetch de las marcas del usuario
+        setMarcas(result);
+        setIsMarcaLoading(false);
+    };
+
+
+
+    useEffect(() => {
+        fetchRefreshMarcas();
+    }, [session?.user.id]);
+
+
+
+    const values = {
+        marcaGlobalSeleccionada,
+        setMarcaGlobalSeleccionada,
+        marcas,
+        setMarcas,
+        isMarcaLoading,
+        setIsMarcaLoading,
+    };
+
+
+    return (
+        <MisMarcasContext.Provider value={{
+
+            marcaGlobalSeleccionada: marcaGlobalSeleccionada,
+            setMarcaGlobalSeleccionada: setMarcaGlobalSeleccionada,
+            marcas: marcas,
+            setMarcas: setMarcas,
+            isMarcaLoading: isMarcaLoading,
+            setIsMarcaLoading: setIsMarcaLoading,
+            fetchRefreshMarcas: fetchRefreshMarcas
+        }}>
+            {children}
+        </MisMarcasContext.Provider>
+    );
+
+
+
+
+};
+
+
+export { MisMarcasProvider, MisMarcasContext };
