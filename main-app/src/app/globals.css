@@ -2,6 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+
+nav{
+  z-index: 1001;
+
+}
+ nav *{
+  z-index: 1002 !important;
+ }
+ .over-nav{
+  position: relative;
+  z-index: 1002 !important;
+ }
+
+
+
 @layer base {
   :root {
     --background: 0 0% 100%;

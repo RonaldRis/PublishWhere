@@ -1,0 +1,17 @@
+STORY POINTS 
+PONDERACIÓN
+    1   GET-DELETE Backend-Fronted
+    2   POST-PUT Backend-Fronted una tabla
+    3   POST-PUT Backend-Fronted entidades que dependen de otras entidades
+    5   Integración con software de terceros (GET-DELET)
+    7   Integración con software de terceros (POST-PUT)
+
+
+
+SPRINT 0
+    
+
+AGREGAR LAS HISTORIAS:
+    * Conexión a la base de datos
+    * Definir schemas de la base de datos 
+    * Diseñar sistema???? 

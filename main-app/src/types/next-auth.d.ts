@@ -13,8 +13,17 @@ declare module "next-auth" {
   interface Session {
     user: {
       id: string
-      token: string 
+      token: string
     } & DefaultSession["user"]
+  }
+
+  declare module 'next-auth/adapters' {
+    interface AdapterUser extends IUser {
+      id: string
+      token: string
+
+
+    }
   }
 }
 

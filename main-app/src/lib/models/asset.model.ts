@@ -1,5 +1,8 @@
 import mongoose from 'mongoose';
 
+mongoose.connect(process.env.MONGO_URL!);
+mongoose.Promise = global.Promise;
+
 const assetSchema = new mongoose.Schema({
     uid: { type: String, required: true },
     contentType: { type: String, required: true },
@@ -20,9 +23,8 @@ const assetSchema = new mongoose.Schema({
 
 
 
-const Asset = mongoose.model('Asset', assetSchema);
 
-export default Asset;
+export default assetSchema;
 
 
 
