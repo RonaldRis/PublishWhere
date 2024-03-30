@@ -98,7 +98,7 @@ export default function BasicHeader() {
                       <SelectTrigger className=" px-8">
                         <SelectValue placeholder="Selecciona una marca" />
                       </SelectTrigger>
-                      <SelectContent >
+                      <SelectContent className="over-nav" >
 
                         {marcas?.map((marca) => (
                           <SelectItem className="gap-5" value={marca._id} key={marca._id}>
@@ -129,7 +129,7 @@ export default function BasicHeader() {
               <HoverCardTrigger href="/perfil/mis-datos">
                 <CircleFadingPlus className="m-4 p-0" size={24} color="#ffffff" absoluteStrokeWidth />
               </HoverCardTrigger>
-              <HoverCardContent className="m-0 p-0 z-[1000]" >
+              <HoverCardContent className="m-0 p-0 " >
                 <div>
                   <Button className="m-0 w-full gap-1 " variant={"ghost"}>
                     <CircleFadingPlus size={16} absoluteStrokeWidth />

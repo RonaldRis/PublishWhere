@@ -1,5 +1,5 @@
 import { postCrearMarca } from '@/lib/actions/marcas.actions';
-import { Marca, User } from '@/lib/models';
+import { Marca, User } from '@/lib/models/models';
 import clientPromise from '@/lib/mongoose';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { NextResponse } from 'next/server';

@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 
 import { connectToDB } from "../mongoose";
 import { IMarca } from "../models/marca.model";
-import { Marca } from "../models";
+import { Marca } from "../models/models";
 
 
 

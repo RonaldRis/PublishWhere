@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 
 
 import { connectToDB } from "../mongoose";
-import { User } from "../models";
+import { User } from "../models/models";
 
 export async function fetchUser(userId: string) {
   try {

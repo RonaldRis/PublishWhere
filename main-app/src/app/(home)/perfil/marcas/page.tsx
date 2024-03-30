@@ -94,7 +94,7 @@ function PerfilMarcasPage() {
                   </TabsContent>
                   <TabsContent value="equipo">
                     <h1 className='font-bold' >Equipo</h1>
-                    <h1>Admin: {marcaSeleccionada.admin?.name}</h1>
+                    <h1>Admin: {marcaSeleccionada?.admin?.name}</h1>
 
 
                     <Separator className='my-2' />
@@ -104,7 +104,7 @@ function PerfilMarcasPage() {
                     {marcaSeleccionada?.equipo?.length > 0 && (
 
                       <ul className='list-disc list-inside'>
-                        {marcaSeleccionada?.equipo.map((user) => {
+                        {marcaSeleccionada?.equipo?.map((user) => {
                           user = user as IUser;
                           return (
 
