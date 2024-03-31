@@ -4,17 +4,18 @@
 // "include": ["next-env.d.ts"],
 
 // This file is used to extend the types of the NextAuth library
+import { IUser } from "@/lib/models/user.model"
 import NextAuth, { DefaultSession } from "next-auth"
 
 declare module "next-auth" {
   /**
    * Returned by `useSession`, `getSession` and received as a prop on the `SessionProvider` React Context
    */
-  interface Session {
+  interface Session  {
     user: {
       id: string
       token: string
-    } & DefaultSession["user"]
+    } & DefaultSession["user"] & IUser
   }
 
   declare module 'next-auth/adapters' {

@@ -52,10 +52,13 @@ const MisMarcasProvider = ({ children }: { children: ReactNode }) => {
 
     const fetchRefreshMarcas = async () => {
         setIsMarcaLoading(true);
+        if(!session?.user.id) return setIsMarcaLoading(false);
 
         const result = await fetchMisMarcas(session?.user.id as string); //TODO: Cambiar por el fetch de las marcas del usuario
-        setMarcas(result);
+        const marcasOrdenadas = result.result!.sort((a, b) => a.name.localeCompare(b.name)); 
+        setMarcas(marcasOrdenadas);
         setIsMarcaLoading(false);
+
     };
 
 

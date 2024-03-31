@@ -14,7 +14,6 @@ import { IMarca } from '@/lib/models/marca.model';
 
 import { toast } from 'sonner';
 import { Separator } from '@/components/ui/separator';
-import { useSession } from 'next-auth/react';
 import { ScrollBar, ScrollArea } from '@/components/ui/scroll-area';
 import MarcaNueva from './MarcaNueva';
 import { MisMarcasContext } from '@/contexts/MisMarcasContext';
@@ -23,16 +22,13 @@ import { MisMarcasContext } from '@/contexts/MisMarcasContext';
 
 interface Props {
     hasNewBotton: boolean;
-    marcaSeleccionada: IMarca|null;
-    setMarcaSeleccionada: React.Dispatch<React.SetStateAction<IMarca|null>>;
 }
 
-function MarcaSeleccionadaBuscador({ hasNewBotton, marcaSeleccionada, setMarcaSeleccionada }: Props) {
+function MarcaSeleccionadaBuscador({ hasNewBotton }: Props) {
     // Aquí puedes usar las props para renderizar tu componente.
     // Este es solo un ejemplo básico, tendrás que adaptarlo a tus necesidades.
 
-    const { data: session } = useSession();
-    const { marcas, isMarcaLoading, setIsOpenModalNuevaMarca } = useContext(MisMarcasContext);
+    const { marcas, isMarcaLoading, setIsOpenModalNuevaMarca, marcaGlobalSeleccionada, setMarcaGlobalSeleccionada } = useContext(MisMarcasContext);
 
     const [marcasFiltro, setMarcasFiltro] = React.useState<IMarca[]>(marcas)
 
@@ -43,7 +39,7 @@ function MarcaSeleccionadaBuscador({ hasNewBotton, marcaSeleccionada, setMarcaSe
 
     const onChangeInputHandler = (event: any) => {
         if (!event.target.value || event.target.value === '') return setMarcasFiltro(marcas)
-        const nuevasMarcas = marcas.filter(marca => marca.name.includes(event.target.value));
+        const nuevasMarcas = marcas.filter(marca => marca.name.toLowerCase().includes(event.target.value.toString().toLowerCase()));
         setMarcasFiltro(nuevasMarcas)
     }
 
@@ -76,9 +72,9 @@ function MarcaSeleccionadaBuscador({ hasNewBotton, marcaSeleccionada, setMarcaSe
                             marcasFiltro?.map((marca, index) => (
 
 
-                                <div key={marca._id} className={`flex flex-col justify-between ${marca._id == marcaSeleccionada?._id ? "bg-slate-200" : ""}`}>
+                                <div key={marca._id} className={`flex flex-col justify-between ${marca._id == marcaGlobalSeleccionada?._id ? "bg-slate-200" : ""}`}>
 
-                                    <Button className='w-full text-left' variant={"ghost"} onClick={() => setMarcaSeleccionada(marca)}>
+                                    <Button className='w-full text-left' variant={"ghost"} onClick={() => setMarcaGlobalSeleccionada(marca)}>
                                         {marca.name}
                                     </Button>
 

@@ -33,14 +33,13 @@ function MarcaNueva({ isOpenModalNuevaMarca, setIsOpenModalNuevaMarca }: { isOpe
         if (!session) return;
         const result = await postCrearMarca(session.user.id, nuevaMarca);
 
-        console.log(result);
-        fetchRefreshMarcas(); //TODO: Now: decidir si refresh all o solo agregar el actual
+        if (!result.isOk) {
+            toast.error(result.error!);
+            return;
+        }
 
+        fetchRefreshMarcas(); 
 
-
-        //TODO: Guardar en la base de datos
-        //TODO: Actualizar el contexto global
-        ///TOOD: revalidar la pagina actual
         setIsOpenModalNuevaMarca(false);
         setNuevaMarca("")
 

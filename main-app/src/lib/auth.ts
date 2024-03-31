@@ -1,11 +1,7 @@
 import { MongoDBAdapter } from '@auth/mongodb-adapter'
-import { nanoid } from 'nanoid'
 import { NextAuthOptions, Session, TokenSet, getServerSession } from 'next-auth'
 import GoogleProvider from 'next-auth/providers/google'
 import clientPromise, { connectToDB } from './mongoose'
-import { connect } from 'http2'
-import User from './models/user.model'
-import NextAuth from 'next-auth/next'
 
 
 

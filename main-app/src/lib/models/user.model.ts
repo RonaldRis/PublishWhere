@@ -11,7 +11,6 @@ export interface IUser {
   image: string;
   bio: string;
   onboarded: boolean;
-  marcas: string[] | IMarca[];
 }
 
 
