@@ -19,15 +19,17 @@ import { IUser } from '@/lib/models/user.model';
 import { fetchAllUser } from '@/lib/actions/users.actions';
 import { Badge } from '../ui/badge';
 import { Separator } from '../ui/separator';
-import { postNewTeamMembersOnMarca } from '@/lib/actions/marcas.actions';
+import { fetchMarca, postNewTeamMembersOnMarca } from '@/lib/actions/marcas.actions';
 import { MisMarcasContext } from '@/contexts/MisMarcasContext';
+import { set } from 'mongoose';
+import { revalidatePath } from 'next/cache';
 
 function MarcaNewTeamMember({ isOpenModalNewTeamMember, setIsOpenModalNewTeamMember }: { isOpenModalNewTeamMember: boolean, setIsOpenModalNewTeamMember: React.Dispatch<React.SetStateAction<boolean>> }) {
 
     
     //Global
     const { data: session } = useSession();
-    const { fetchRefreshMarcas, marcaGlobalSeleccionada, setMarcaGlobalSeleccionada } = useContext(MisMarcasContext);
+    const { fetchRefreshMarcas, marcaGlobalSeleccionada, setMarcaGlobalSeleccionada, marcas } = useContext(MisMarcasContext);
 
     ///USUARIOS
     const [usuarios, setUsuarios] = React.useState<IUser[]>([])
@@ -108,13 +110,13 @@ function MarcaNewTeamMember({ isOpenModalNewTeamMember, setIsOpenModalNewTeamMem
         setUsersSeleccionados(usersSeleccionados.filter(user => user._id !== userId));
     }
 
-    const handlerGuardarMarca = async () => {
+    const handlerGuardarNewTeamMembers = async () => {
 
-        //TODO: NOW MANEJAR ERROR DE SI YA EXISTE LA MARCA
         if (usersSeleccionados.length <= 0) {
             toast.info('Debes seleccionar al menos un usuario');
             return;
         }
+
         if (!session) {
             toast.error('No hay sesión activa');
             return;
@@ -125,29 +127,35 @@ function MarcaNewTeamMember({ isOpenModalNewTeamMember, setIsOpenModalNewTeamMem
             return;
         }
 
+        //TODO: URGENTE: POR ALGUN MOTIVO AL AGREGA UN USUARIO NUEVO SIEMPRE SE AGREGA EN EL USUARIO DE MARCELA
         const idSeleccionados = usersSeleccionados.map(user => user._id);
+        const marcaId = marcaGlobalSeleccionada._id;
+        console.log("idSeleccionados", idSeleccionados);
+        console.log("marcaId", marcaId);
 
+        console.log("MARCAS ANTES", marcas);
+        const result = await postNewTeamMembersOnMarca(marcaId, idSeleccionados);
 
-        console.log('idSeleccionados', idSeleccionados);
-        console.log('marcaseleccionada', marcaGlobalSeleccionada?._id);
-        const result = await postNewTeamMembersOnMarca(marcaGlobalSeleccionada?._id, usersSeleccionados.map(user => user._id));
-
-        console.log(result);
-
+        console.log("postNewTeamMembersOnMarca", result);
         if (!result.isOk) {
             toast.error(result.error!);
             return;
         }
 
-        setMarcaGlobalSeleccionada(result.result!);
 
-        fetchRefreshMarcas();
+        await fetchRefreshMarcas();
 
+        
         setIsOpenModalNewTeamMember(false);
+        setUsersSeleccionados([])
         setInputText("")
-
+        
         toast.success('Equipo actualizado correctamente');
+        setMarcaGlobalSeleccionada(result.result!);
     }
+
+
+
 
 
 
@@ -160,7 +168,7 @@ function MarcaNewTeamMember({ isOpenModalNewTeamMember, setIsOpenModalNewTeamMem
             </DialogTrigger>
             <DialogContent className="sm:max-w-[600px]">
                 <DialogHeader>
-                    <DialogTitle>Agregar miembros del equipo a la marca "{marcaGlobalSeleccionada?.name}"</DialogTitle>
+                    <DialogTitle>Agregar miembros al equipo: {marcaGlobalSeleccionada?.name}</DialogTitle>
                     <DialogDescription>
                         Selecciona a las personas que quieras agregar
                     </DialogDescription>
@@ -258,7 +266,7 @@ function MarcaNewTeamMember({ isOpenModalNewTeamMember, setIsOpenModalNewTeamMem
                 <Separator className='my-2' />
                 <DialogFooter className='items-center'>
                     <span >Asegurate de guardar tus cambios</span>
-                    <Button type='submit' onClick={handlerGuardarMarca}>Guardar</Button>
+                    <Button type='submit' onClick={handlerGuardarNewTeamMembers}>Guardar</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog >

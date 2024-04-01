@@ -38,7 +38,7 @@ function MarcaNueva({ isOpenModalNuevaMarca, setIsOpenModalNuevaMarca }: { isOpe
             return;
         }
 
-        fetchRefreshMarcas(); 
+        await fetchRefreshMarcas(); 
 
         setIsOpenModalNuevaMarca(false);
         setNuevaMarca("")

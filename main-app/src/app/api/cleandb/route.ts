@@ -29,8 +29,8 @@ export async function GET(request: Request, response: Response) {
 
 
             console.log(userRonald);
-            await postCrearMarca(userRonald._id, "Marcela Peraz")
             await postCrearMarca(userRonald._id, "Ris")
+            await postCrearMarca(userRonald._id, "Marcela Peraz")
             await postCrearMarca(userRonald._id.toString(), "Kibo")
 
             const allMarcas = await db.collection('marcas').find({}).toArray();
@@ -42,12 +42,7 @@ export async function GET(request: Request, response: Response) {
 
             return NextResponse.json({
                 message: 'Colecciones eliminadas exitosamente',
-                ronald: userRonald,
                 allUser: allUsers,
-                allMarcas: allMarcas,
-                allMarcas2: allMarcas2,
-                allMarcasModel: allMarcasModel,
-                misMarcas: await Marca.find({ equipo: { $in: [userRonald._id] } }),
                 marcasPopulate: marcas
             });
         } catch (error) {
