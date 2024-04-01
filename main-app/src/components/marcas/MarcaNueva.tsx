@@ -43,6 +43,9 @@ function MarcaNueva({ isOpenModalNuevaMarca, setIsOpenModalNuevaMarca }: { isOpe
         setIsOpenModalNuevaMarca(false);
         setNuevaMarca("")
 
+        //TODO: Decidir si actualizar la marca seleccionada con la nueva creada en funcion de si afecta al estar en publicar contenido o la galeria para que actualice esto
+        
+
         toast.success('Marca creada correctamente');
     }
 

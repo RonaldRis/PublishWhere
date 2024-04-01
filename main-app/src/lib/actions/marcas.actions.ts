@@ -132,7 +132,6 @@ export async function postNewTeamMembersOnMarca(marcaId: string, userIds: string
         
         //Ahora vuelvo a buscar la marca y populo el admin y el equipo
         const resultPopulate = await Marca.findOne({ _id: marcaId }).populate('admin').populate('equipo');
-        console.log("resultPopulate", resultPopulate);
         if (!resultPopulate) {
             return { result: null, isOk: false, error: "No es posible agregar el miembro al equipo" };
         }
@@ -160,13 +159,6 @@ export async function deleteTeamMembersOnMarca(marcaId: string, userId: string):
             { $pull: { equipo: userId } },
             { new: true, useFindAndModify: false }
         );
-        console.log("marcaid", marcaId);
-
-
-        console.log(result);
-
-
-
 
         return {
             result: JSON.parse(JSON.stringify(result)) as IMarca,

@@ -30,6 +30,7 @@ import { deleteMarca, deleteTeamMembersOnMarca, fetchMarca, renameMarca } from '
 import { toast } from 'sonner';
 import { useSession } from 'next-auth/react';
 import { Input } from '@/components/ui/input';
+import EquipoCrud from './EquipoCrud';
 
 
 
@@ -38,81 +39,12 @@ function DetallesMarcaEditable() {
     const { marcaGlobalSeleccionada, fetchRefreshMarcas, setMarcaGlobalSeleccionada, marcas } = useContext(MisMarcasContext);
     const { data: session } = useSession();
 
-    //Delete
-    const [isOpenModalDelete, setIsOpenModalDelete] = React.useState<boolean>(false);
-    const [userBorrar, setUserBorrar] = React.useState<IUser | null>(null);
-
     //Rename
     const [isOpenModalRename, setIsOpenModalRename] = React.useState<boolean>(false);
     const [newName, setNewName] = React.useState<string>('');
 
-    //New Team Member
-    const [isOpenModalNewTeamMember, setIsOpenModalNewTeamMember] = React.useState<boolean>(false);
-
-
-    //Handlers
-    //DELETE
-    const handlerClickOnDeleteUserBadge = (user: IUser) => {
-        if (!user) {
-            toast.info('No hay usuario seleccionado');
-            return;
-        }
-        if (user._id === marcaGlobalSeleccionada?.admin?._id) {
-            toast.info('No puedes eliminar al administrador');
-            return;
-        }
-
-        setUserBorrar(user);
-        setIsOpenModalDelete(true);
-    }
-
-    const handlerDeleteUseronMarca = async () => {
-        //Validaciones
-        if (!userBorrar) {
-            toast.info('No hay usuario seleccionado');
-            return;
-        }
-        if (!marcaGlobalSeleccionada) {
-            toast.info('No hay marca seleccionada');
-            return;
-        }
-
-
-        const marcaId = marcaGlobalSeleccionada._id;
-        const result = await deleteTeamMembersOnMarca(marcaId, userBorrar._id);
-
-        if (!result.isOk) {
-            toast.error(result.error!);
-            return;
-        }
-        toast.success('Usuario eliminado correctamente');
-
-        setIsOpenModalDelete(false);
-        setUserBorrar(null);
-
-
-        ///Actualizo las marcas y la marca seleccionada
-        await fetchRefreshMarcas();
-
-        if (userBorrar._id === session?.user.id) {
-            setMarcaGlobalSeleccionada(null);
-            return;
-        }
-
-
-        const marcaRenovada = await fetchMarca(marcaGlobalSeleccionada._id);
-        if (!marcaRenovada.isOk) {
-            toast.error(marcaRenovada.error!);
-            return;
-        }
-        else
-            setMarcaGlobalSeleccionada(marcaRenovada.result);
-
-
-    }
-
-    //RENAME
-    const handlerClickOnRenameOpenModal = () => {
+      //RENAME
+      const handlerClickOnRenameOpenModal = () => {
         setIsOpenModalRename(true);
     }
 
@@ -147,6 +79,8 @@ function DetallesMarcaEditable() {
         setIsOpenModalRename(false);
         setNewName('');
     }
+
+
 
     return (
 
@@ -204,38 +138,8 @@ function DetallesMarcaEditable() {
                                     </ol>
                                 </TabsContent>
                                 <TabsContent value="equipo">
-                                    <h1 className='font-bold' >Equipo</h1>
-                                    <h1>Admin: {marcaGlobalSeleccionada?.admin?.name}</h1>
-
-
-                                    <Separator className='my-2' />
-
-                                    <h2 className='font-bold' >Miembros</h2>
-
-                                    {marcaGlobalSeleccionada?.equipo?.length > 0 && (
-
-                                        <ul className='list-disc list-inside'>
-                                            {marcaGlobalSeleccionada?.equipo?.map((user) => {
-                                                user = user as IUser;
-                                                return (
-
-                                                    <li key={user._id} className='flex items-center justify-between'>
-
-                                                        <span>{user.name}</span>
-                                                        <Button className='justify-end' variant='ghost' onClick={() => handlerClickOnDeleteUserBadge(user)} >
-
-                                                            <CircleX color="#e00000" />
-                                                        </Button>
-                                                    </li>
-                                                )
-                                            })}
-
-                                        </ul>
-
-                                    )}
-
-                                    <Button className='w-full' variant='ghost' onClick={() => setIsOpenModalNewTeamMember(true)}>Agregar miembro</Button>
-
+                                    <EquipoCrud/>
+                                    
 
                                 </TabsContent>
                             </Tabs>
@@ -254,25 +158,6 @@ function DetallesMarcaEditable() {
             {
                 marcaGlobalSeleccionada &&
                 <>
-                    <MarcaNewTeamMember isOpenModalNewTeamMember={isOpenModalNewTeamMember} setIsOpenModalNewTeamMember={setIsOpenModalNewTeamMember} />
-
-                    {/* // ConfirmarDelete Dialog */}
-                    <Dialog open={isOpenModalDelete} onOpenChange={setIsOpenModalDelete}>
-                        <DialogTrigger asChild>
-                        </DialogTrigger>
-                        <DialogContent className="sm:max-w-[425px]">
-                            <DialogHeader>
-                                <DialogTitle>Eliminar usuario:  <span>{userBorrar?.name}</span></DialogTitle>
-                                <DialogDescription>
-                                    ¿Estás seguro de que deseas eliminarlo del equipo - {marcaGlobalSeleccionada.name}?
-                                </DialogDescription>
-                            </DialogHeader>
-                            <DialogFooter>
-                                <Button variant="destructive" onClick={handlerDeleteUseronMarca}>Eliminar</Button>
-                            </DialogFooter>
-                        </DialogContent>
-                    </Dialog>
-
 
                     {/* // Cambiar Nombre Dialog */}
                     <Dialog open={isOpenModalRename} onOpenChange={setIsOpenModalRename}>

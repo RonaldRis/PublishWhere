@@ -160,7 +160,7 @@ export default function AppHeader() {
               closeDelay={5}
 
             >
-              <HoverCardTrigger href="/perfil/mis-datos">
+              <HoverCardTrigger href="/perfil/marcas">
                 {session?.user?.image ?
                   <Image src={session.user.image} alt="Foto de perfil" className="rounded-full w-10 h-10 object-cover" width={40} height={40} />
                   :
@@ -170,11 +170,11 @@ export default function AppHeader() {
               <HoverCardContent className="m-0 p-0" >
                 <div>
                   <p className="m-0 w-full text-center font-medium">{session.user.name}</p>
-                  <Link href="/perfil/mis-datos">
-                    <Button className="m-0 w-full" variant={"ghost"}>Mis datos</Button>
-                  </Link>
                   <Link href="/perfil/marcas">
                     <Button className="m-0 w-full" variant={"ghost"}>Mis marcas</Button>
+                  </Link>
+                  <Link href="/perfil/mis-datos">
+                    <Button className="m-0 w-full" variant={"ghost"}>Mis datos</Button>
                   </Link>
 
                   <Button className="m-0 w-full" variant={"ghost"} onClick={handlerLogout}>Cerrar sesión</Button>

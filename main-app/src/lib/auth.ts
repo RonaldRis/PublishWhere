@@ -29,6 +29,7 @@ export const authOptions: NextAuthOptions = {
 
      
       if (user) {
+        session.user._id = user.id;
         session.user.id = user.id;
         session.user.email = user.email;
         session.user.name = user.name;

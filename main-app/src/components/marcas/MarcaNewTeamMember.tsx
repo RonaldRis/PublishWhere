@@ -130,13 +130,8 @@ function MarcaNewTeamMember({ isOpenModalNewTeamMember, setIsOpenModalNewTeamMem
         //TODO: URGENTE: POR ALGUN MOTIVO AL AGREGA UN USUARIO NUEVO SIEMPRE SE AGREGA EN EL USUARIO DE MARCELA
         const idSeleccionados = usersSeleccionados.map(user => user._id);
         const marcaId = marcaGlobalSeleccionada._id;
-        console.log("idSeleccionados", idSeleccionados);
-        console.log("marcaId", marcaId);
-
-        console.log("MARCAS ANTES", marcas);
         const result = await postNewTeamMembersOnMarca(marcaId, idSeleccionados);
 
-        console.log("postNewTeamMembersOnMarca", result);
         if (!result.isOk) {
             toast.error(result.error!);
             return;
