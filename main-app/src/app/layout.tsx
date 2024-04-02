@@ -41,7 +41,7 @@ export default async function RootLayout({
             <Suspense>
               <HeaderDynamic />
             </Suspense>
-            <main className="container m-auto pt-20 h-screen ">
+            <main className="m-auto pt-20 h-screen ">
               <div className=" w-full h-full py-10">
 
                 {children}

@@ -1,12 +1,15 @@
 import mongoose from "mongoose";
-import assetSchema from "./asset.model";
-import { marcaSchema } from "./marca.model";
+import { IMarca, marcaSchema } from "./marca.model";
 import { IUser, userSchema } from "./user.model";
 import { connectToDB } from "../mongoose";
+import { IFile, fileSchema } from "./file.model";
+
+mongoose.connect(process.env.MONGO_URL!);
+mongoose.Promise = global.Promise;
 
 const User = mongoose.models.User || mongoose.model<IUser>("User", userSchema);
-const Marca = mongoose.models.Marca || mongoose.model("Marca", marcaSchema);
-const Asset = mongoose.models.Asset || mongoose.model('Asset', assetSchema);
+const Marca = mongoose.models.Marca || mongoose.model<IMarca>("Marca", marcaSchema);
+const File = mongoose.models.File || mongoose.model<IFile>("File", fileSchema);
 
 //BORRAR
 // User.find({}).then((users) => {
@@ -27,4 +30,4 @@ const Asset = mongoose.models.Asset || mongoose.model('Asset', assetSchema);
 
 
 
-export { User, Marca, Asset};
+export { User, Marca, File};

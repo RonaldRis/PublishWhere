@@ -7,7 +7,7 @@ import { revalidatePath } from "next/cache";
 import { connectToDB } from "../mongoose";
 import { User } from "../models/models";
 import { IUser } from "../models/user.model";
-import { IServerResponse } from "../models/ServerResponse";
+import { IServerResponse } from "./ServerResponse";
 
 export async function fetchUser(userId: string) : Promise<IServerResponse<IUser>>{
   try {

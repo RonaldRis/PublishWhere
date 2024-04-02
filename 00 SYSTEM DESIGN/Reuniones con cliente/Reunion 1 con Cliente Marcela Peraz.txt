@@ -1,0 +1,109 @@
+Problema de acumular contenido y "falta editar" o quedan almacenados en el ipad.
+El dia de la publicación haces 2 y luego vas revisando los borradores, olvida publicar tus borradores porque están en el ipad
+hay X grabados, pero solo 2 publicados... Entonces quedan ahí.
+
+Subir videos a la plataforma yq ue la la plataforma decida que en "2 semanas volver a publicar otro". 5 videos para CUANDO SEA que se tengan que publicar.
+
+SUBIS TODO, y luego que se automatice. Tiktok y Facebook -> Publicacion aleatoria.
+Publicar cosas "3 meses después", 
+
+
+TIKTOK, REELS DE FB Y SHORTS DE YOUTUBE. 
+ANOTADO MANUAL Y ESTOS VIDEOS PUBLICADOS EN DONDE, Y DONDE FALTA (CRUD para un seguimiento de los posts que quieres hacer).
+
+"THREADS SUBIR TAMBIEN"
+
+CATEGORIAS, VILLANOS,ROMANTICO, 
+
+
+BIBLIOTECA DE VIDEOS-> a futuro ()
+X1 (fB 12 marzo, SHORT14 abril,),X2,X3
+
+tiktok, instagram
+
+CATEGORIAS
+
+
+
+BIBLIOTECA DE VIDEOS
+X1 -  PUBLICADO EN:   [a,b,c]    ---- GUSTARIA PUBLICAR EN: 
+	caption
+	Elegir red social
+	Thhumbnail
+	Hora 
+	
+
+
+
+
+
+PRIMER SPRINT:
+***YOUTUBE***, TIKTOK, ***FACEBOOK*** "(SHORT SIZE)"
+
+
+
+cuenta GLOBAL
+	Cuentas de:
+		Facebook 
+			Perfil:
+				Fan Pages 
+		"Instagram":
+			Cuentas Bussines o Creador (Asociada a la fanpage!)
+		Tiktok 
+			
+		Youtube 
+			Google 
+
+
+
+
+
+VIDEO: 7 
+TEXTO: 3
+SETUP INICIAL CUENTAS: 7 
+
+
+capacidad semanal es 12:
+
+
+
+
+
+
+
+
+************ REQUSIITOS DEL PROYECTOS:
+	Cuentas ilimitadas: 
+	Publicaciones ilimitadas
+	Pagar lo menos posible 
+	
+	
+SERVIDOR
+	Computadora propia donde se ejecute todo: 
+	Mac Pro -> 
+
+
+
+
+
+
+
+
+								WORKFLOW SEMANAL  -> CALENDARIO ()
+								lUNES
+								[X] TIKTOK 
+								[ ]Facebook
+								[ ]Tiktok
+								[ ]Twitter
+								MATRTES
+								[x] TIKTOK 
+								[ ]Facebook
+								[x]Tiktok
+								[ ]Twitter
+								MIERCOLE
+								[X] TIKTOK 
+								[ ]Facebook
+								[x]Tiktok
+								[x]Twitter
+
+

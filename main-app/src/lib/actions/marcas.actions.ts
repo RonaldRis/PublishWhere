@@ -2,7 +2,7 @@
 
 import { IMarca } from "../models/marca.model";
 import { Marca, User } from "../models/models";
-import { IServerResponse } from "../models/ServerResponse";
+import { IServerResponse } from "./ServerResponse";
 
 
 
@@ -98,7 +98,7 @@ export async function deleteMarca(marcaId: string): Promise<IServerResponse<bool
 }
 
 
-export async function renameMarca(marcaId: string, newName:string): Promise<IServerResponse<Imarca>> {
+export async function renameMarca(marcaId: string, newName:string): Promise<IServerResponse<IMarca>> {
     try {
 
         const result = await Marca.findByIdAndUpdate(

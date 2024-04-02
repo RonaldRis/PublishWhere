@@ -6,7 +6,7 @@ SPRINT 1
     Día 4: Definición de contexto global del cliente y crear  marcas
     Día 7: Renombrar marca, agregar persona al equipo de la marca, eliminar persona
     SEMANA 2
-    Día 1: (Pretendo hacer el subir archivos a AWS S3 y mostrarlo TODO en un array... flex?)
-    Día   
+    Día 2: (Pretendo hacer el subir archivos a AWS S3 y mostrarlo TODO en un array... flex?)
+    Día  : 
     Día   
     Día   

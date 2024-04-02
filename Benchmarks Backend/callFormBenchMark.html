@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Formulario de Subida de Archivos</title>
+</head>
+<body>
+
+<form id="uploadForm">
+    <input type="file" id="imageInput" name="image" accept="image/*">
+    <input type="file" id="videoInput" name="video" accept="video/*">
+    <input type="number" id="iterationsInput" name="iterations" min="1" value="10" placeholder="Número de Iteraciones">
+    <select id="backendSelector">
+        <option value="express">Express</option>
+        <option value="dotnet">.NET</option>
+        <option value="springBoot">Spring Boot</option>
+    </select>
+    <input type="button" value="Submit" onclick="submitForm()">
+</form>
+
+<ul id="processList"></ul> <!-- Lista para mostrar mensajes de inicio y finalización -->
+
+<script>
+// Función para enviar el formulario
+async function submitForm() {
+    const imageFile = document.getElementById('imageInput').files[0];
+    const videoFile = document.getElementById('videoInput').files[0];
+    const iterations = parseInt(document.getElementById('iterationsInput').value) || 1;
+    const backend = document.getElementById('backendSelector').value;
+    const startTime = Date.now();
+    const startMessage = `${backend} - Iniciando proceso a las ${new Date().toLocaleTimeString()} con ${iterations} iteraciones.`;
+    document.getElementById('processList').innerHTML += `<li>${startMessage}</li>`;
+
+    let okCounter = 0;
+    let promises = [];
+    for (let i = 0; i < iterations; i++) {
+        let uniqueId = 'archivo123_' + i;
+        switch (backend) {
+            case 'express':
+                promises.push(sendDataExpress(imageFile, videoFile, uniqueId));
+                break;
+            case 'dotnet':
+                promises.push(sendDataDOTNET(imageFile, videoFile, uniqueId));
+                break;
+            case 'springBoot':
+                promises.push(sendDataSpringBoot(imageFile, videoFile, uniqueId));
+                break;
+            default:
+                console.error('Backend no soportado');
+                break;
+        }
+    }
+
+    // Espera a que todas las promesas se resuelvan
+    await Promise.all(promises.map(p => p.catch(e => e))).then((results) => {
+        const endTime = Date.now();
+        const duration = (endTime - startTime) / 1000;
+        let endMessage = `${backend} - Terminado a las ${new Date().toLocaleTimeString()} y se ha tardado ${duration} segundos`;
+        document.getElementById('processList').innerHTML += `<li>${endMessage}</li>`;
+        results.forEach(result => {
+            if (result && result.status === 200) {
+                okCounter++; // Incrementa el contador si la respuesta fue exitosa
+            }
+        });
+        endMessage = `${backend} - Éxitos: ${okCounter} de ${iterations}`;
+        document.getElementById('processList').innerHTML += `<li>${endMessage}</li>`;
+    });
+}
+
+// Asegúrate de que tus funciones de envío de datos retornen la respuesta (y no sólo el status).
+// Por ejemplo:
+function sendDataExpress(image, video, id) {
+    const formData = new FormData();
+    formData.append('image', image);
+    formData.append('video', video);
+    formData.append('id', id);
+
+    return fetch('http://localhost:5000/upload', {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response; // Retorna la respuesta para su verificación posterior
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        throw error; // Asegúrate de lanzar el error para que pueda ser capturado en el .catch() de Promise.all
+    });
+}
+
+
+// Función para enviar datos
+function sendDataDOTNET(image, video, id) {
+    const formData = new FormData();
+    formData.append('image', image);
+    formData.append('video', video);
+    formData.append('id', id);
+
+    // Implementación básica de fetch para enviar datos
+    return fetch('http://localhost:5057/upload', { 
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response; // Retorna la respuesta para su verificación posterior
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        throw error; // Asegúrate de lanzar el error para que pueda ser capturado en el .catch() de Promise.all
+    });
+}
+
+// Función para enviar datos
+function sendDataSpringBoot(image, video, id) {
+    const formData = new FormData();
+    formData.append('image', image);
+    formData.append('video', video);
+    formData.append('id', id);
+
+    // Implementación básica de fetch para enviar datos
+    return fetch('http://localhost:6007/upload', { 
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response; // Retorna la respuesta para su verificación posterior
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        throw error; // Asegúrate de lanzar el error para que pueda ser capturado en el .catch() de Promise.all
+    });
+}
+
+
+
+
+
+
+// Función que verifica el estado de los backends al cargar la página
+function checkBackendStatus() {
+    const backends = [
+        { name: 'Express', url: 'http://localhost:5000/upload' },
+        { name: '.NET', url: 'http://localhost:5057/upload' },
+        { name: 'Spring Boot', url: 'http://localhost:6007/upload' }
+    ];
+
+    backends.forEach(backend => {
+        fetch(backend.url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Respuesta de red no fue ok.');
+                }
+                return true; // O response.json() si esperas JSON
+            })
+            .then(data => {
+                document.getElementById('processList').innerHTML += `<li>${backend.name} ACTIVO.</li>`;
+            })
+            .catch(error => {
+                document.getElementById('processList').innerHTML += `<li>${backend.name} GET FALLIDO: ${error.message}</li>`;
+            });
+    });
+}
+
+
+
+// Ejecuta la función al cargar la página
+window.onload = checkBackendStatus;
+
+</script>
+
+</body>
+</html>

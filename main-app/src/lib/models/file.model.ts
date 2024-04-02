@@ -1,9 +1,51 @@
-import mongoose from 'mongoose';
+import { Schema } from "mongoose";
+import { IUser } from "./user.model";
 
-mongoose.connect(process.env.MONGO_URL!);
-mongoose.Promise = global.Promise;
 
-const assetSchema = new mongoose.Schema({
+export interface IFile {
+    _id: string;
+    name: string;
+    url: string; //TODO: BORRAR CAMPO
+    type: string;
+    marcaId: string;
+    creatorId: string | IUser;
+    shouldDelete: boolean;
+    alreadyUsed: boolean;
+
+
+    //timestamps
+    createdAt: Date;
+}
+
+export interface IFilePost{
+    name: string;
+    type: string;
+    url: string; //TODO: BORRAR CAMPO
+    marcaId: string;
+    creatorId: string;
+    alreadyUsed: boolean;
+}
+
+
+const fileSchema: Schema = new Schema({
+    name: { type: String, required: true },
+    type: { type: String, enum: ['image', 'video'], required: true },
+    url: { type: String, required: true }, //TODO: BORRAR CAMPO, USADO MIENTRAS NO ESTA EL BUCTKET CONFIGURADO
+    marcaId: String,    //userful when we want to delete all files of a marca
+    creatorId: { type: Schema.Types.ObjectId, ref: 'User' },
+    shouldDelete: { type: Boolean, default: false },
+    alreadyUsed: { type: Boolean, default: false }
+},
+    { timestamps: true }
+);
+
+export { fileSchema }
+
+
+
+
+//TODO: Agregar posteriormente estos campos al fileSchema, mientras tanto usar un ejemplo basico
+const assetSchema = new Schema({
     uid: { type: String, required: true },
     contentType: { type: String, required: true },
     createdByIdentityId: { type: String, required: true },
@@ -24,7 +66,6 @@ const assetSchema = new mongoose.Schema({
 
 
 
-export default assetSchema;
 
 
 
