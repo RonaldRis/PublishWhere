@@ -60,7 +60,6 @@ export const columns: ColumnDef<IFile& { isFavorited: boolean }>[] = [
   },
   {
     accessorKey: "type",
-    width: 40,
     header: ({ column }) => {
       return (
         <Button

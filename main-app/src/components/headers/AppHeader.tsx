@@ -1,10 +1,20 @@
-"use client" // This is a client component
+"use client"; // This is a client component
 
 import { signIn, signOut, useSession } from "next-auth/react";
-import Link from 'next/link';
+import Link from "next/link";
 import { Button } from "../ui/button";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/hover-card";
-import { ChevronDown, CircleFadingPlus, CirclePlus, ImageUp, Mail } from "lucide-react";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "../ui/hover-card";
+import {
+  ChevronDown,
+  CircleFadingPlus,
+  CirclePlus,
+  ImageUp,
+  Mail,
+} from "lucide-react";
 import Image from "next/image";
 import { perfilProfile } from "@/assets";
 import {
@@ -13,28 +23,36 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
 import { Session } from "next-auth";
-import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from "../ui/navigation-menu";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "../ui/navigation-menu";
 import { useContext } from "react";
 import { MisMarcasContext } from "@/contexts/MisMarcasContext";
 import MarcaNueva from "../marcas/MarcaNueva";
-
-
+import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 
 export default function AppHeader() {
+  const {
+    marcas,
+    isMarcaLoading,
+    setMarcaGlobalSeleccionada,
+    marcaGlobalSeleccionada,
+    isOpenModalNuevaMarca,
+    setIsOpenModalNuevaMarca,
+  } = useContext(MisMarcasContext);
 
-
-  const { marcas, isMarcaLoading, setMarcaGlobalSeleccionada, marcaGlobalSeleccionada, isOpenModalNuevaMarca, setIsOpenModalNuevaMarca } = useContext(MisMarcasContext);
-
-  const { data: session, status } = useSession()
-
-
+  const { data: session, status } = useSession();
 
   const handlerLogout = (e: any) => {
     e.preventDefault();
     setMarcaGlobalSeleccionada(null);
-
 
     signOut({ callbackUrl: "/" });
   };
@@ -43,98 +61,101 @@ export default function AppHeader() {
     e.preventDefault();
     setMarcaGlobalSeleccionada(null);
 
-    signIn("google", { callbackUrl: "/dashboard" })
+    signIn("google", { callbackUrl: "/dashboard" });
   };
 
   const handlerMarcaSelectedChanged = (idSelected: string) => {
     if (!idSelected) return;
-    const marcaSelected = marcas.find(marca => marca._id === idSelected)
+    const marcaSelected = marcas.find((marca) => marca._id === idSelected);
     setMarcaGlobalSeleccionada(marcaSelected || null);
-  }
-
-
-
+  };
 
   return (
     // TODO: 1/3 ver como modificar el Header para que se vea bien en mobile, modificar h-20 tanto en el layout como aca
-    <nav className="fixed h-20 w-full top-0 start-0 bg-slate-900"> 
+    <nav className="fixed h-20 w-full top-0 start-0 bg-slate-900">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-
-        <div className="flex gap-4">
-
+        <div className="flex gap-4 justify-start">
           {/* Nombre de la app */}
-          <Link href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
+          <Link
+            href="/"
+            className="flex items-center space-x-3 rtl:space-x-reverse"
+          >
             {/* <img src={Logo.src} className="h-8" alt="Kibo Logo" /> */}
-            <h1 className="self-center text-2xl font-semibold whitespace-nowrap text-slate-100">Contenido</h1>
+            <h1 className="self-center text-2xl font-semibold whitespace-nowrap text-slate-100">
+              Contenido
+            </h1>
           </Link>
-          {session &&
-            <Link href="/biblioteca" className="text-xl text-slate-100 flex items-center">
-                <ImageUp size={16} absoluteStrokeWidth />
-                Biblioteca
-            </Link>}
+          {session && (
+            <Link
+              href="/biblioteca"
+              className="text-xl text-slate-100 flex items-center"
+            >
+              <ImageUp size={16} absoluteStrokeWidth />
+              Biblioteca
+            </Link>
+          )}
         </div>
 
-
-
         {/* SELECTOR DE MARCAS */}
-        {session &&
+        {session && (
           <div>
-            {
-              isMarcaLoading ?
-                <p className="text-slate-100">Cargando...</p>
-                :
-                (
-                  // <p className="text-slate-100">Hay datos</p>
-                  marcas?.length <= 0 ? (
-                    <p className="text-slate-100">Crea una marca</p>
-                  ) : (
-                    <Select onValueChange={handlerMarcaSelectedChanged}
-                      value={
-                        marcaGlobalSeleccionada
-                          ? marcaGlobalSeleccionada?._id
-                          : undefined
-                      }>
-                      <SelectTrigger className=" px-8">
-                        <SelectValue placeholder="Selecciona una marca" />
-                      </SelectTrigger>
-                      <SelectContent className="over-nav" >
-
-                        {marcas?.map((marca) => (
-                          <SelectItem className="gap-5" value={marca._id} key={marca._id}>
-                            {marca.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  )
-                )
-            }
-
+            {isMarcaLoading ? (
+              <p className="text-slate-100">Cargando...</p>
+            ) : // <p className="text-slate-100">Hay datos</p>
+            marcas?.length <= 0 ? (
+              <p className="text-slate-100">Crea una marca</p>
+            ) : (
+              <Select
+                onValueChange={handlerMarcaSelectedChanged}
+                value={
+                  marcaGlobalSeleccionada
+                    ? marcaGlobalSeleccionada?._id
+                    : undefined
+                }
+              >
+                <SelectTrigger className=" px-8">
+                  <SelectValue placeholder="Selecciona una marca" />
+                </SelectTrigger>
+                <SelectContent className="over-nav">
+                  {marcas?.map((marca) => (
+                    <SelectItem
+                      className="gap-5"
+                      value={marca._id}
+                      key={marca._id}
+                    >
+                      {marca.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
           </div>
-        }
-
-
+        )}
 
         {/* BOTON DE + && (BOTON DE LOGIN O DEL USUARIO)  */}
         <div className="flex gap-4 items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-
-
           {/* BOTON DE AGREAR UN NUEVO POST, MARCA, RED SOCIAL */}
           {session && (
-            <HoverCard
-              openDelay={1}
-              closeDelay={5}
-            >
+            <HoverCard openDelay={1} closeDelay={5}>
               <HoverCardTrigger href="/perfil/mis-datos">
-                <CircleFadingPlus className="m-4 p-0" size={24} color="#ffffff" absoluteStrokeWidth />
+                <CircleFadingPlus
+                  className="m-4 p-0"
+                  size={24}
+                  color="#ffffff"
+                  absoluteStrokeWidth
+                />
               </HoverCardTrigger>
-              <HoverCardContent className="m-0 p-0 " >
+              <HoverCardContent className="m-0 p-0 ">
                 <div>
                   <Button className="m-0 w-full gap-1 " variant={"ghost"}>
                     <CircleFadingPlus size={16} absoluteStrokeWidth />
                     Publicación
                   </Button>
-                  <Button className="m-0 w-full gap-1" variant={"ghost"} onClick={() => setIsOpenModalNuevaMarca(true)}>
+                  <Button
+                    className="m-0 w-full gap-1"
+                    variant={"ghost"}
+                    onClick={() => setIsOpenModalNuevaMarca(true)}
+                  >
                     <CircleFadingPlus size={16} absoluteStrokeWidth />
                     marca
                   </Button>
@@ -149,56 +170,66 @@ export default function AppHeader() {
                 </div>
               </HoverCardContent>
             </HoverCard>
-
-
           )}
 
           {/* LOGIN BTN || UserProfile */}
           {session ? (
-            <HoverCard
-              openDelay={1}
-              closeDelay={5}
-
-            >
+            <HoverCard openDelay={1} closeDelay={5}>
               <HoverCardTrigger href="/perfil/marcas">
-                {session?.user?.image ?
-                  <Image src={session.user.image} alt="Foto de perfil" className="rounded-full w-10 h-10 object-cover" width={40} height={40} />
-                  :
-                  <Image src={perfilProfile} alt="Foto de perfil" className="rounded-full w-10 h-10 object-cover" />
-                }
+                <Avatar>
+                  <AvatarImage
+                    src={session?.user?.image}
+                    alt="Foto de perfil"
+                    className="rounded-full w-10 h-10 object-cover"
+                  />
+                  <AvatarFallback>
+                    <Image
+                      src={perfilProfile}
+                      alt="Foto de perfil"
+                      className="rounded-full w-auto h-auto object-cover"
+                      width={40}
+                      height={40}
+                    />
+                  </AvatarFallback>
+                </Avatar>
               </HoverCardTrigger>
-              <HoverCardContent className="m-0 p-0" >
+              <HoverCardContent className="m-0 p-0">
                 <div>
-                  <p className="m-0 w-full text-center font-medium">{session.user.name}</p>
+                  <p className="m-0 w-full text-center font-medium">
+                    {session.user.name}
+                  </p>
                   <Link href="/perfil/marcas">
-                    <Button className="m-0 w-full" variant={"ghost"}>Mis marcas</Button>
+                    <Button className="m-0 w-full" variant={"ghost"}>
+                      Mis marcas
+                    </Button>
                   </Link>
                   <Link href="/perfil/mis-datos">
-                    <Button className="m-0 w-full" variant={"ghost"}>Mis datos</Button>
+                    <Button className="m-0 w-full" variant={"ghost"}>
+                      Mis datos
+                    </Button>
                   </Link>
 
-                  <Button className="m-0 w-full" variant={"ghost"} onClick={handlerLogout}>Cerrar sesión</Button>
+                  <Button
+                    className="m-0 w-full"
+                    variant={"ghost"}
+                    onClick={handlerLogout}
+                  >
+                    Cerrar sesión
+                  </Button>
                 </div>
               </HoverCardContent>
             </HoverCard>
-
-
-
-
-
           ) : (
-            <Button
-              onClick={handlerLogin} >
+            <Button onClick={handlerLogin}>
               <Mail className="mr-2 h-4 w-4" /> Login
             </Button>
-
           )}
-
-
         </div>
       </div>
-      <MarcaNueva isOpenModalNuevaMarca={isOpenModalNuevaMarca} setIsOpenModalNuevaMarca={setIsOpenModalNuevaMarca} />
-
+      <MarcaNueva
+        isOpenModalNuevaMarca={isOpenModalNuevaMarca}
+        setIsOpenModalNuevaMarca={setIsOpenModalNuevaMarca}
+      />
     </nav>
   );
 }
