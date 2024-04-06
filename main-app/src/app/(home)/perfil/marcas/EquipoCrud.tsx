@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { deleteTeamMembersOnMarca, fetchMarca, renameMarca } from '@/lib/actions/marcas.actions';
+import { deleteTeamMembersOnMarcaAction, fetchMarcaAction, renameMarcaAction } from '@/lib/actions/marcas.actions';
 import { IUser } from '@/lib/models/user.model';
 import { CircleX } from 'lucide-react';
 import React, { useContext } from 'react'
@@ -84,7 +84,7 @@ function EquipoCrud() {
         
 
         const marcaId = marcaGlobalSeleccionada?._id;
-        const result = await deleteTeamMembersOnMarca(marcaId!, userBorrar?._id!);
+        const result = await deleteTeamMembersOnMarcaAction(marcaId!, userBorrar?._id!);
 
         if (!result.isOk) {
             toast.error(result.error!);
@@ -105,7 +105,7 @@ function EquipoCrud() {
         }
 
 
-        const marcaRenovada = await fetchMarca(marcaGlobalSeleccionada?._id!);
+        const marcaRenovada = await fetchMarcaAction(marcaGlobalSeleccionada?._id!);
         if (!marcaRenovada.isOk) {
             toast.error(marcaRenovada.error!);
             return;

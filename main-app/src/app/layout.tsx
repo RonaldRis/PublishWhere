@@ -8,6 +8,7 @@ import { Suspense } from "react";
 import { Toaster } from 'sonner'
 import {  MisMarcasProvider } from "@/contexts/MisMarcasContext";
 import dynamic from "next/dynamic";
+import { BibliotecaProvider } from "@/contexts/BibliotecaContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -35,6 +36,8 @@ export default async function RootLayout({
       <body className={inter.className}>
         <SelfSessionProvider session={session}>
           <MisMarcasProvider>
+            <BibliotecaProvider>
+
 
 
 
@@ -50,7 +53,7 @@ export default async function RootLayout({
             </main>
             <Toaster position='bottom-right' richColors />
 
-
+            </BibliotecaProvider>
           </MisMarcasProvider>
         </SelfSessionProvider>
       </body>

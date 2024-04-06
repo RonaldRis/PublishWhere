@@ -17,7 +17,6 @@ export default function DashboardLayout({
     <main className=" min-h-screen flex gap-4">
         {/* TODO: NOW - ADD MY HEADER HERE */}
         <SideNav />
-
         <div className="w-full">{children}</div>
     </main>
   );

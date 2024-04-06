@@ -1,4 +1,4 @@
-import { postCrearMarca } from '@/lib/actions/marcas.actions';
+import { postCrearMarcaAction } from '@/lib/actions/marcas.actions';
 import { Marca, User } from '@/lib/models/models';
 import clientPromise from '@/lib/mongoose';
 import { NextApiRequest, NextApiResponse } from 'next';
@@ -29,9 +29,9 @@ export async function GET(request: Request, response: Response) {
 
 
             console.log(userRonald);
-            await postCrearMarca(userRonald._id, "Ris")
-            await postCrearMarca(userRonald._id, "Marcela Peraz")
-            await postCrearMarca(userRonald._id.toString(), "Kibo")
+            await postCrearMarcaAction(userRonald._id, "Ris")
+            await postCrearMarcaAction(userRonald._id, "Marcela Peraz")
+            await postCrearMarcaAction(userRonald._id.toString(), "Kibo")
 
             const allMarcas = await db.collection('marcas').find({}).toArray();
             const allMarcas2 = await db.collection('marcas').find({});

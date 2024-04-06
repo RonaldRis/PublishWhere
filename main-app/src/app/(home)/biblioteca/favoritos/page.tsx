@@ -2,10 +2,10 @@
 
 import { FileBrowser } from "../_components/file-browser";
 
-export default function NotUsedFilesPage() {
+export default function FavoritesFilesPage() {
   return (
     <div>
-      <FileBrowser title="No usados" notUsedOnly  />
+      <FileBrowser title="Favoritos" favoritesOnly />
     </div>
   );
 }

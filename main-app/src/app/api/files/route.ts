@@ -1,7 +1,7 @@
 import { use } from 'react';
 import { IFile, IFilePost } from './../../../lib/models/file.model';
-import { fetchAllFilesByMarca, postCrearFile } from '@/lib/actions/files.actions';
-import { postCrearMarca } from '@/lib/actions/marcas.actions';
+import { fetchAllFilesByMarcaAction, postCreateFileAction } from '@/lib/actions/files.actions';
+import { postCrearMarcaAction } from '@/lib/actions/marcas.actions';
 import { IMarca } from '@/lib/models/marca.model';
 import { Marca, User } from '@/lib/models/models';
 import clientPromise from '@/lib/mongoose';
@@ -51,15 +51,15 @@ export async function GET(request: Request, response: Response) {
 
 
 
-            await postCrearFile(fileVideo)
-            await postCrearFile({ ...fileImage, alreadyUsed: true })
-            await postCrearFile({ ...fileImage, creatorId: users[0]._id as string })
-            await postCrearFile({ ...fileImage, creatorId: users[1]._id as string })
-            await postCrearFile(fileVideo)
-            await postCrearFile(fileImage)
-            await postCrearFile(fileImage)
+            await postCreateFileAction(fileVideo)
+            await postCreateFileAction({ ...fileImage, alreadyUsed: true })
+            await postCreateFileAction({ ...fileImage, creatorId: users[0]._id as string })
+            await postCreateFileAction({ ...fileImage, creatorId: users[1]._id as string })
+            await postCreateFileAction(fileVideo)
+            await postCreateFileAction(fileImage)
+            await postCreateFileAction(fileImage)
 
-            const allFiles = await fetchAllFilesByMarca(marcas[0]._id as string);
+            const allFiles = await fetchAllFilesByMarcaAction(marcas[0]._id as string);
             console.log(allFiles);
 
             const marca0 = await Marca.findById(fileImage.marcaId).populate("files");

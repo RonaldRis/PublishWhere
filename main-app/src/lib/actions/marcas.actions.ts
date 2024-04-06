@@ -11,7 +11,7 @@ import { IServerResponse } from "./ServerResponse";
 
 
 
-export async function fetchMarca(marcaId: string): Promise<IServerResponse<IMarca>> {
+export async function fetchMarcaAction(marcaId: string): Promise<IServerResponse<IMarca>> {
     try {
 
         var result = await Marca.findOne({ _id: marcaId }).populate('admin').populate('equipo');
@@ -30,7 +30,7 @@ export async function fetchMarca(marcaId: string): Promise<IServerResponse<IMarc
     }
 }
 
-export async function fetchAllMarcas(): Promise<IServerResponse<IMarca[]>> {
+export async function fetchAllMarcasAction(): Promise<IServerResponse<IMarca[]>> {
     try {
         // connectToDB();
 
@@ -44,7 +44,7 @@ export async function fetchAllMarcas(): Promise<IServerResponse<IMarca[]>> {
 }
 
 
-export async function fetchMisMarcas(userId: string): Promise<IServerResponse<IMarca[]>> {
+export async function fetchMisMarcasAction(userId: string): Promise<IServerResponse<IMarca[]>> {
     try {
         // connectToDB();
 
@@ -59,7 +59,7 @@ export async function fetchMisMarcas(userId: string): Promise<IServerResponse<IM
 }
 
 //INTERFAZ DE QUERIES EJEMPLO: IServerResponse SAMPLE RESPONSE
-export async function postCrearMarca(userId: string, marca: string): Promise<IServerResponse<IMarca>> {
+export async function postCrearMarcaAction(userId: string, marca: string): Promise<IServerResponse<IMarca>> {
 
     try {
 
@@ -75,7 +75,7 @@ export async function postCrearMarca(userId: string, marca: string): Promise<ISe
     }
 }
 
-export async function deleteMarca(marcaId: string): Promise<IServerResponse<boolean>> {
+export async function deleteMarcaAction(marcaId: string): Promise<IServerResponse<boolean>> {
     try {
 
 
@@ -98,7 +98,7 @@ export async function deleteMarca(marcaId: string): Promise<IServerResponse<bool
 }
 
 
-export async function renameMarca(marcaId: string, newName:string): Promise<IServerResponse<IMarca>> {
+export async function renameMarcaAction(marcaId: string, newName:string): Promise<IServerResponse<IMarca>> {
     try {
 
         const result = await Marca.findByIdAndUpdate(
@@ -120,7 +120,7 @@ export async function renameMarca(marcaId: string, newName:string): Promise<ISer
 
 
 
-export async function postNewTeamMembersOnMarca(marcaId: string, userIds: string[]): Promise<IServerResponse<IMarca>> {
+export async function postNewTeamMembersOnMarcaAction(marcaId: string, userIds: string[]): Promise<IServerResponse<IMarca>> {
     try {
 
         const result = await Marca.findByIdAndUpdate(
@@ -149,7 +149,7 @@ export async function postNewTeamMembersOnMarca(marcaId: string, userIds: string
 }
 
 
-export async function deleteTeamMembersOnMarca(marcaId: string, userId: string): Promise<IServerResponse<IMarca>> {
+export async function deleteTeamMembersOnMarcaAction(marcaId: string, userId: string): Promise<IServerResponse<IMarca>> {
     try {
 
 

@@ -2,7 +2,15 @@
 
 import { Button } from "@/components/ui/button";
 import clsx from "clsx";
-import { FileIcon, PanelLeftClose, PanelRightClose, StarIcon, TrashIcon } from "lucide-react";
+import {
+  FileIcon,
+  FileInput,
+  FileX2,
+  PanelLeftClose,
+  PanelRightClose,
+  StarIcon,
+  TrashIcon,
+} from "lucide-react";
 import { set } from "mongoose";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -12,7 +20,6 @@ export function SideNav() {
   const pathname = usePathname();
 
   const [show, setShow] = useState(true);
-
 
   return (
     <div className="w-auto flex flex-col gap-4">
@@ -24,22 +31,18 @@ export function SideNav() {
           setShow(!show);
         }}
       >
-        {show ?
+        {show ? (
           <>
             Ocultar lateral
             <PanelLeftClose />
           </>
-          :
+        ) : (
           <PanelRightClose />
-        }
-
+        )}
       </Button>
 
-
       {show && (
-
         <>
-
           <Link href="/biblioteca/files">
             <Button
               variant={"link"}
@@ -47,48 +50,57 @@ export function SideNav() {
                 "text-blue-500": pathname.includes("/biblioteca/files"),
               })}
             >
-              <FileIcon /> All Files
+              <FileIcon /> Todos
             </Button>
           </Link>
 
-          <Link href="/biblioteca/favorites">
+          <Link href="/biblioteca/favoritos">
             <Button
               variant={"link"}
               className={clsx("flex gap-2", {
                 "text-blue-500": pathname.includes("/biblioteca/favorites"),
               })}
             >
-              <StarIcon /> Already used
+              <StarIcon /> Favoritos
             </Button>
           </Link>
 
-          <Link href="/biblioteca/favorites">
+          <Link href="/biblioteca/usados">
             <Button
               variant={"link"}
               className={clsx("flex gap-2", {
                 "text-blue-500": pathname.includes("/biblioteca/favorites"),
               })}
             >
-              <StarIcon /> Not used yet
+              <FileInput />
+               Usados
             </Button>
           </Link>
 
-          <Link href="/biblioteca/trash">
+          <Link href="/biblioteca/no-usados">
+            <Button
+              variant={"link"}
+              className={clsx("flex gap-2", {
+                "text-blue-500": pathname.includes("/biblioteca/favorites"),
+              })}
+            >
+              <FileX2 />
+              No usados
+            </Button>
+          </Link>
+
+          <Link href="/biblioteca/papelera">
             <Button
               variant={"link"}
               className={clsx("flex gap-2", {
                 "text-blue-500": pathname.includes("/biblioteca/trash"),
               })}
             >
-              <TrashIcon /> Trash
+              <TrashIcon /> Papelera
             </Button>
           </Link>
         </>
-
-
       )}
-
-
     </div>
   );
 }

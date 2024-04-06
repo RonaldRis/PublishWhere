@@ -23,10 +23,9 @@ import {
 import { MisMarcasContext } from "@/contexts/MisMarcasContext";
 import { useSession } from "next-auth/react";
 import { IFile } from "@/lib/models/file.model";
-import { fetchAllFilesByMarca } from "@/lib/actions/files.actions";
+import { fetchAllFilesByMarcaAction } from "@/lib/actions/files.actions";
 import { Label } from "@/components/ui/label";
-
-export type FileType = "video" | "image" | "all";
+import { BibliotecaContext } from "@/contexts/BibliotecaContext";
 
 function Placeholder() {
   return (
@@ -47,92 +46,63 @@ export function FileBrowser({
   title,
   favoritesOnly = false,
   deletedOnly = false,
+  notUsedOnly = false,
+  usedOnly = false,
 }: {
   title: string;
   favoritesOnly?: boolean;
   deletedOnly?: boolean;
+  notUsedOnly?: boolean;
+  usedOnly?: boolean;
 }) {
   const { data: session } = useSession();
   const { marcaGlobalSeleccionada } = useContext(MisMarcasContext);
-
-  const [query, setQuery] = useState("");
-  const [files, setFiles] = useState<IFile[] | undefined>(undefined);
-
-  const [type, setType] = useState<FileType>("all");
-
-  let orgId: string | undefined = undefined;
-
-  //TODO: DECIDIR SI ID DEL USUARIO O DE LA MARCA **CREEMOS QUE DE LA MARCA**
-  if (session?.user) {
-    orgId = session.user.id;
-  }
-  if (marcaGlobalSeleccionada) {
-    orgId = marcaGlobalSeleccionada._id;
-  }
+  const { files, setFiles, type, setType, isLoading, modifiedFiles } =
+    useContext(BibliotecaContext);
 
   //TODO: QUERY TRAE TODOS LOS ARCHIVOS FAVORITOS DE UNA MARCA
 
   useEffect(() => {
-    const fetchFiles = async () => {
-      if (marcaGlobalSeleccionada) {
-        const result = await fetchAllFilesByMarca(
-          marcaGlobalSeleccionada._id as string,
-          deletedOnly
-        );
-        setFiles([]);
-        if (result.isOk && result.result) {
-          setFiles(result.result);
-        }
-      } else {
-        setFiles([]);
-      }
-    };
+    //Para que no se ejecute al inicio
+    if (marcaGlobalSeleccionada && session) {
+      fetchAllFilesByMarcaAction(
+        marcaGlobalSeleccionada._id as string,
+        deletedOnly
+      ).then((result) => {
+        if (result.isOk)
+          if (result.result) {
+            var files = result.result;
+            console.log("filesREQUEST", files.length);
+            console.log("filesREQUEST", files);
+            //TODO: Hacer tablas de Favoritos! Para verificar esa Query
+            // if (favoritesOnly) {
+            //   result.result = result.result?.filter((file: IFile) => file.isFavorited) ?? [];
+            // }
 
-    fetchFiles();
-  }, [marcaGlobalSeleccionada, deletedOnly]);
+            if (notUsedOnly) {
+              files = result.result?.filter(
+                (file: IFile) => file.alreadyUsed === false
+              );
+            }
 
-  // const favorites = useQuery(
-  //   api.files.getAllFavorites,
-  //   orgId ? { orgId } : "skip"
-  // );
+            if (usedOnly) {
+              files = result.result?.filter(
+                (file: IFile) => file.alreadyUsed === true
+              );
+            }
 
-  // const files = useQuery(
-  //   api.files.getFiles,
-  //   orgId
-  //     ? {
-  //       orgId,
-  //       type: type === "all" ? undefined : type,
-  //       query,
-  //       favorites: favoritesOnly,
-  //       deletedOnly,
-  //     }
-  //     : "skip"
-  // );
-
-  const isLoading = files === undefined;
-
-  //TODO: VERIFICAR SI SON FAVORITOS O NO
-  var modifiedFiles =
-    files?.map((file) => ({
-      ...file,
-      isFavorited: true,
-    })) ?? [];  
-
-    console.log(type)
-    if(type === "video") 
-      modifiedFiles = modifiedFiles.filter((file) => file.type === "video");
-    if(type === "image")
-      modifiedFiles = modifiedFiles.filter((file) => file.type === "image");
+            if(deletedOnly)
+              files = result.result?.filter((file: IFile) => file.shouldDelete) ?? [];
 
 
-  console.log(modifiedFiles);
-  // const modifiedFiles =
-  //   files?.map((file) => ({
-  //     ...file,
-  //     isFavorited: (favorites ?? []).some(
-  //       (favorite) => favorite.fileId === file._id
-  //     ),
-  //   })) ?? [];
+            console.log("filesFILTER", files.length);
+            console.log("filesFILTER", files);
+
+            setFiles(files ?? []);
+          }
+      });
+    }
+  }, []);
 
   return (
     <div>
@@ -146,7 +116,7 @@ export function FileBrowser({
         <div className="w-1/3 mr-0">{/* <UploadButton /> */}</div>
       </div>
 
-      <Tabs defaultValue="grid">
+      <Tabs defaultValue="table">
         <div className="flex justify-between items-center">
           <TabsList className="mb-2">
             <TabsTrigger value="grid" className="flex gap-2 items-center">
@@ -186,9 +156,6 @@ export function FileBrowser({
         )}
 
         <TabsContent value="grid">
-          {modifiedFiles.length > 0 && (
-            <DataTable columns={columns} data={modifiedFiles} />
-          )}
           <div className="grid grid-cols-3 gap-4">
             {modifiedFiles?.map((file) => {
               return <FileCard key={file._id} file={file} />;

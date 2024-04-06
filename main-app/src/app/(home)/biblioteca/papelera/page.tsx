@@ -2,10 +2,10 @@
 
 import { FileBrowser } from "../_components/file-browser";
 
-export default function FavoritesPage() {
+export default function TrashCanFilesPage() {
   return (
     <div>
-      <FileBrowser title="Trash" deletedOnly />
+      <FileBrowser title="Papelera" deletedOnly />
     </div>
   );
 }

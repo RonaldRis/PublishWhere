@@ -9,7 +9,7 @@ import { User } from "../models/models";
 import { IUser } from "../models/user.model";
 import { IServerResponse } from "./ServerResponse";
 
-export async function fetchUser(userId: string) : Promise<IServerResponse<IUser>>{
+export async function fetchUserAction(userId: string) : Promise<IServerResponse<IUser>>{
   try {
     // connectToDB();
 
@@ -24,7 +24,7 @@ export async function fetchUser(userId: string) : Promise<IServerResponse<IUser>
 }
 
 
-export async function fetchAllUser() : Promise<IServerResponse<IUser[]>>{
+export async function fetchAllUserAction() : Promise<IServerResponse<IUser[]>>{
   try {
 
     const queryReuslt =  await User.find({})
@@ -46,7 +46,7 @@ interface Params {
   path: string;
 }
 
-export async function updateUser({
+export async function updateUserAction({
   userId,
   bio,
   name,

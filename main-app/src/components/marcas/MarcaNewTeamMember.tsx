@@ -16,10 +16,10 @@ import { useSession } from 'next-auth/react';
 import { IMarca } from '@/lib/models/marca.model';
 import { ScrollArea } from '../ui/scroll-area';
 import { IUser } from '@/lib/models/user.model';
-import { fetchAllUser } from '@/lib/actions/users.actions';
+import { fetchAllUserAction } from '@/lib/actions/users.actions';
 import { Badge } from '../ui/badge';
 import { Separator } from '../ui/separator';
-import { fetchMarca, postNewTeamMembersOnMarca } from '@/lib/actions/marcas.actions';
+import { fetchMarcaAction, postNewTeamMembersOnMarcaAction } from '@/lib/actions/marcas.actions';
 import { MisMarcasContext } from '@/contexts/MisMarcasContext';
 import { set } from 'mongoose';
 import { revalidatePath } from 'next/cache';
@@ -53,7 +53,7 @@ function MarcaNewTeamMember({ isOpenModalNewTeamMember, setIsOpenModalNewTeamMem
             setIsLoadingUser(true)
             if (!marcaGlobalSeleccionada) return;
 
-            const res = await fetchAllUser();
+            const res = await fetchAllUserAction();
             const allUsersNotInTheMarcaTeam = res.result!.filter(user => {
                 if (marcaGlobalSeleccionada.equipo.length > 0) {
                     if (typeof marcaGlobalSeleccionada.equipo[0] === 'string') {
@@ -130,7 +130,7 @@ function MarcaNewTeamMember({ isOpenModalNewTeamMember, setIsOpenModalNewTeamMem
         //TODO: URGENTE: POR ALGUN MOTIVO AL AGREGA UN USUARIO NUEVO SIEMPRE SE AGREGA EN EL USUARIO DE MARCELA
         const idSeleccionados = usersSeleccionados.map(user => user._id);
         const marcaId = marcaGlobalSeleccionada._id;
-        const result = await postNewTeamMembersOnMarca(marcaId, idSeleccionados);
+        const result = await postNewTeamMembersOnMarcaAction(marcaId, idSeleccionados);
 
         if (!result.isOk) {
             toast.error(result.error!);

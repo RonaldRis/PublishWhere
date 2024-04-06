@@ -26,7 +26,7 @@ import MarcaNewTeamMember from '@/components/marcas/MarcaNewTeamMember';
 import { Button } from '@/components/ui/button';
 import { CircleX, Pencil } from 'lucide-react';
 import { set } from 'mongoose';
-import { deleteMarca, deleteTeamMembersOnMarca, fetchMarca, renameMarca } from '@/lib/actions/marcas.actions';
+import { deleteMarcaAction, deleteTeamMembersOnMarcaAction, fetchMarcaAction, renameMarcaAction } from '@/lib/actions/marcas.actions';
 import { toast } from 'sonner';
 import { useSession } from 'next-auth/react';
 import { Input } from '@/components/ui/input';
@@ -61,7 +61,7 @@ function DetallesMarcaEditable() {
         }
 
         const marcaId = marcaGlobalSeleccionada._id;
-        const result = await renameMarca(marcaId, newName);
+        const result = await renameMarcaAction(marcaId, newName);
         if (!result.isOk) {
             toast.error(result.error!);
             return;

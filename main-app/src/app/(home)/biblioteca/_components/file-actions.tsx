@@ -23,10 +23,14 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { useState } from "react";
-import { restoreTrashFile, sendToTrashFile } from "@/lib/actions/files.actions";
+import { useContext, useState } from "react";
+import {
+  restoreTrashFileAction,
+  sendToTrashFileAction,
+} from "@/lib/actions/files.actions";
 import { IFile } from "@/lib/models/file.model";
 import { toast } from "sonner";
+import { BibliotecaContext } from "@/contexts/BibliotecaContext";
 
 export function FileCardActions({
   file,
@@ -35,36 +39,31 @@ export function FileCardActions({
   file: IFile;
   isFavorited: boolean;
 }) {
+  const { handlerRestoreFile, handlerTrashFile } =
+    useContext(BibliotecaContext);
 
-  const deleteFile = sendToTrashFile;
-  const restoreFile = restoreTrashFile;
-  // const toggleFavorite = useMutation(api.files.toggleFavorite); ///TODO: REVISAR como hacer los favoritos, si por archivo o por usuario o marca  
+  // const toggleFavorite = useMutation(api.files.toggleFavorite); ///TODO: REVISAR como hacer los favoritos, si por archivo o por usuario o marca
 
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   // TODO: Terminar cambiando por Dialog, no hay necesidad de que sean AlertDialog y no se puedan cerrar solos...
   return (
     <>
-
       <AlertDialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogTitle>¿Estás totalmente seguro?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action will mark the file for our deletion process. Files are
-              deleted periodically
+              Esta acción marcará el archivo para nuestro proceso de eliminación.
+              Los archivos son eliminados periódicamente
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={async () => {
-                await deleteFile(file._id);
+                await handlerTrashFile(file._id);
 
-                toast.info("File marked for deletion",
-                  {
-                    description: "Your file will be deleted soon",
-                  });
-
+               
               }}
             >
               Continue
@@ -109,27 +108,27 @@ export function FileCardActions({
           </DropdownMenuItem>
 
           <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => {
-                if (file.shouldDelete) {
-                  restoreFile(file._id);
-                  //TODO: REMOVER DE LOS ARCHIVOS EL BORRADO
-                } else {
-                  setIsConfirmOpen(true);
-                }
-              }}
-              className="flex gap-1 items-center cursor-pointer"
-            >
-              {file.shouldDelete ? (
-                <div className="flex gap-1 text-green-600 items-center cursor-pointer">
-                  <UndoIcon className="w-4 h-4" /> Restore
-                </div>
-              ) : (
-                <div className="flex gap-1 text-red-600 items-center cursor-pointer">
-                  <TrashIcon className="w-4 h-4" /> Delete
-                </div>
-              )}
-            </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => {
+              if (file.shouldDelete) {
+                handlerRestoreFile(file._id);
+                //TODO: REMOVER DE LOS ARCHIVOS EL BORRADO
+              } else {
+                setIsConfirmOpen(true);
+              }
+            }}
+            className="flex gap-1 items-center cursor-pointer"
+          >
+            {file.shouldDelete ? (
+              <div className="flex gap-1 text-green-600 items-center cursor-pointer">
+                <UndoIcon className="w-4 h-4" /> Restore
+              </div>
+            ) : (
+              <div className="flex gap-1 text-red-600 items-center cursor-pointer">
+                <TrashIcon className="w-4 h-4" /> Delete
+              </div>
+            )}
+          </DropdownMenuItem>
 
           {/* TODO: VALIDAR PROTECCION DEL DELETE PARA USARLO SOLAMENTE EL ADMIN O BIEN SOLO BORRAR ARCHIVOS PROPIOS */}
           {/* <Protect

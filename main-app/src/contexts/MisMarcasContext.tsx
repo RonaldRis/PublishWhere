@@ -1,6 +1,6 @@
 "use client"
 
-import { fetchAllMarcas, fetchMisMarcas } from '@/lib/actions/marcas.actions';
+import { fetchAllMarcasAction, fetchMisMarcasAction } from '@/lib/actions/marcas.actions';
 import { IMarca } from '@/lib/models/marca.model';
 import { useSession } from 'next-auth/react';
 import React, { useState, useEffect, Context, createContext, ReactNode } from 'react';
@@ -54,7 +54,7 @@ const MisMarcasProvider = ({ children }: { children: ReactNode }) => {
         setIsMarcaLoading(true);
         if(!session?.user.id) return setIsMarcaLoading(false);
 
-        const result = await fetchMisMarcas(session?.user.id as string); //TODO: Cambiar por el fetch de las marcas del usuario
+        const result = await fetchMisMarcasAction(session?.user.id as string); //TODO: Cambiar por el fetch de las marcas del usuario
         const marcasOrdenadas = result.result!.sort((a, b) => a.name.localeCompare(b.name)); 
         setMarcas(marcasOrdenadas);
         setIsMarcaLoading(false);

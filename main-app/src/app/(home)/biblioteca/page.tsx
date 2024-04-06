@@ -1,13 +1,10 @@
+import { FileBrowser } from "./_components/file-browser"
 
 
 function BibliotecaPage() {
   return (
-
-
     <div>
-
-      BibliotecaPage
-
+      <FileBrowser title="Tus archivos" />
     </div>
   )
 }

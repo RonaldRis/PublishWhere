@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from '../ui/input';
 import { toast } from 'sonner';
 import { useSession } from 'next-auth/react';
-import { postCrearMarca } from '@/lib/actions/marcas.actions';
+import { postCrearMarcaAction } from '@/lib/actions/marcas.actions';
 import { MisMarcasContext } from '@/contexts/MisMarcasContext';
 import { revalidatePath } from 'next/cache';
 
@@ -31,7 +31,7 @@ function MarcaNueva({ isOpenModalNuevaMarca, setIsOpenModalNuevaMarca }: { isOpe
         //TODO: NOW MANEJAR ERROR DE SI YA EXISTE LA MARCA
         if (nuevaMarca === '') return;
         if (!session) return;
-        const result = await postCrearMarca(session.user.id, nuevaMarca);
+        const result = await postCrearMarcaAction(session.user.id, nuevaMarca);
 
         if (!result.isOk) {
             toast.error(result.error!);

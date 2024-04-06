@@ -6,7 +6,7 @@ import { IServerResponse } from "./ServerResponse";
 
 
 
-export async function fetch(fileId: string): Promise<IServerResponse<IFile>> {
+export async function fetchFileAction(fileId: string): Promise<IServerResponse<IFile>> {
     try {
 
         var result = await File.findById(fileId);
@@ -24,8 +24,10 @@ export async function fetch(fileId: string): Promise<IServerResponse<IFile>> {
         return { result: null, isOk: false, error: "No existe el archivo" };
     }
 }
-export async function fetchAllFilesByMarca(marcaId: string, trashOnly: boolean = false): Promise<IServerResponse<IFile[]>> {
+export async function fetchAllFilesByMarcaAction(marcaId: string, trashOnly: boolean = false, favoriteOnly: boolean = false): Promise<IServerResponse<IFile[]>> {
     try {
+
+        //TODO: CAMBIAR REQUEST PARA OBTENER SOLO LOS FAVORITOS
 
         const filesQuery = await File.find<IFile>({
             marcaId: marcaId,
@@ -39,7 +41,7 @@ export async function fetchAllFilesByMarca(marcaId: string, trashOnly: boolean =
     }
 }
 
-export async function fetchMyFiles(userId: string): Promise<IServerResponse<IFile[]>> {
+export async function fetchMyFilesAction(userId: string): Promise<IServerResponse<IFile[]>> {
     try {
         // connectToDB();
 
@@ -54,7 +56,7 @@ export async function fetchMyFiles(userId: string): Promise<IServerResponse<IFil
 }
 
 //Works for both creating File and updating Marca reference
-export async function postCrearFile(newFile: IFilePost): Promise<IServerResponse<IFile>> {
+export async function postCreateFileAction(newFile: IFilePost): Promise<IServerResponse<IFile>> {
 
     try {
 
@@ -85,7 +87,7 @@ export async function postCrearFile(newFile: IFilePost): Promise<IServerResponse
 }
 
 
-export async function sendToTrashFile(fileId: string): Promise<IServerResponse<IFile>> {
+export async function sendToTrashFileAction(fileId: string): Promise<IServerResponse<IFile>> {
     try {
 
 
@@ -101,7 +103,7 @@ export async function sendToTrashFile(fileId: string): Promise<IServerResponse<I
     }
 }
 
-export async function restoreTrashFile(fileId: string): Promise<IServerResponse<IFile>> {
+export async function restoreTrashFileAction(fileId: string): Promise<IServerResponse<IFile>> {
     try {
 
 
@@ -118,7 +120,7 @@ export async function restoreTrashFile(fileId: string): Promise<IServerResponse<
 }
 
 
-export async function markFileAsUsed(fileId: string): Promise<IServerResponse<IFile>> {
+export async function putFileAsUsedAction(fileId: string): Promise<IServerResponse<IFile>> {
     try {
 
         const result = await File.findByIdAndUpdate(fileId, { alreadyUsed: true }, { new: true });
@@ -135,7 +137,7 @@ export async function markFileAsUsed(fileId: string): Promise<IServerResponse<IF
 
 
 
-export async function deleteFile(fileId: string): Promise<IServerResponse<boolean>> {
+export async function deleteFileAction(fileId: string): Promise<IServerResponse<boolean>> {
     try {
 
 
