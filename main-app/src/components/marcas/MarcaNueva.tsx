@@ -54,9 +54,6 @@ function MarcaNueva({ isOpenModalNuevaMarca, setIsOpenModalNuevaMarca }: { isOpe
 
         <Dialog open={isOpenModalNuevaMarca} onOpenChange={setIsOpenModalNuevaMarca}
         >
-            <DialogTrigger asChild>
-                <Button className=' hidden w-full' onClick={() => setIsOpenModalNuevaMarca(!isOpenModalNuevaMarca)}>Nueva marca</Button>
-            </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle>Nueva marca</DialogTitle>

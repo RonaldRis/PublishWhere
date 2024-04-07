@@ -3,7 +3,7 @@
 import { Table } from "@tanstack/react-table"
 
 
-import { priorities, statuses, types } from "./data/data"
+import {  statuses, types } from "@/lib/constantes"
 import { DataTableFacetedFilter } from "./data-table-faceted-filter"
 import { CircleX, CrossIcon } from "lucide-react"
 import { Input } from "@/components/ui/input"
@@ -37,13 +37,7 @@ export function DataTableToolbar<TData>({
             options={types}
           />
         )}
-        {table.getColumn("priority") && (
-          <DataTableFacetedFilter
-            column={table.getColumn("priority")}
-            title="Priority"
-            options={priorities}
-          />
-        )}
+        
         {isFiltered && (
           <Button
             variant="ghost"

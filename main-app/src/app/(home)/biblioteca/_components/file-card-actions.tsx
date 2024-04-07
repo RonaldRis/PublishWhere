@@ -14,15 +14,14 @@ import {
   UndoIcon,
 } from "lucide-react";
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { useContext, useState } from "react";
 import {
   restoreTrashFileAction,
@@ -31,6 +30,7 @@ import {
 import { IFile } from "@/lib/models/file.model";
 import { toast } from "sonner";
 import { BibliotecaContext } from "@/contexts/BibliotecaContext";
+import { Button } from "@/components/ui/button";
 
 export function FileCardActions({
   file,
@@ -48,29 +48,27 @@ export function FileCardActions({
   // TODO: Terminar cambiando por Dialog, no hay necesidad de que sean AlertDialog y no se puedan cerrar solos...
   return (
     <>
-      <AlertDialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>¿Estás totalmente seguro?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Esta acción marcará el archivo para nuestro proceso de eliminación.
-              Los archivos son eliminados periódicamente
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
+      <Dialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>¿Estás totalmente seguro?</DialogTitle>
+            <DialogDescription>
+              Esta acción marcará el archivo para nuestro proceso de
+              eliminación. Los archivos son eliminados periódicamente
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button onClick={() => setIsConfirmOpen(false)}>Cancelar</Button>
+            <Button variant={"destructive"}
               onClick={async () => {
                 await handlerTrashFile(file._id);
-
-               
               }}
             >
-              Continue
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+              Borrar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <DropdownMenu>
         <DropdownMenuTrigger>

@@ -88,7 +88,7 @@ const BibliotecaProvider = ({ children }: { children: ReactNode }) => {
     var modifiedFilesNew =
       files?.map((file) => ({
         ...file,
-        isFavorited: true,
+        isFavorited: false,
       })) ?? [];
 
     console.log(type);
@@ -101,6 +101,8 @@ const BibliotecaProvider = ({ children }: { children: ReactNode }) => {
         (file) => file.type === "image"
       );
     setModifiedFiles(modifiedFilesNew);
+    //TODO: HACER LO DE SI SON ARCHIVOS FAVORITOS O NO?? NI IDEA XD
+    console.log(modifiedFilesNew);
   };
 
   useEffect(() => {
@@ -114,8 +116,8 @@ const BibliotecaProvider = ({ children }: { children: ReactNode }) => {
         deletedOnly
       );
       setFiles([]);
-      if (result.isOk && result.result) {
-        setFiles(result.result);
+      if (result.isOk && result.data) {
+        setFiles(result.data);
       }
     } else {
       setFiles([]);
@@ -152,6 +154,10 @@ const BibliotecaProvider = ({ children }: { children: ReactNode }) => {
       toast.success("Archivo eliminado");
     }
   };
+
+  const handlerPostNewFile = async (file: IFile) => {
+    
+  }
 
   const isLoading = files === undefined;
 

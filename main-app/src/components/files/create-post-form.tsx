@@ -1,12 +1,17 @@
 "use client"
 
 import Image from "next/image"
-import { useState } from "react"
+import { useContext, useState } from "react"
 import { twMerge } from "tailwind-merge"
 
 import { createPost, getSignedURL } from "./actions"
+import { MisMarcasContext } from "@/contexts/MisMarcasContext"
+import { toast } from "sonner"
 
 export default function CreatePostForm({ user }: { user: { name?: string | null; image?: string | null } }) {
+
+  const { marcaGlobalSeleccionada } = useContext(MisMarcasContext)
+
   const [content, setContent] = useState("")
   const [file, setFile] = useState<File | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
@@ -25,14 +30,27 @@ export default function CreatePostForm({ user }: { user: { name?: string | null;
   }
 
   const handleFileUpload = async (file: File) => {
+
+    if(!marcaGlobalSeleccionada)
+    {
+      toast.error("Selecciona una marca antes de subir un archivo")
+      return;
+    }
+
+
     const signedURLResult = await getSignedURL({
       fileSize: file.size,
       fileType: file.type,
       checksum: await computeSHA256(file),
+      marcaId: marcaGlobalSeleccionada._id!,
+
     })
+
+    console.log(signedURLResult)
     if (signedURLResult.failure !== undefined) {
       throw new Error(signedURLResult.failure)
     }
+    
     const { url, id: fileId } = signedURLResult.success
     await fetch(url, {
       method: "PUT",
@@ -50,7 +68,7 @@ export default function CreatePostForm({ user }: { user: { name?: string | null;
     e.preventDefault()
     setLoading(true)
     try {
-      let fileId: number | undefined = undefined
+      let fileId: string | undefined = undefined
       if (file) {
         setStatusMessage("Uploading...")
         fileId = await handleFileUpload(file)

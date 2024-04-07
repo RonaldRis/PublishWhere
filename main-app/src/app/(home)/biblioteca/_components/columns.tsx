@@ -2,8 +2,9 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { formatRelative } from "date-fns";
+import { es } from "date-fns/locale";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { FileCardActions } from "./file-actions";
+import { FileCardActions } from "./file-card-actions";
 import { IFile } from "@/lib/models/file.model";
 import { IUser } from "@/lib/models/user.model";
 import { Button } from "@/components/ui/button";
@@ -105,7 +106,7 @@ export const columns: ColumnDef<IFile& { isFavorited: boolean }>[] = [
     cell: ({ row }) => {
       return (
         <div>
-          {formatRelative(new Date(row.original.createdAt), new Date())}
+          {formatRelative(new Date(row.original.createdAt), new Date(), { locale: es })}
         </div>
       );
     },

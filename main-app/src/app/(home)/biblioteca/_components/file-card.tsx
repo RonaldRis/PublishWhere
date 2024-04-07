@@ -8,37 +8,38 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatRelative } from "date-fns";
 
-import { FileTextIcon, GanttChartIcon, ImageIcon, SquarePlay, VideoIcon } from "lucide-react";
+import {
+  FileTextIcon,
+  GanttChartIcon,
+  ImageIcon,
+  SquarePlay,
+  VideoIcon,
+} from "lucide-react";
 import { ReactNode } from "react";
 import Image from "next/image";
-import { FileCardActions, getFileUrl } from "./file-actions";
+import { FileCardActions, getFileUrl } from "./file-card-actions";
 import { IFile } from "@/lib/models/file.model";
 import { IUser } from "@/lib/models/user.model";
-import { FileType } from "./file-browser";
 import { z } from "zod";
+import { es } from "date-fns/locale";
+import { getMediaUrl } from "@/lib/constantes";
 
-export function FileCard({
-  file,
-}: {
-  file: IFile & { isFavorited: boolean };
-}) {
-  const userProfile = (file.creatorId as IUser)
+export function FileCard({ file }: { file: IFile & { isFavorited: boolean } }) {
+  const userProfile = file.creatorId as IUser;
 
   const typeIcons = {
     image: <ImageIcon />,
-    video: <SquarePlay />
-  } as Record< string, ReactNode>;
+    video: <SquarePlay />,
+  } as Record<string, ReactNode>;
 
   return (
-    <Card>
-      <CardHeader className="relative">
+    <Card className="flex flex-col justify-between">
+      <CardHeader className=" relative mb-4">
         <CardTitle className="flex justify-start gap-2 text-base font-normal ">
           <div className="flex justify-center ">{typeIcons[file.type]}</div>{" "}
           <span className="w-auto whitespace-break-spaces">
             {file.name}
-            {file.name}
-            {file.name}
-            </span>
+          </span>
         </CardTitle>
         <div className="absolute top-2 right-2">
           <FileCardActions isFavorited={file.isFavorited} file={file} />
@@ -50,7 +51,7 @@ export function FileCard({
             alt={file.name}
             width="200"
             height="100"
-            src={file.url} //TODO: Cambiar por la url de la imagen
+            src={getMediaUrl(file.bucketFileName)} //TODO: Cambiar por la url de la imagen
           />
         )}
 
@@ -60,23 +61,27 @@ export function FileCard({
           // <VideoIcon className="w-20 h-20" />
           <video
             className="h-20 w-20"
-            src={file.url}
+            src={getMediaUrl(file.bucketFileName)}
             controls
             autoPlay
-
           ></video>
         )}
       </CardContent>
       <CardFooter className="flex justify-between">
-        <div className="flex gap-2 text-xs text-gray-700 w-40 items-center">
+        <div className="flex gap-2 text-xs text-gray-700 w-40 items-center mt-4">
           <Avatar className="w-6 h-6">
             <AvatarImage src={userProfile?.image} />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
           {userProfile?.name}
         </div>
-        <div className="text-xs text-gray-700">
-          Uploaded on {formatRelative(new Date(file.createdAt), new Date())}
+        <div className="text-xs text-gray-700 mt-4">
+          <div className="border-l border-slate-900 h-auto mx-2 px-4">
+            Subido:{" "}
+            {formatRelative(new Date(file.createdAt), new Date(), {
+              locale: es,
+            })}
+          </div>
         </div>
       </CardFooter>
     </Card>

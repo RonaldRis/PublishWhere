@@ -15,11 +15,11 @@ export async function fetchUserAction(userId: string) : Promise<IServerResponse<
 
     const queryReuslt =  await User.findOne({ id: userId })
     const user =  JSON.parse(JSON.stringify(queryReuslt)) as IUser;
-    return { result: user, isOk: true, error: null };
+    return { data: user, isOk: true, error: null };
 
 
   } catch (error: any) {
-    return { result: null, isOk: false, error: "No hay usuario" };
+    return { data: null, isOk: false, error: "No hay usuario" };
   }
 }
 
@@ -29,11 +29,11 @@ export async function fetchAllUserAction() : Promise<IServerResponse<IUser[]>>{
 
     const queryReuslt =  await User.find({})
     const user =  JSON.parse(JSON.stringify(queryReuslt)) as IUser[];
-    return { result: user, isOk: true, error: null };
+    return { data: user, isOk: true, error: null };
 
 
   } catch (error: any) {
-    return { result: [], isOk: false, error: "No hay usuarios" };
+    return { data: [], isOk: false, error: "No hay usuarios" };
   }
 }
 

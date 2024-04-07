@@ -5,7 +5,7 @@ import { IUser } from "./user.model";
 export interface IFile {
     _id: string;
     name: string;
-    url: string; //TODO: BORRAR CAMPO
+    bucketFileName: string; //TODO: BORRAR CAMPO
     type: string;
     marcaId: string;
     creatorId: string | IUser;
@@ -17,10 +17,18 @@ export interface IFile {
     createdAt: Date;
 }
 
+export interface IFileUpdateAfterUpload{
+    name: string;
+    type: string;
+    bucketFileName: string; //TODO: BORRAR CAMPO
+    marcaId: string;
+    creatorId: string;
+}
+
 export interface IFilePost{
     name: string;
     type: string;
-    url: string; //TODO: BORRAR CAMPO
+    bucketFileName: string; //TODO: BORRAR CAMPO
     marcaId: string;
     creatorId: string;
     alreadyUsed: boolean;
@@ -30,7 +38,7 @@ export interface IFilePost{
 const fileSchema: Schema = new Schema({
     name: { type: String, required: true },
     type: { type: String, enum: ['image', 'video'], required: true },
-    url: { type: String, required: true }, //TODO: BORRAR CAMPO, USADO MIENTRAS NO ESTA EL BUCTKET CONFIGURADO
+    bucketFileName: { type: String, required: true }, //TODO: BORRAR CAMPO, USADO MIENTRAS NO ESTA EL BUCTKET CONFIGURADO
     marcaId: String,    //userful when we want to delete all files of a marca
     creatorId: { type: Schema.Types.ObjectId, ref: 'User' },
     shouldDelete: { type: Boolean, default: false },

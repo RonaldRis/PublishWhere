@@ -36,7 +36,7 @@ function Placeholder() {
         height="300"
         src="/empty.svg"
       />
-      <div className="text-2xl">You have no files, upload one now</div>
+      <div className="text-2xl">No hay archivos</div>
       {/* <UploadButton /> */}
     </div>
   );
@@ -70,8 +70,8 @@ export function FileBrowser({
         deletedOnly
       ).then((result) => {
         if (result.isOk)
-          if (result.result) {
-            var files = result.result;
+          if (result.data) {
+            var files = result.data;
             console.log("filesREQUEST", files.length);
             console.log("filesREQUEST", files);
             //TODO: Hacer tablas de Favoritos! Para verificar esa Query
@@ -80,20 +80,20 @@ export function FileBrowser({
             // }
 
             if (notUsedOnly) {
-              files = result.result?.filter(
+              files = result.data?.filter(
                 (file: IFile) => file.alreadyUsed === false
               );
             }
 
             if (usedOnly) {
-              files = result.result?.filter(
+              files = result.data?.filter(
                 (file: IFile) => file.alreadyUsed === true
               );
             }
 
-            if(deletedOnly)
-              files = result.result?.filter((file: IFile) => file.shouldDelete) ?? [];
-
+            if (deletedOnly)
+              files =
+                result.data?.filter((file: IFile) => file.shouldDelete) ?? [];
 
             console.log("filesFILTER", files.length);
             console.log("filesFILTER", files);
@@ -116,7 +116,7 @@ export function FileBrowser({
         <div className="w-1/3 mr-0">{/* <UploadButton /> */}</div>
       </div>
 
-      <Tabs defaultValue="table">
+      <Tabs defaultValue="grid">
         <div className="flex justify-between items-center">
           <TabsList className="mb-2">
             <TabsTrigger value="grid" className="flex gap-2 items-center">
@@ -156,7 +156,7 @@ export function FileBrowser({
         )}
 
         <TabsContent value="grid">
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {modifiedFiles?.map((file) => {
               return <FileCard key={file._id} file={file} />;
             })}

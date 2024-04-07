@@ -54,7 +54,7 @@ function MarcaNewTeamMember({ isOpenModalNewTeamMember, setIsOpenModalNewTeamMem
             if (!marcaGlobalSeleccionada) return;
 
             const res = await fetchAllUserAction();
-            const allUsersNotInTheMarcaTeam = res.result!.filter(user => {
+            const allUsersNotInTheMarcaTeam = res.data!.filter(user => {
                 if (marcaGlobalSeleccionada.equipo.length > 0) {
                     if (typeof marcaGlobalSeleccionada.equipo[0] === 'string') {
                         // If marcaSeleccionada.equipo is string[], use user._id
@@ -146,7 +146,7 @@ function MarcaNewTeamMember({ isOpenModalNewTeamMember, setIsOpenModalNewTeamMem
         setInputText("")
         
         toast.success('Equipo actualizado correctamente');
-        setMarcaGlobalSeleccionada(result.result!);
+        setMarcaGlobalSeleccionada(result.data!);
     }
 
 

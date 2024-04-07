@@ -55,7 +55,7 @@ const MisMarcasProvider = ({ children }: { children: ReactNode }) => {
         if(!session?.user.id) return setIsMarcaLoading(false);
 
         const result = await fetchMisMarcasAction(session?.user.id as string); //TODO: Cambiar por el fetch de las marcas del usuario
-        const marcasOrdenadas = result.result!.sort((a, b) => a.name.localeCompare(b.name)); 
+        const marcasOrdenadas = result.data!.sort((a, b) => a.name.localeCompare(b.name)); 
         setMarcas(marcasOrdenadas);
         setIsMarcaLoading(false);
 

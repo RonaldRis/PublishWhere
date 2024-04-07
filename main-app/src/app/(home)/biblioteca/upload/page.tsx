@@ -1,7 +1,7 @@
 
 import { getServerSession } from "next-auth"
 import { redirect } from "next/navigation"
-import CreatePostForm from "./create-post-form"
+import CreatePostForm from "../../../../components/files/create-post-form"
 import { authOptions } from "@/lib/auth"
 
 // export const runtime = 'edge'

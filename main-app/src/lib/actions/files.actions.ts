@@ -11,17 +11,17 @@ export async function fetchFileAction(fileId: string): Promise<IServerResponse<I
 
         var result = await File.findById(fileId);
         if (!result) {
-            return { result: null, isOk: false, error: "No existe el archivo" };
+            return { data: null, isOk: false, error: "No existe el archivo" };
         }
 
         return {
-            result: JSON.parse(JSON.stringify(result)) as IFile,
+            data: JSON.parse(JSON.stringify(result)) as IFile,
             isOk: true,
             error: null
         };
 
     } catch (error: any) {
-        return { result: null, isOk: false, error: "No existe el archivo" };
+        return { data: null, isOk: false, error: "No existe el archivo" };
     }
 }
 export async function fetchAllFilesByMarcaAction(marcaId: string, trashOnly: boolean = false, favoriteOnly: boolean = false): Promise<IServerResponse<IFile[]>> {
@@ -34,10 +34,10 @@ export async function fetchAllFilesByMarcaAction(marcaId: string, trashOnly: boo
             shouldDelete: trashOnly
         }).populate('creatorId');
         const files = JSON.parse(JSON.stringify(filesQuery)) as IFile[];
-        return { result: files, isOk: true, error: null };
+        return { data: files, isOk: true, error: null };
 
     } catch (error: any) {
-        return { result: [], isOk: false, error: "No hay archivos" };
+        return { data: [], isOk: false, error: "No hay archivos" };
     }
 }
 
@@ -48,10 +48,10 @@ export async function fetchMyFilesAction(userId: string): Promise<IServerRespons
         const filesQuery = await File.find({ creatorId: userId });
         const result = JSON.parse(JSON.stringify(filesQuery)) as IFile[];
 
-        return { result: result, isOk: true, error: null };
+        return { data: result, isOk: true, error: null };
 
     } catch (error: any) {
-        return { result: [], isOk: false, error: "No hay archivos" };
+        return { data: [], isOk: false, error: "No hay archivos" };
     }
 }
 
@@ -62,30 +62,29 @@ export async function postCreateFileAction(newFile: IFilePost): Promise<IServerR
 
         const marca = await Marca.findById(newFile.marcaId);
         if (!marca) {
-            return { result: null, isOk: false, error: "No existe la marca" };
+            return { data: null, isOk: false, error: "No existe la marca" };
         }
 
         const newFileMongo = await File.create(newFile);
         //Validar que si se ha creado el archivo
         if (!newFileMongo) {
-            return { result: null, isOk: false, error: "No se ha podido crear el archivo" };
+            return { data: null, isOk: false, error: "No se ha podido crear el archivo" };
         }
         marca.files.push(newFileMongo);
         await marca.save();
 
 
         return {
-            result: JSON.parse(JSON.stringify(newFileMongo)) as IFile,
+            data: JSON.parse(JSON.stringify(newFileMongo)) as IFile,
             isOk: true,
             error: null
         };
 
 
     } catch (error: any) {
-        return { result: null, isOk: false, error: "Ya existe ese archivo" };
+        return { data: null, isOk: false, error: "Ya existe ese archivo" };
     }
 }
-
 
 export async function sendToTrashFileAction(fileId: string): Promise<IServerResponse<IFile>> {
     try {
@@ -94,12 +93,12 @@ export async function sendToTrashFileAction(fileId: string): Promise<IServerResp
         const result = await File.findByIdAndUpdate(fileId, { shouldDelete: true }, { new: true });
 
         return {
-            result: JSON.parse(JSON.stringify(result)) as IFile,
+            data: JSON.parse(JSON.stringify(result)) as IFile,
             isOk: true,
             error: "Enviado a la papelera con éxito"
         };
     } catch (error: any) {
-        return { result: null, isOk: false, error: "No es posible eliminar el archivo" };
+        return { data: null, isOk: false, error: "No es posible eliminar el archivo" };
     }
 }
 
@@ -110,15 +109,14 @@ export async function restoreTrashFileAction(fileId: string): Promise<IServerRes
         const result = await File.findByIdAndUpdate(fileId, { shouldDelete: false }, { new: true });
 
         return {
-            result: JSON.parse(JSON.stringify(result)) as IFile,
+            data: JSON.parse(JSON.stringify(result)) as IFile,
             isOk: true,
             error: "Enviado a la papelera con éxito"
         };
     } catch (error: any) {
-        return { result: null, isOk: false, error: "No es posible eliminar el archivo" };
+        return { data: null, isOk: false, error: "No es posible eliminar el archivo" };
     }
 }
-
 
 export async function putFileAsUsedAction(fileId: string): Promise<IServerResponse<IFile>> {
     try {
@@ -126,16 +124,14 @@ export async function putFileAsUsedAction(fileId: string): Promise<IServerRespon
         const result = await File.findByIdAndUpdate(fileId, { alreadyUsed: true }, { new: true });
 
         return {
-            result: JSON.parse(JSON.stringify(result)) as IFile,
+            data: JSON.parse(JSON.stringify(result)) as IFile,
             isOk: true,
             error: "Archivo marcado como usado"
         };
     } catch (error: any) {
-        return { result: null, isOk: false, error: "No es posible usar el archivo" };
+        return { data: null, isOk: false, error: "No es posible usar el archivo" };
     }
 }
-
-
 
 export async function deleteFileAction(fileId: string): Promise<IServerResponse<boolean>> {
     try {
@@ -146,16 +142,16 @@ export async function deleteFileAction(fileId: string): Promise<IServerResponse<
         console.log("Delete count: ", result.deletedCount)
 
         if (result.deletedCount == 0) {
-            return { result: false, isOk: false, error: "No es posible eliminar el archivo" };
+            return { data: false, isOk: false, error: "No es posible eliminar el archivo" };
         }
         return {
-            result: true,
+            data: true,
             isOk: true,
             error: "Eliminado con exito"
         };
 
     } catch (error: any) {
-        return { result: false, isOk: false, error: "No es posible eliminar el miembro al equipo" };
+        return { data: false, isOk: false, error: "No es posible eliminar el miembro al equipo" };
     }
 }
 

@@ -111,7 +111,7 @@ function EquipoCrud() {
             return;
         }
         else
-            setMarcaGlobalSeleccionada(marcaRenovada.result);
+            setMarcaGlobalSeleccionada(marcaRenovada.data);
 
 
     }

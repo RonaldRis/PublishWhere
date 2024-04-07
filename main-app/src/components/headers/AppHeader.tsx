@@ -37,6 +37,8 @@ import { useContext } from "react";
 import { MisMarcasContext } from "@/contexts/MisMarcasContext";
 import MarcaNueva from "../marcas/MarcaNueva";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import { BibliotecaContext } from "@/contexts/BibliotecaContext";
+import UploadFiles from "../files/UploadFiles";
 
 export default function AppHeader() {
   const {
@@ -47,6 +49,8 @@ export default function AppHeader() {
     isOpenModalNuevaMarca,
     setIsOpenModalNuevaMarca,
   } = useContext(MisMarcasContext);
+
+  const{setIsOpenModalNewFile, isOpenModalNewFile} = useContext(BibliotecaContext);
 
   const { data: session, status } = useSession();
 
@@ -137,12 +141,14 @@ export default function AppHeader() {
           {/* BOTON DE AGREAR UN NUEVO POST, MARCA, RED SOCIAL */}
           {session && (
             <HoverCard openDelay={1} closeDelay={5}>
-              <HoverCardTrigger href="/perfil/mis-datos">
+              <HoverCardTrigger >
                 <CircleFadingPlus
-                  className="m-4 p-0"
+                  className="m-4 p-0 cursor-pointer"
                   size={24}
                   color="#ffffff"
                   absoluteStrokeWidth
+                  onClick={() => setIsOpenModalNewFile(true)}
+
                 />
               </HoverCardTrigger>
               <HoverCardContent className="m-0 p-0 ">
@@ -163,7 +169,9 @@ export default function AppHeader() {
                     <CircleFadingPlus size={16} absoluteStrokeWidth />
                     Red social
                   </Button>
-                  <Button className="m-0 w-full gap-1" variant={"ghost"}>
+                  <Button className="m-0 w-full gap-1" variant={"ghost"}
+                    onClick={() => setIsOpenModalNewFile(true)}
+                    >
                     <ImageUp size={16} absoluteStrokeWidth />
                     Multimedia
                   </Button>
@@ -230,6 +238,12 @@ export default function AppHeader() {
         isOpenModalNuevaMarca={isOpenModalNuevaMarca}
         setIsOpenModalNuevaMarca={setIsOpenModalNuevaMarca}
       />
+
+      <UploadFiles
+
+        isOpenModalNewFile={isOpenModalNewFile}
+        setIsOpenModalNewFile={setIsOpenModalNewFile}
+        />
     </nav>
   );
 }
