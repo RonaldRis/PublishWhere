@@ -31,6 +31,7 @@ import { IFile } from "@/lib/models/file.model";
 import { toast } from "sonner";
 import { BibliotecaContext } from "@/contexts/BibliotecaContext";
 import { Button } from "@/components/ui/button";
+import { getMediaUrl } from "@/lib/constantes";
 
 export function FileCardActions({
   file,
@@ -77,8 +78,7 @@ export function FileCardActions({
         <DropdownMenuContent>
           <DropdownMenuItem
             onClick={() => {
-              window.open(file.name, "_blank"); //TODO: REVISAR DOWNLOAD
-              // window.open(getFileUrl(file._id), "_blank"); //TODO: REVISAR DOWNLOAD
+              window.open(getMediaUrl(file.bucketFileName), "_blank");
             }}
             className="flex gap-1 items-center cursor-pointer"
           >
@@ -147,7 +147,3 @@ export function FileCardActions({
   );
 }
 
-//TODO: Modificar segun el URL del bucket y el nombre del archivo!
-export function getFileUrl(fileId: string): string {
-  return `${process.env.NEXT_PUBLIC_CONVEX_URL}/api/storage/${fileId}`;
-}

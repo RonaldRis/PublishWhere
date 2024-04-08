@@ -4,11 +4,10 @@ import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { allowedFileTypes } from "../constantes";
 import { IServerResponse } from "./ServerResponse";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import crypto from "crypto";
 
 import { getServerSessionAuth } from "@/lib/auth";
 import { postCreateFileAction } from "@/lib/actions/files.actions";
-import { IFile } from "../models/file.model";
+import { IFile, IFilePost } from "../models/file.model";
 
 const s3Client = new S3Client({
   region: process.env.AWS_BUCKET_REGION!,
@@ -18,25 +17,33 @@ const s3Client = new S3Client({
   },
 });
 
-type SignedURLResponse = { url: string; file: IFile };
+
+
+
+////// FUNCIONES DE S3 //////
+
+type SignedURLResponse = { signedURL: string; };
 
 type GetSignedURLParams = {
-  fileType: string;
-  fileSize: number;
-  checksum: string;
-  marcaId: string;
+  fileData: {
+    fileType: string;
+    fileSize: number;
+    checksum: string;
+  };
+  newFile: IFilePost;
 };
 
 export const getSignedURL = async ({
-  fileType,
-  fileSize,
-  checksum,
-  marcaId,
+  newFile,
+  fileData: { fileSize, fileType, checksum },
 }: GetSignedURLParams): Promise<IServerResponse<SignedURLResponse>> => {
+
+
   const session = await getServerSessionAuth();
 
-  if (!fileSize || !fileType || !checksum || !marcaId)
+  if (!fileSize || !fileType || !checksum || !newFile.marcaId)
     return { data: null, isOk: false, error: "Faltan datos" };
+
 
   if (!session) {
     return {
@@ -46,6 +53,7 @@ export const getSignedURL = async ({
     };
   }
 
+
   if (!allowedFileTypes.includes(fileType)) {
     return {
       data: null,
@@ -54,46 +62,37 @@ export const getSignedURL = async ({
     };
   }
 
-  const fileName = crypto.randomBytes(32).toString("hex");
-  console.log(fileName);
+  console.log("TIPO ACEPTADO")
+  console.log("FILE SIZE: ", fileSize);
 
   const putObjectCommand = new PutObjectCommand({
     Bucket: process.env.AWS_BUCKET_NAME!,
-    Key: fileName,
-
+    Key: newFile.bucketFileName,
     ContentType: fileType,
     ContentLength: fileSize,
     ChecksumSHA256: checksum,
   });
 
-  const segundoExpire = fileSize / (1024 * 1024); //Cantidad de MB (1 segundo por MB)
+  var segundoExpire = fileSize / (1024 * 1024)*100; //Cantidad de MB (1 segundo por MB)
+  segundoExpire = Math.ceil(segundoExpire); 
+
+  if(segundoExpire < 60)
+    segundoExpire = 60;
+
+  console.log("EXPIRE: ", segundoExpire);
 
   const url = await getSignedUrl(
     s3Client,
     putObjectCommand,
-    { expiresIn: segundoExpire } // 60 seconds
+    { expiresIn: segundoExpire } // TIENE QUE SER UN ENTERO O FALLA
   );
 
   console.log("URL: ", url);
+  
 
-  const imageOrVideo = fileType.startsWith("image") ? "image" : "video";
-
-  const fileEmptyWithLink = {
-    name: fileName,
-    type: imageOrVideo,
-    url: url.split("?")[0],
-    marcaId: marcaId,
-    creatorId: session.user.id,
-    alreadyUsed: false,
+  return {
+    data: { signedURL: url },
+    isOk: true,
+    error: null,
   };
-  console.log(fileEmptyWithLink);
-  const resultFile = await postCreateFileAction(fileEmptyWithLink);
-  console.log(resultFile);
-  if (!resultFile.isOk) {
-    return { failure: "Error al subir el archivo" };
-  }
-
-  console.log({ success: { url, id: resultFile.data?._id! } });
-
-  return { success: { url, id: resultFile.data?._id! } };
 };

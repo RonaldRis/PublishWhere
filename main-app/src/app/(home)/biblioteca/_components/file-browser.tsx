@@ -102,7 +102,7 @@ export function FileBrowser({
           }
       });
     }
-  }, []);
+  }, [marcaGlobalSeleccionada, session, deletedOnly, favoritesOnly, notUsedOnly]);
 
   return (
     <div>
@@ -151,7 +151,7 @@ export function FileBrowser({
         {isLoading && (
           <div className="flex flex-col gap-8 w-full items-center mt-24">
             <Loader2 className="h-32 w-32 animate-spin text-gray-500" />
-            <div className="text-2xl">Loading your files...</div>
+            <div className="text-2xl">Cargando tus ...</div>
           </div>
         )}
 

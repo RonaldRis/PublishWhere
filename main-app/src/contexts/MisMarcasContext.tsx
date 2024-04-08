@@ -46,7 +46,7 @@ const MisMarcasProvider = ({ children }: { children: ReactNode }) => {
     const {data: session} = useSession();
 
     const [marcas, setMarcas] = React.useState<IMarca[]>([]); 
-    const [marcaGlobalSeleccionada, setMarcaGlobalSeleccionada] = useLocalStorage<IMarca | null>("marcaGlobalSeleccionada", null);
+    const [marcaGlobalSeleccionada, setMarcaGlobalSeleccionada] = useLocalStorage<IMarca | null>("marcaGlobalSeleccionada", null); //TODO: CAMBIAR POR UN HOOK NORMAL CUANDO TERMINE
     const [isMarcaLoading, setIsMarcaLoading] = React.useState<boolean>(false);
     const [isOpenModalNuevaMarca, setIsOpenModalNuevaMarca] = React.useState<boolean>(false);
 

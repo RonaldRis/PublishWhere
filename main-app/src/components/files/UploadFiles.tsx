@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,35 +11,170 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "../ui/button";
-import { CircleX } from "lucide-react";
+import { CircleX, Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { AspectRatio } from "../ui/aspect-ratio";
 import { Card, CardContent } from "../ui/card";
+import { MisMarcasContext } from "@/contexts/MisMarcasContext";
+import { IFilePost } from "@/lib/models/file.model";
+import { getSignedURL } from "@/lib/actions/s3.actions";
+import { toast } from "sonner";
+import { se } from "date-fns/locale";
+import crypto from "crypto";
+import axios from "axios";
 
-interface IUploadFilesProps {
-  isOpenModalNewFile: boolean;
-  setIsOpenModalNewFile: React.Dispatch<React.SetStateAction<boolean>>;
-}
+import { postCreateFileAction } from "@/lib/actions/files.actions";
+import { Progress } from "../ui/progress";
 
-const IndividualUploadFile = ({ file }: { file: File }) => {
+// export const computeSHA256 = async (file: File) => {
+//   const buffer = await file.arrayBuffer();
+//   const hashBuffer = await crypto.subtle.digest("SHA-256", buffer);
+//   const hashArray = Array.from(new Uint8Array(hashBuffer));
+//   const hashHex = hashArray
+//     .map((b) => b.toString(16).padStart(2, "0"))
+//     .join("");
+//   return hashHex;
+// };
+
+export const computeSHA256 = async (file: File) => {
+  const buffer = await file.arrayBuffer();
+  const hash = crypto.createHash("sha256");
+  hash.update(new Uint8Array(buffer));
+  return hash.digest("hex");
+};
+
+const IndividualUploadFile = ({
+  file,
+  marcaId,
+  userId,
+}: {
+  file: File;
+  marcaId: string;
+  userId: string;
+}) => {
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+
+  const [fileURL, setFileURL] = useState<string | null>(null);
+  const [nombre, setNombre] = useState<string>("");
+
+  useEffect(() => {
+    if (file) {
+      setNombre(file.name);
+    }
+  }, [file]);
+
+  const HandlerUploadFileAction = async ({
+    fileName,
+    file,
+    marcaId,
+    userId,
+  }: {
+    fileName: string;
+    file: File;
+    marcaId: string;
+    userId: string;
+  }) => {
+    //Primero se obtiene el URL firmado
+    setIsUploading(true);
+    setUploadProgress(0);
+    const extension = file.type.split("/")[1];
+    const bucketFileName =
+      marcaId + crypto.randomBytes(32).toString("hex") + "." + extension;
+
+    try {
+      var fileObject: IFilePost = {
+        name: fileName,
+        marcaId: marcaId,
+        creatorId: userId,
+        type: file.type.startsWith("image") ? "image" : "video",
+        bucketFileName: bucketFileName,
+        alreadyUsed: false,
+      };
+      console.log(fileObject);
+
+      const checksum = await computeSHA256(file);
+      console.log("checksum", checksum);
+
+      const fileData= {
+        fileSize: file.size,
+        fileType: file.type,
+        checksum: checksum,
+      }
+      console.log(fileData);
+      var resultSigningURL = await getSignedURL({
+        newFile: fileObject,
+        fileData: fileData, 
+      });
+      console.log(resultSigningURL);
+
+      if (!resultSigningURL.isOk) {
+        toast.error(resultSigningURL.error);
+        setIsUploading(false);
+        return;
+      }
+
+      const signedUrl = resultSigningURL.data?.signedURL!;
+
+      await axios.request({
+        method: "PUT",
+        url: signedUrl,
+        data: file,
+        headers: {
+          "Content-Type": file.type,
+          "Content-Disposition": `attachment; filename="${fileObject.bucketFileName}"`,
+        },
+
+        onUploadProgress: (progressEvent) => {
+          if (progressEvent.total) {
+            const percentCompleted = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total
+            );
+            setUploadProgress(percentCompleted);
+          }
+        },
+      });
+
+      // // tryout 2 subo el archivo firmado: //USA AXIOS PORQUE SI FALLA CAE EN EL CATCH
+      await axios.put(signedUrl, file, {
+        headers: {
+          "Content-Type": file.type, // set the content type header
+          "Content-Disposition": `attachment; filename="${fileObject.bucketFileName}"`,
+        },
+      });
+
+      ///Guardar el archivo en la base de datos
+      const resultDb = await postCreateFileAction(fileObject);
+      if (!resultDb.isOk) {
+        toast.error(resultDb.error);
+        setIsUploading(false);
+        return;
+      }
+
+      toast.success("Archivo subido correctamente");
+    } catch (error) {
+      toast.error("Error al subir el archivo : " + error);
+      console.log(error);
+      console.error(error);
+    }
+
+    setIsUploading(false);
+
+    //Retornar el ID del archivo
+  };
+
   return (
     <Card>
       <CardContent>
         <div className="flex items-center flex-col lg:flex-row">
           {/* IMAGE CARD */}
           <Card className=" p-4">
-            {/* <Image
-              src={URL.createObjectURL(file)}
-              alt="Image"
-              width={450}
-              height={450}
-              objectFit={"fit"}
-            /> */}
-
-            <div style={{ position: "relative",  width: "400px", height:"400px"}}>
+            <div
+              style={{ position: "relative", width: "400px", height: "400px" }}
+            >
               <Image
                 src={URL.createObjectURL(file)}
                 alt=""
@@ -51,12 +186,39 @@ const IndividualUploadFile = ({ file }: { file: File }) => {
 
           {/* FILE DATA */}
 
-          <div className="container w-full ">
+          <div className="container w-full h-full bg-slate-200 ">
             <br />
-            <p>Picture</p>
-            <Input type="text" value={file.name} className="w-fill" />
+            <p>Nombre archivo:</p>
+            <Input
+              type="text"
+              className="w-fill"
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
+            />
             <p>{(file.size / (1024 * 1024)).toPrecision(2)} MB</p>
-            <Button onClick={() => console.log("NOTHIUNG")}>NOTHING</Button>
+            <p>ETIQUETAS?? </p>
+            <p>Type: {" " + file.type} </p>
+            {/* TODO: ETIQUETAS ?? */}
+            <Button
+              className="w-full"
+              onClick={async () => {
+                await HandlerUploadFileAction({
+                  fileName: nombre,
+                  file: file,
+                  marcaId: marcaId,
+                  userId: userId,
+                });
+              }}
+            >
+              Subir
+            </Button>
+            {isUploading && (
+              <div className="flex flex-col gap-8 w-full items-center mt-24">
+                <Loader2 className="animate-spin text-gray-500" size={24} />
+                <Progress value={uploadProgress} />
+                <div className="text-2xl">Subiendo archivo...</div>
+              </div>
+            )}
           </div>
         </div>
       </CardContent>
@@ -64,20 +226,45 @@ const IndividualUploadFile = ({ file }: { file: File }) => {
   );
 };
 
+interface IUploadFilesProps {
+  isOpenModalNewFile: boolean;
+  setIsOpenModalNewFile: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
 function UploadFiles({
   isOpenModalNewFile,
   setIsOpenModalNewFile,
 }: IUploadFilesProps) {
   const { data: session } = useSession();
+  const { marcaGlobalSeleccionada } = useContext(MisMarcasContext);
   const [files, setFiles] = useState<File[]>([]);
 
   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
+    if (e.target?.files) {
       let selectedFiles = Array.from(e.target.files);
       console.log(selectedFiles);
       setFiles(selectedFiles);
     }
   };
+
+  //DRAG AND DROP
+  const onDrop = useCallback((event: any) => {
+    event.preventDefault();
+
+    console.log("DROP");
+    console.log(event.dataTransfer.files);
+
+    if (event.dataTransfer.files) {
+      let selectedFiles = Array.from(event.dataTransfer.files) as File[];
+      console.log(selectedFiles);
+      setFiles(selectedFiles);
+    }
+
+  }, []);
+
+  const onDragOver = useCallback((event: any) => {
+    event.preventDefault();
+  }, []);
 
   return (
     <AlertDialog onOpenChange={setIsOpenModalNewFile} open={isOpenModalNewFile}>
@@ -108,6 +295,8 @@ function UploadFiles({
           {/* CONTENT - INPUT */}
           <label
             htmlFor="dropzone-file"
+            onDrop={onDrop}
+            onDragOver={onDragOver}
             className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
           >
             <div className="flex flex-col items-center justify-center pt-5 pb-6">
@@ -148,7 +337,12 @@ function UploadFiles({
           {files.length > 0 && (
             <div className="flex flex-col gap-4 p-4 w-[80vw]">
               {files.map((file, index) => (
-                <IndividualUploadFile key={index} file={file} />
+                <IndividualUploadFile
+                  key={index}
+                  file={file}
+                  marcaId={marcaGlobalSeleccionada?._id!}
+                  userId={session?.user._id!}
+                />
               ))}
             </div>
           )}

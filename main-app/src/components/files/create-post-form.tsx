@@ -21,13 +21,7 @@ export default function CreatePostForm({ user }: { user: { name?: string | null;
 
   const buttonDisabled = content.length < 1 || loading
 
-  const computeSHA256 = async (file: File) => {
-    const buffer = await file.arrayBuffer()
-    const hashBuffer = await crypto.subtle.digest("SHA-256", buffer)
-    const hashArray = Array.from(new Uint8Array(hashBuffer))
-    const hashHex = hashArray.map((b) => b.toString(16).padStart(2, "0")).join("")
-    return hashHex
-  }
+
 
   const handleFileUpload = async (file: File) => {
 
