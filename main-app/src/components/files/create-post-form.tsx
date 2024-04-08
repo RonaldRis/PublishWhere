@@ -8,6 +8,8 @@ import { createPost, getSignedURL } from "./actions"
 import { MisMarcasContext } from "@/contexts/MisMarcasContext"
 import { toast } from "sonner"
 
+//TODO: MODIFICAR PARA HACER UN POST CON UN ARCHIVO + TEXTO LUEGO 
+//TODO: APLICAR ACA IndividualUploadFile component
 export default function CreatePostForm({ user }: { user: { name?: string | null; image?: string | null } }) {
 
   const { marcaGlobalSeleccionada } = useContext(MisMarcasContext)

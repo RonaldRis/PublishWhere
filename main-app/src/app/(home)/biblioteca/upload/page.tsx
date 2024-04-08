@@ -8,7 +8,6 @@ import { authOptions } from "@/lib/auth"
 
 export default async function Create() {
   const session = await getServerSession(authOptions)
-  console.log("SESION: ", session)
   if (!session?.user) {
     redirect("/api/auth/signin?callbackUrl=/create")
   }

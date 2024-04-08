@@ -27,7 +27,6 @@ export function SideNav() {
         variant={"ghost"}
         className="flex gap-2 place-self-end"
         onClick={() => {
-          console.log("click");
           setShow(!show);
         }}
       >

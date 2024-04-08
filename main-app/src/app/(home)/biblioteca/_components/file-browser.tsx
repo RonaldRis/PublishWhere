@@ -26,6 +26,8 @@ import { IFile } from "@/lib/models/file.model";
 import { fetchAllFilesByMarcaAction } from "@/lib/actions/files.actions";
 import { Label } from "@/components/ui/label";
 import { BibliotecaContext } from "@/contexts/BibliotecaContext";
+import { set } from "mongoose";
+import { Console } from "console";
 
 function Placeholder() {
   return (
@@ -57,52 +59,54 @@ export function FileBrowser({
 }) {
   const { data: session } = useSession();
   const { marcaGlobalSeleccionada } = useContext(MisMarcasContext);
-  const { files, setFiles, type, setType, isLoading, modifiedFiles } =
-    useContext(BibliotecaContext);
+  const {
+    files,
+    type,
+    setType,
+    isLoading,
+    modifiedFiles,
+    fetchFilesContext,
+    setDeletedOnly,
+    setFavoritesOnly,
+    setNotUsedOnly,
+    setUsedOnly,
+  } = useContext(BibliotecaContext);
 
-  //TODO: QUERY TRAE TODOS LOS ARCHIVOS FAVORITOS DE UNA MARCA
+  //TODO: BARRA DE BUSQUEDA! PENDIENTE 
 
   useEffect(() => {
+    console.log("USE EFFECT: SET FILTERS CONTEXT");
+
+    setDeletedOnly(deletedOnly);
+    setFavoritesOnly(favoritesOnly);
+    setNotUsedOnly(notUsedOnly);
+    setUsedOnly(usedOnly);
+
+    fetchFilesContext();
+
+  }, []);
+
+  useEffect(() => {
+   
+
     //Para que no se ejecute al inicio
     if (marcaGlobalSeleccionada && session) {
-      fetchAllFilesByMarcaAction(
-        marcaGlobalSeleccionada._id as string,
-        deletedOnly
-      ).then((result) => {
-        if (result.isOk)
-          if (result.data) {
-            var files = result.data;
-            console.log("filesREQUEST", files.length);
-            console.log("filesREQUEST", files);
-            //TODO: Hacer tablas de Favoritos! Para verificar esa Query
-            // if (favoritesOnly) {
-            //   result.result = result.result?.filter((file: IFile) => file.isFavorited) ?? [];
-            // }
+      setDeletedOnly(deletedOnly);
+      setFavoritesOnly(favoritesOnly);
+      setNotUsedOnly(notUsedOnly);
+      setUsedOnly(usedOnly);
 
-            if (notUsedOnly) {
-              files = result.data?.filter(
-                (file: IFile) => file.alreadyUsed === false
-              );
-            }
-
-            if (usedOnly) {
-              files = result.data?.filter(
-                (file: IFile) => file.alreadyUsed === true
-              );
-            }
-
-            if (deletedOnly)
-              files =
-                result.data?.filter((file: IFile) => file.shouldDelete) ?? [];
-
-            console.log("filesFILTER", files.length);
-            console.log("filesFILTER", files);
-
-            setFiles(files ?? []);
-          }
-      });
+      console.log("USE EFFECT: FETCH FILES CONTEXT");
+      fetchFilesContext();
     }
-  }, [marcaGlobalSeleccionada, session, deletedOnly, favoritesOnly, notUsedOnly]);
+  }, [
+    marcaGlobalSeleccionada,
+    session,
+    deletedOnly,
+    favoritesOnly,
+    notUsedOnly,
+    usedOnly,
+  ]);
 
   return (
     <div>

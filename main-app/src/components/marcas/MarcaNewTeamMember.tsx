@@ -127,7 +127,6 @@ function MarcaNewTeamMember({ isOpenModalNewTeamMember, setIsOpenModalNewTeamMem
             return;
         }
 
-        //TODO: URGENTE: POR ALGUN MOTIVO AL AGREGA UN USUARIO NUEVO SIEMPRE SE AGREGA EN EL USUARIO DE MARCELA
         const idSeleccionados = usersSeleccionados.map(user => user._id);
         const marcaId = marcaGlobalSeleccionada._id;
         const result = await postNewTeamMembersOnMarcaAction(marcaId, idSeleccionados);

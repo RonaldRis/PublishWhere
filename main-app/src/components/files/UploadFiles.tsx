@@ -28,6 +28,7 @@ import axios from "axios";
 
 import { postCreateFileAction } from "@/lib/actions/files.actions";
 import { Progress } from "../ui/progress";
+import { BibliotecaContext } from "@/contexts/BibliotecaContext";
 
 // export const computeSHA256 = async (file: File) => {
 //   const buffer = await file.arrayBuffer();
@@ -55,10 +56,13 @@ const IndividualUploadFile = ({
   marcaId: string;
   userId: string;
 }) => {
+  //CONTEXT
+  const{fetchFilesContext} = useContext(BibliotecaContext);  
+
+  //LOCAL
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
 
-  const [fileURL, setFileURL] = useState<string | null>(null);
   const [nombre, setNombre] = useState<string>("");
 
   useEffect(() => {
@@ -94,22 +98,18 @@ const IndividualUploadFile = ({
         bucketFileName: bucketFileName,
         alreadyUsed: false,
       };
-      console.log(fileObject);
 
       const checksum = await computeSHA256(file);
-      console.log("checksum", checksum);
 
       const fileData= {
         fileSize: file.size,
         fileType: file.type,
         checksum: checksum,
       }
-      console.log(fileData);
       var resultSigningURL = await getSignedURL({
         newFile: fileObject,
         fileData: fileData, 
       });
-      console.log(resultSigningURL);
 
       if (!resultSigningURL.isOk) {
         toast.error(resultSigningURL.error);
@@ -154,11 +154,19 @@ const IndividualUploadFile = ({
         return;
       }
 
+      if(resultDb.data){
+        //Necesito que esto altere el estado se muestre en el UI
+
+      }
+
+
+      //Actualizar la lista de archivos
+      
       toast.success("Archivo subido correctamente");
+      fetchFilesContext()
     } catch (error) {
       toast.error("Error al subir el archivo : " + error);
       console.log(error);
-      console.error(error);
     }
 
     setIsUploading(false);
@@ -239,10 +247,9 @@ function UploadFiles({
   const { marcaGlobalSeleccionada } = useContext(MisMarcasContext);
   const [files, setFiles] = useState<File[]>([]);
 
-  const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileInputOnChangeEvent = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target?.files) {
       let selectedFiles = Array.from(e.target.files);
-      console.log(selectedFiles);
       setFiles(selectedFiles);
     }
   };
@@ -251,12 +258,8 @@ function UploadFiles({
   const onDrop = useCallback((event: any) => {
     event.preventDefault();
 
-    console.log("DROP");
-    console.log(event.dataTransfer.files);
-
     if (event.dataTransfer.files) {
       let selectedFiles = Array.from(event.dataTransfer.files) as File[];
-      console.log(selectedFiles);
       setFiles(selectedFiles);
     }
 
@@ -328,7 +331,7 @@ function UploadFiles({
               type="file"
               className="hidden"
               multiple={true}
-              onChange={handleFileInput}
+              onChange={handleFileInputOnChangeEvent}
               accept="image/*, video/*"
             />
           </label>

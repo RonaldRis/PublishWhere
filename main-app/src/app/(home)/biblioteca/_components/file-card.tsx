@@ -37,7 +37,9 @@ export function FileCard({ file }: { file: IFile & { isFavorited: boolean } }) {
       <CardHeader className=" relative mb-4">
         <CardTitle className="flex justify-start gap-2 text-base font-normal w-[200px]">
           <div className="flex justify-center ">{typeIcons[file.type]}</div>{" "}
+          {/* TODO: QUE SE VEA BIEN EL TEXTO SI ES MUY LARGO */}
           <span className="w-auto whitespace-pre">{file.name}</span>
+
         </CardTitle>
         <div className="absolute top-2 right-2">
           <FileCardActions isFavorited={file.isFavorited} file={file} />
@@ -49,7 +51,7 @@ export function FileCard({ file }: { file: IFile & { isFavorited: boolean } }) {
             style={{ position: "relative", width: "200px", height: "200px" }}
           >
             <Image
-              src={getMediaUrl(file.bucketFileName)} //TODO: Cambiar por la url de la imagen
+              src={getMediaUrl(file.bucketFileName)}
               alt={file.name}
               fill={true}
               style={{ objectFit: "contain" }}
@@ -61,6 +63,7 @@ export function FileCard({ file }: { file: IFile & { isFavorited: boolean } }) {
         {file.type === "pdf" && <FileTextIcon className="w-20 h-20" />}
         {file.type === "video" && (
           // <VideoIcon className="w-20 h-20" />
+          //TODO: URGENTE: HACER QUE LOS VIDEOS SE VEAN EN EL CARD
           <video
             className="h-20 w-20"
             src={getMediaUrl(file.bucketFileName)}

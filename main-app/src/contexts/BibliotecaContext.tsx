@@ -48,6 +48,16 @@ interface IGlobalContextProps {
   type: FileType;
   setType: React.Dispatch<React.SetStateAction<FileType>>;
   isLoading: boolean;
+
+  //ESTADOS PARA HACER EL FETCH ALL FILES INICIAL
+  favoritesOnly: boolean;
+  deletedOnly: boolean;
+  notUsedOnly: boolean;
+  usedOnly: boolean;
+  setFavoritesOnly: React.Dispatch<React.SetStateAction<boolean>>;
+  setDeletedOnly: React.Dispatch<React.SetStateAction<boolean>>;
+  setNotUsedOnly: React.Dispatch<React.SetStateAction<boolean>>;
+  setUsedOnly: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 // Contexto
@@ -67,6 +77,16 @@ const BibliotecaContext = React.createContext<IGlobalContextProps>({
   type: "all",
   setType: () => {},
   isLoading: false,
+
+  //ESTADOS PARA HACER EL FETCH ALL FILES INICIAL
+  favoritesOnly: false,
+  deletedOnly: false,
+  notUsedOnly: false,
+  usedOnly: false,
+  setFavoritesOnly: () => {},
+  setDeletedOnly: () => {},
+  setNotUsedOnly: () => {},
+  setUsedOnly: () => {},
 });
 
 // Proveedor
@@ -82,6 +102,14 @@ const BibliotecaProvider = ({ children }: { children: ReactNode }) => {
   const [type, setType] = useState<FileType>("all");
   const [query, setQuery] = useState("");
 
+  var [favoritesOnly, setFavoritesOnly] = useLocalStorage(
+    "favoritesOnly",
+    false
+  );
+  var [deletedOnly, setDeletedOnly] = useLocalStorage("deletedOnly", false);
+  var [notUsedOnly, setNotUsedOnly] = useLocalStorage("notUsedOnly", false);
+  var [usedOnly, setUsedOnly] = useLocalStorage("usedOnly", false);
+
   const recalcutateModifiedFiles = () => {
     if (files === undefined) return [];
 
@@ -91,7 +119,6 @@ const BibliotecaProvider = ({ children }: { children: ReactNode }) => {
         isFavorited: false,
       })) ?? [];
 
-    console.log(type);
     if (type === "video")
       modifiedFilesNew = modifiedFilesNew.filter(
         (file) => file.type === "video"
@@ -102,14 +129,13 @@ const BibliotecaProvider = ({ children }: { children: ReactNode }) => {
       );
     setModifiedFiles(modifiedFilesNew);
     //TODO: HACER LO DE SI SON ARCHIVOS FAVORITOS O NO?? NI IDEA XD
-    console.log(modifiedFilesNew);
   };
 
   useEffect(() => {
     recalcutateModifiedFiles();
   }, [files, type]);
 
-  const fetchFilesContext = async (deletedOnly = false) => {
+  const fetchFilesContext = async () => {
     if (marcaGlobalSeleccionada) {
       const result = await fetchAllFilesByMarcaAction(
         marcaGlobalSeleccionada._id as string,
@@ -117,10 +143,28 @@ const BibliotecaProvider = ({ children }: { children: ReactNode }) => {
       );
       setFiles([]);
       if (result.isOk && result.data) {
-        setFiles(result.data);
+        //APLICO LOS FILTROS INICIALES
+        var files = result.data;
+
+        if (notUsedOnly) {
+          files = result.data?.filter(
+            (file: IFile) => file.alreadyUsed === false
+          );
+        }
+
+        if (usedOnly) {
+          files = result.data?.filter(
+            (file: IFile) => file.alreadyUsed === true
+          );
+        }
+
+        if (deletedOnly)
+          files = result.data?.filter((file: IFile) => file.shouldDelete) ?? [];
+
+        console.log("fetchFilesContext","filesFILTER", files.length,  files);
+
+        setFiles(files ?? []);
       }
-    } else {
-      setFiles([]);
     }
   };
 
@@ -155,13 +199,10 @@ const BibliotecaProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const handlerPostNewFile = async (file: IFile) => {
-    
-  }
+  const handlerPostNewFile = async (file: IFile) => {};
 
   const isLoading = files === undefined;
 
-  console.log(modifiedFiles);
 
   return (
     <BibliotecaContext.Provider
@@ -180,6 +221,16 @@ const BibliotecaProvider = ({ children }: { children: ReactNode }) => {
         setType: setType,
         isLoading: isLoading,
         handlerDeleteFile: handlerDeleteFile,
+
+        //Query inicial
+        favoritesOnly: favoritesOnly,
+        deletedOnly: deletedOnly,
+        notUsedOnly: notUsedOnly,
+        usedOnly: usedOnly,
+        setFavoritesOnly: setFavoritesOnly,
+        setDeletedOnly: setDeletedOnly,
+        setNotUsedOnly: setNotUsedOnly,
+        setUsedOnly: setUsedOnly,
       }}
     >
       {children}

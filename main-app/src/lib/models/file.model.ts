@@ -1,11 +1,18 @@
 import { Schema } from "mongoose";
 import { IUser } from "./user.model";
 
-
+//TODO: AGREAR CAMPOS DE SIZE, HEIGHT, WIDTH, WIDTH, DURATION
+// ALGO COMO
+// fileData:{
+//     size: number;
+//     height: number;
+//     width: number;
+//     duration: number;
+// }
 export interface IFile {
     _id: string;
     name: string;
-    bucketFileName: string; //TODO: BORRAR CAMPO
+    bucketFileName: string; 
     type: string;
     marcaId: string;
     creatorId: string | IUser;
@@ -20,7 +27,7 @@ export interface IFile {
 export interface IFileUpdateAfterUpload{
     name: string;
     type: string;
-    bucketFileName: string; //TODO: BORRAR CAMPO
+    bucketFileName: string;
     marcaId: string;
     creatorId: string;
 }
@@ -28,7 +35,7 @@ export interface IFileUpdateAfterUpload{
 export interface IFilePost{
     name: string;
     type: string;
-    bucketFileName: string; //TODO: BORRAR CAMPO
+    bucketFileName: string;
     marcaId: string;
     creatorId: string;
     alreadyUsed: boolean;
@@ -38,7 +45,7 @@ export interface IFilePost{
 const fileSchema: Schema = new Schema({
     name: { type: String, required: true },
     type: { type: String, enum: ['image', 'video'], required: true },
-    bucketFileName: { type: String, required: true }, //TODO: BORRAR CAMPO, USADO MIENTRAS NO ESTA EL BUCTKET CONFIGURADO
+    bucketFileName: { type: String, required: true }, 
     marcaId: String,    //userful when we want to delete all files of a marca
     creatorId: { type: Schema.Types.ObjectId, ref: 'User' },
     shouldDelete: { type: Boolean, default: false },
