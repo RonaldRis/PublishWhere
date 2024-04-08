@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from '../ui/input';
 import { toast } from 'sonner';
 import { useSession } from 'next-auth/react';
-import { postCrearMarca } from '@/lib/actions/marcas.actions';
+import { postCrearMarcaAction } from '@/lib/actions/marcas.actions';
 import { MisMarcasContext } from '@/contexts/MisMarcasContext';
 import { revalidatePath } from 'next/cache';
 
@@ -31,18 +31,20 @@ function MarcaNueva({ isOpenModalNuevaMarca, setIsOpenModalNuevaMarca }: { isOpe
         //TODO: NOW MANEJAR ERROR DE SI YA EXISTE LA MARCA
         if (nuevaMarca === '') return;
         if (!session) return;
-        const result = await postCrearMarca(session.user.id, nuevaMarca);
+        const result = await postCrearMarcaAction(session.user.id, nuevaMarca);
 
-        console.log(result);
-        fetchRefreshMarcas(); //TODO: Now: decidir si refresh all o solo agregar el actual
+        if (!result.isOk) {
+            toast.error(result.error!);
+            return;
+        }
 
+        await fetchRefreshMarcas(); 
 
-
-        //TODO: Guardar en la base de datos
-        //TODO: Actualizar el contexto global
-        ///TOOD: revalidar la pagina actual
         setIsOpenModalNuevaMarca(false);
         setNuevaMarca("")
+
+        //TODO: Decidir si actualizar la marca seleccionada con la nueva creada en funcion de si afecta al estar en publicar contenido o la galeria para que actualice esto
+        
 
         toast.success('Marca creada correctamente');
     }
@@ -52,9 +54,6 @@ function MarcaNueva({ isOpenModalNuevaMarca, setIsOpenModalNuevaMarca }: { isOpe
 
         <Dialog open={isOpenModalNuevaMarca} onOpenChange={setIsOpenModalNuevaMarca}
         >
-            <DialogTrigger asChild>
-                <Button className=' hidden w-full' onClick={() => setIsOpenModalNuevaMarca(!isOpenModalNuevaMarca)}>Nueva marca</Button>
-            </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle>Nueva marca</DialogTitle>

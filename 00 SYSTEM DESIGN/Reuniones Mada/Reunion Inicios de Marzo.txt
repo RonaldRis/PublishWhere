@@ -1,0 +1,48 @@
+preguntas con Mada:
+
+
+MI PROYECTO.
+	Objetivos: Minimizar costes:
+		S3, CLOUDFRONT, EC2?? DB COSTS??
+		CLIENTE EXTERNO 
+		
+		NUBE O TODO LOCAL??
+		
+		
+		
+OBJETIVOS GLOBALES Y NO TECNICOS. En vez de requisitos. 
+Con el objetivo de. 
+	Global + Especificos 
+		Facil de integrar, interfaz sencilla y muchas opciones 
+		Quiero que no tenga limite de cuentas que se puedan registrar gratuito 
+
+
+
+PLANTEAR CLIENTE FINAL:
+	Cliente: costes, escalabilidad de usuarios y de aplicaciones de redes sociales. (Objetivo) que no tenga limite que se puedan registrar limitamente.(motivacion del proyecto )
+	Consultora: 
+	
+
+
+
+********************************
+ESTUDIO DEL MERCADO . 
+Diferentes web 
+
+
+
+
+
+
+SELECCION DE TECNOLOGIAS.
+	Punto 4, Va dentro de la metodoligia donde elijo las herramientas. 
+		Justificar porque uso la tecnologia
+			*Hecho metricas. 
+			blogs 
+
+
+CLIENTE REAL. 
+	MARCELA (INFLUENCER, AGENCIAS DIGITALES )
+		SCRUM.
+			sCRUM sEMANAL o bisemanal. 
+			

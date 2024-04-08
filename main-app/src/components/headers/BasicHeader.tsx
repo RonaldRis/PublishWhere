@@ -7,35 +7,15 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/hover-card"
 import { ChevronDown, CircleFadingPlus, CirclePlus, ImageUp, Mail } from "lucide-react";
 import Image from "next/image";
 import { perfilProfile } from "@/assets";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import { Session } from "next-auth";
-import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from "../ui/navigation-menu";
 import { useContext } from "react";
 import { MisMarcasContext } from "@/contexts/MisMarcasContext";
-import MarcaNueva from "../marcas/MarcaNueva";
 
-interface marcas {
-  id: string,
-  name: string,
-}
 
-const marcas: marcas[] = [
-  { id: "1", name: "Marcela Peraz" },
-  { id: "2", name: "Ucam" },
-  { id: "3", name: "Ronald Ris" },
-  // Add more brands as needed
-];
 
 export default function BasicHeader() {
 
 
-  const { marcas, isMarcaLoading, setMarcaGlobalSeleccionada, marcaGlobalSeleccionada, isOpenModalNuevaMarca, setIsOpenModalNuevaMarca } = useContext(MisMarcasContext);
+  const { setMarcaGlobalSeleccionada } = useContext(MisMarcasContext);
 
   const { data: session, status } = useSession()
 
@@ -56,63 +36,20 @@ export default function BasicHeader() {
     signIn("google", { callbackUrl: "/dashboard" })
   };
 
-  const handlerMarcaSelectedChanged = (idSelected: string) => {
-    if (!idSelected) return;
-    const marcaSelected = marcas.find(marca => marca._id === idSelected)
-    setMarcaGlobalSeleccionada(marcaSelected || null);
-  }
-
-
-
 
   return (
     <nav className="fixed h-20 w-full top-0 start-0 bg-slate-900">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
 
-        {/* Nombre de la app */}
-        <Link href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
-          {/* <img src={Logo.src} className="h-8" alt="Kibo Logo" /> */}
-          <h1 className="self-center text-2xl font-semibold whitespace-nowrap text-slate-100">PublishWhere</h1>
-        </Link>
 
+        <Button className="m-0 w-full" variant={"ghost"}>Hola</Button>
+        <p className="text-slate-500">Hola</p>
 
+        <div>
+          <p className="text-slate-500">Hola</p>
+          <p className="text-slate-100">Administra tus marcas en un solo lugar</p>
+        </div>
 
-        {/* SELECTOR DE MARCAS */}
-        {session &&
-          <div>
-            {
-              isMarcaLoading ?
-                <p className="text-slate-100">Cargando...</p>
-                :
-                (
-                  // <p className="text-slate-100">Hay datos</p>
-                  marcas?.length <= 0 ? (
-                    <p className="text-slate-100">Crea una marca</p>
-                  ) : (
-                    <Select onValueChange={handlerMarcaSelectedChanged}
-                      value={
-                        marcaGlobalSeleccionada
-                          ? marcaGlobalSeleccionada?._id
-                          : undefined
-                      }>
-                      <SelectTrigger className=" px-8">
-                        <SelectValue placeholder="Selecciona una marca" />
-                      </SelectTrigger>
-                      <SelectContent className="over-nav" >
-
-                        {marcas?.map((marca) => (
-                          <SelectItem className="gap-5" value={marca._id} key={marca._id}>
-                            {marca.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  )
-                )
-            }
-
-          </div>
-        } 
 
 
 
@@ -122,35 +59,9 @@ export default function BasicHeader() {
 
           {/* BOTON DE AGREAR UN NUEVO POST, MARCA, RED SOCIAL */}
           {session && (
-            <HoverCard
-              openDelay={1}
-              closeDelay={5}
-            >
-              <HoverCardTrigger href="/perfil/mis-datos">
-                <CircleFadingPlus className="m-4 p-0" size={24} color="#ffffff" absoluteStrokeWidth />
-              </HoverCardTrigger>
-              <HoverCardContent className="m-0 p-0 " >
-                <div>
-                  <Button className="m-0 w-full gap-1 " variant={"ghost"}>
-                    <CircleFadingPlus size={16} absoluteStrokeWidth />
-                    Publicación
-                  </Button>
-                  <Button className="m-0 w-full gap-1" variant={"ghost"} onClick={() => setIsOpenModalNuevaMarca(true)}>
-                    <CircleFadingPlus size={16} absoluteStrokeWidth />
-                    marca
-                  </Button>
-                  <Button className="m-0 w-full gap-1" variant={"ghost"}>
-                    <CircleFadingPlus size={16} absoluteStrokeWidth />
-                    Red social
-                  </Button>
-                  <Button className="m-0 w-full gap-1" variant={"ghost"}>
-                    <ImageUp size={16} absoluteStrokeWidth />
-                    Multimedia
-                  </Button>
-                </div>
-              </HoverCardContent>
-            </HoverCard>
-
+            <Link href="/dashboard">
+              <Button className="m-0 w-full" >Abrir app</Button>
+            </Link>
 
           )}
 
@@ -198,7 +109,6 @@ export default function BasicHeader() {
 
         </div>
       </div>
-      <MarcaNueva isOpenModalNuevaMarca={isOpenModalNuevaMarca} setIsOpenModalNuevaMarca={setIsOpenModalNuevaMarca}/>
 
     </nav>
   );

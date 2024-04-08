@@ -1,6 +1,6 @@
 "use client"
 
-import { fetchAllMarcas, fetchMisMarcas } from '@/lib/actions/marcas.actions';
+import { fetchAllMarcasAction, fetchMisMarcasAction } from '@/lib/actions/marcas.actions';
 import { IMarca } from '@/lib/models/marca.model';
 import { useSession } from 'next-auth/react';
 import React, { useState, useEffect, Context, createContext, ReactNode } from 'react';
@@ -46,16 +46,19 @@ const MisMarcasProvider = ({ children }: { children: ReactNode }) => {
     const {data: session} = useSession();
 
     const [marcas, setMarcas] = React.useState<IMarca[]>([]); 
-    const [marcaGlobalSeleccionada, setMarcaGlobalSeleccionada] = useLocalStorage<IMarca | null>("marcaGlobalSeleccionada", null);
+    const [marcaGlobalSeleccionada, setMarcaGlobalSeleccionada] = useLocalStorage<IMarca | null>("marcaGlobalSeleccionada", null); //TODO: CAMBIAR POR UN HOOK NORMAL CUANDO TERMINE
     const [isMarcaLoading, setIsMarcaLoading] = React.useState<boolean>(false);
     const [isOpenModalNuevaMarca, setIsOpenModalNuevaMarca] = React.useState<boolean>(false);
 
     const fetchRefreshMarcas = async () => {
         setIsMarcaLoading(true);
+        if(!session?.user.id) return setIsMarcaLoading(false);
 
-        const result = await fetchMisMarcas(session?.user.id as string); //TODO: Cambiar por el fetch de las marcas del usuario
-        setMarcas(result);
+        const result = await fetchMisMarcasAction(session?.user.id as string); //TODO: Cambiar por el fetch de las marcas del usuario
+        const marcasOrdenadas = result.data!.sort((a, b) => a.name.localeCompare(b.name)); 
+        setMarcas(marcasOrdenadas);
         setIsMarcaLoading(false);
+
     };
 
 

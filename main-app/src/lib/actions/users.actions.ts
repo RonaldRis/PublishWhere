@@ -6,14 +6,34 @@ import { revalidatePath } from "next/cache";
 
 import { connectToDB } from "../mongoose";
 import { User } from "../models/models";
+import { IUser } from "../models/user.model";
+import { IServerResponse } from "./ServerResponse";
 
-export async function fetchUser(userId: string) {
+export async function fetchUserAction(userId: string) : Promise<IServerResponse<IUser>>{
   try {
     // connectToDB();
 
-    return await User.findOne({ id: userId })
+    const queryReuslt =  await User.findOne({ id: userId })
+    const user =  JSON.parse(JSON.stringify(queryReuslt)) as IUser;
+    return { data: user, isOk: true, error: null };
+
+
   } catch (error: any) {
-    throw new Error(`Failed to fetch user: ${error.message}`);
+    return { data: null, isOk: false, error: "No hay usuario" };
+  }
+}
+
+
+export async function fetchAllUserAction() : Promise<IServerResponse<IUser[]>>{
+  try {
+
+    const queryReuslt =  await User.find({})
+    const user =  JSON.parse(JSON.stringify(queryReuslt)) as IUser[];
+    return { data: user, isOk: true, error: null };
+
+
+  } catch (error: any) {
+    return { data: [], isOk: false, error: "No hay usuarios" };
   }
 }
 
@@ -26,7 +46,7 @@ interface Params {
   path: string;
 }
 
-export async function updateUser({
+export async function updateUserAction({
   userId,
   bio,
   name,

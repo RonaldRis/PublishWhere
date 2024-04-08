@@ -1,8 +1,11 @@
+import { FileBrowser } from "./_components/file-browser"
 
 
 function BibliotecaPage() {
   return (
-    <div>BibliotecaPage</div>
+    <div>
+      <FileBrowser title="Tus archivos" />
+    </div>
   )
 }
 
