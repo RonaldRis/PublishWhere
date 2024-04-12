@@ -1,10 +1,8 @@
 "use client";
 
-import { UploadButton } from "./upload-button";
 import { FileCard } from "./file-card";
 import Image from "next/image";
 import { GridIcon, Loader2, RowsIcon, TableIcon } from "lucide-react";
-import { SearchBar } from "./search-bar";
 import { useContext, useEffect, useState } from "react";
 import { DataTable } from "./file-table";
 import { columns } from "./columns";
@@ -72,7 +70,7 @@ export function FileBrowser({
     setUsedOnly,
   } = useContext(BibliotecaContext);
 
-  //TODO: BARRA DE BUSQUEDA! PENDIENTE 
+  //TODO: BARRA DE BUSQUEDA! PENDIENTE DE IMPLEMENTAR
 
   useEffect(() => {
     console.log("USE EFFECT: SET FILTERS CONTEXT");
@@ -114,7 +112,7 @@ export function FileBrowser({
         <h1 className="text-4xl font-bold w-1/3">{title}</h1>
 
         <div className="w-1/3">
-          {/* <SearchBar query={query} setQuery={setQuery} /> */}
+          {/* <SearchBar query={query} setQuery={setQuery} />  TODO: HACER SEARCHBAR*/}
         </div>
 
         <div className="w-1/3 mr-0">{/* <UploadButton /> */}</div>

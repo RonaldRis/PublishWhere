@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { ReactNode } from "react";
 import Image from "next/image";
-import { FileCardActions, getFileUrl } from "./file-card-actions";
+import { FileCardActions } from "./file-card-actions";
 import { IFile } from "@/lib/models/file.model";
 import { IUser } from "@/lib/models/user.model";
 import { z } from "zod";
