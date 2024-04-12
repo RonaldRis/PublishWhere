@@ -10,10 +10,10 @@ import { postCreateFileAction } from "@/lib/actions/files.actions";
 import { IFile, IFilePost } from "../models/file.model";
 
 const s3Client = new S3Client({
-  region: process.env.AWS_BUCKET_REGION!,
+  region: process.env.BUCKET_REGION_AWS!,
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY!,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+    accessKeyId: process.env.ACCESS_KEY_AWS!,
+    secretAccessKey: process.env.SECRET_ACCESS_KEY_AWS!,
   },
 });
 
@@ -66,7 +66,7 @@ export const getSignedURL = async ({
   console.log("FILE SIZE: ", fileSize);
 
   const putObjectCommand = new PutObjectCommand({
-    Bucket: process.env.AWS_BUCKET_NAME!,
+    Bucket: process.env.BUCKET_NAME_AWS!,
     Key: newFile.bucketFileName,
     ContentType: fileType,
     ContentLength: fileSize,
