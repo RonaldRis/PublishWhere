@@ -27,15 +27,13 @@ export const allowedFileTypes = [
   // Videos
   "video/mp4",
   "video/quicktime",
-  "video/x-msvideo", // AVI
-  "video/x-ms-wmv", // WMV
-  "video/mpeg", // MPEG
-  "video/3gpp", // 3GP
-  "video/3gpp2", // 3G2
-  "video/ogg", // OGG
   "video/webm", // WEBM
-  "video/x-matroska", // MKV
 ];
+
+// TIKTOK VALID FILE TYPES
+// video/mp4
+// video/quicktime
+// video/webm
 
 export const types = [
   {
