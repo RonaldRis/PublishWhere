@@ -1,3 +1,4 @@
+"use client"
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { deleteTeamMembersOnMarcaAction, fetchMarcaAction, renameMarcaAction } from '@/lib/actions/marcas.actions';
