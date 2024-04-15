@@ -22,7 +22,7 @@ export async function GET(request: Request, response: Response) {
             // await db.collection('sessions').drop();
             // await db.collection('users').drop();
             await db.collection('marcas').drop();
-            await db.collection('assets').drop();
+            await db.collection('files').drop();
 
             const allUsers = await User.find({});
             const userRonald = allUsers.find(user => user.email === "rrris402@gmail.com");

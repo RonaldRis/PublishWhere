@@ -11,7 +11,6 @@ import {
   StarIcon,
   TrashIcon,
 } from "lucide-react";
-import { set } from "mongoose";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";

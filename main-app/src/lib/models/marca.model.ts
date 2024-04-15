@@ -1,6 +1,17 @@
 import mongoose, { Schema } from "mongoose";
 import { IUser } from "./user.model";
 import { IFile } from "./file.model";
+import { IOauth } from "./Oauth.model";
+
+export interface ISocialMedia {
+    _id: string;
+    provider: string;
+    name: string;
+    imgUrl: string;
+    username: string;
+    oauthData?: IOauth;
+}
+
 
 export interface IMarca {
     _id: string;
@@ -8,6 +19,7 @@ export interface IMarca {
     admin: string | IUser;
     equipo: string[] | IUser[]; // References to other User documents
     files: string[] | IFile[]; // References to File documents
+    socialMedia: ISocialMedia[]
 }
 
 const marcaSchema: Schema = new Schema({
@@ -16,6 +28,14 @@ const marcaSchema: Schema = new Schema({
     admin: { type: Schema.Types.ObjectId, ref: 'User' },
     equipo: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     files: [{ type: Schema.Types.ObjectId, ref: 'File' }],
+    socialMedia: [{
+        _id: { type: String, required: true, default: mongoose.Types.ObjectId},
+        provider: { type: String, required: true },
+        name: { type: String, required: true },
+        imgUrl: { type: String, required: true },
+        username: { type: String, required: true },
+        oauthData: { type: Schema.Types.ObjectId, ref: 'OauthData' }
+    }]
 
 },
     { timestamps: true }

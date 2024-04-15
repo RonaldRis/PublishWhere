@@ -37,6 +37,7 @@ import { useSession } from "next-auth/react";
 import { Input } from "@/components/ui/input";
 import EquipoCrud from "./EquipoCrud";
 import Link from "next/link";
+import NuevaRedSocial from "./NuevaRedSocial";
 
 function DetallesMarcaEditable() {
   const {
@@ -72,7 +73,7 @@ function DetallesMarcaEditable() {
     const marcaId = marcaGlobalSeleccionada._id;
     const result = await renameMarcaAction(marcaId, newName);
     if (!result.isOk) {
-      toast.error(result.error!);
+      toast.error(result.message!);
       return;
     }
 
@@ -133,11 +134,13 @@ function DetallesMarcaEditable() {
                     <li key="X">Twitter</li>
                   </ol>
                   <Separator className="my-2" />
+
                   <div className="flex justify-end">
                     <Link href="/perfil/marcas/nueva-red-social">
                       <Button className="">Agregar red social</Button>
                     </Link>
                   </div>
+                  <NuevaRedSocial/>
                 </TabsContent>
                 <TabsContent value="equipo">
                   <EquipoCrud />

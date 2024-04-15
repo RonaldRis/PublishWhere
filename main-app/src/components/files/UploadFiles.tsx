@@ -112,7 +112,7 @@ const IndividualUploadFile = ({
       });
 
       if (!resultSigningURL.isOk) {
-        toast.error(resultSigningURL.error);
+        toast.error(resultSigningURL.message);
         setIsUploading(false);
         return;
       }
@@ -149,7 +149,7 @@ const IndividualUploadFile = ({
       ///Guardar el archivo en la base de datos
       const resultDb = await postCreateFileAction(fileObject);
       if (!resultDb.isOk) {
-        toast.error(resultDb.error);
+        toast.error(resultDb.message);
         setIsUploading(false);
         return;
       }

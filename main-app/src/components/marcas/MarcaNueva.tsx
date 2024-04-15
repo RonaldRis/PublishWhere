@@ -34,7 +34,7 @@ function MarcaNueva({ isOpenModalNuevaMarca, setIsOpenModalNuevaMarca }: { isOpe
         const result = await postCrearMarcaAction(session.user.id, nuevaMarca);
 
         if (!result.isOk) {
-            toast.error(result.error!);
+            toast.error(result.message!);
             return;
         }
 

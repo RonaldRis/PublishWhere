@@ -20,12 +20,8 @@ import {
 //Mias
 import { MisMarcasContext } from "@/contexts/MisMarcasContext";
 import { useSession } from "next-auth/react";
-import { IFile } from "@/lib/models/file.model";
-import { fetchAllFilesByMarcaAction } from "@/lib/actions/files.actions";
 import { Label } from "@/components/ui/label";
 import { BibliotecaContext } from "@/contexts/BibliotecaContext";
-import { set } from "mongoose";
-import { Console } from "console";
 
 function Placeholder() {
   return (

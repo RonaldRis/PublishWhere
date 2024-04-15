@@ -88,7 +88,7 @@ function EquipoCrud() {
         const result = await deleteTeamMembersOnMarcaAction(marcaId!, userBorrar?._id!);
 
         if (!result.isOk) {
-            toast.error(result.error!);
+            toast.error(result.message!);
             return;
         }
         toast.success('Usuario eliminado correctamente');
@@ -108,7 +108,7 @@ function EquipoCrud() {
 
         const marcaRenovada = await fetchMarcaAction(marcaGlobalSeleccionada?._id!);
         if (!marcaRenovada.isOk) {
-            toast.error(marcaRenovada.error!);
+            toast.error(marcaRenovada.message!);
             return;
         }
         else

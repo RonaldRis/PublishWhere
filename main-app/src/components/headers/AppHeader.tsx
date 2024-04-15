@@ -107,7 +107,10 @@ export default function AppHeader() {
               <p className="text-slate-100">Cargando...</p>
             ) : // <p className="text-slate-100">Hay datos</p>
             marcas?.length <= 0 ? (
-              <p className="text-slate-100">Crea una marca</p>
+              <Button className="flex gap-2" onClick={() => setIsOpenModalNuevaMarca(true)}>
+                <CirclePlus size={16} absoluteStrokeWidth />
+                Crea tu primer marca
+              </Button>
             ) : (
               <Select
                 onValueChange={handlerMarcaSelectedChanged}

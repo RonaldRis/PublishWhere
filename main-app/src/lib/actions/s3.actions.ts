@@ -42,14 +42,14 @@ export const getSignedURL = async ({
   const session = await getServerSessionAuth();
 
   if (!fileSize || !fileType || !checksum || !newFile.marcaId)
-    return { data: null, isOk: false, error: "Faltan datos" };
+    return { data: null, isOk: false, message: "Faltan datos" };
 
 
   if (!session) {
     return {
       data: null,
       isOk: false,
-      error: "No autenticado",
+      message: "No autenticado",
     };
   }
 
@@ -58,7 +58,7 @@ export const getSignedURL = async ({
     return {
       data: null,
       isOk: false,
-      error: "Tipo de archivo no permitido",
+      message: "Tipo de archivo no permitido",
     };
   }
 
@@ -93,6 +93,6 @@ export const getSignedURL = async ({
   return {
     data: { signedURL: url },
     isOk: true,
-    error: null,
+    message: null,
   };
 };

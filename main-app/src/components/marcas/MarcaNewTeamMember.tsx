@@ -21,8 +21,6 @@ import { Badge } from '../ui/badge';
 import { Separator } from '../ui/separator';
 import { fetchMarcaAction, postNewTeamMembersOnMarcaAction } from '@/lib/actions/marcas.actions';
 import { MisMarcasContext } from '@/contexts/MisMarcasContext';
-import { set } from 'mongoose';
-import { revalidatePath } from 'next/cache';
 
 function MarcaNewTeamMember({ isOpenModalNewTeamMember, setIsOpenModalNewTeamMember }: { isOpenModalNewTeamMember: boolean, setIsOpenModalNewTeamMember: React.Dispatch<React.SetStateAction<boolean>> }) {
 
@@ -132,7 +130,7 @@ function MarcaNewTeamMember({ isOpenModalNewTeamMember, setIsOpenModalNewTeamMem
         const result = await postNewTeamMembersOnMarcaAction(marcaId, idSeleccionados);
 
         if (!result.isOk) {
-            toast.error(result.error!);
+            toast.error(result.message!);
             return;
         }
 
