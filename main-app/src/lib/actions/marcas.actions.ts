@@ -48,7 +48,7 @@ export async function fetchMisMarcasAction(userId: string): Promise<IServerRespo
     try {
         // connectToDB();
 
-        const marcasQuery = await Marca.find({ equipo: { $in: [userId] } }).populate('admin').populate('equipo');
+        const marcasQuery = await Marca.find({ equipo: { $in: [userId] } }).populate('admin').populate('equipo').populate("socialMedia");
         const result = JSON.parse(JSON.stringify(marcasQuery)) as IMarca[];
 
         return { data: result, isOk: true, message: null };

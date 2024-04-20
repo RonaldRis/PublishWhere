@@ -2,6 +2,8 @@
 import { CalendarioContext } from "@/contexts/CalendarioContext";
 import { Calendar } from "lucide-react";
 import React, { useContext } from "react";
+import { labelsClasses } from "./EventModal";
+
 
 export default function Labels() {
   const { labels, updateLabel } = useContext(CalendarioContext);
@@ -16,7 +18,7 @@ export default function Labels() {
             onChange={() =>
               updateLabel({ label: lbl, checked: !checked })
             }
-            className={`form-checkbox h-5 w-5 text-${lbl}-400 rounded focus:ring-0 cursor-pointer`}
+            className={`form-checkbox h-5 w-5 accent-${lbl}-400 rounded focus:ring-0 cursor-pointer`}
           />
           <span className="ml-2 text-gray-700 capitalize">{lbl}</span>
         </label>

@@ -1,8 +1,11 @@
 "use client";
 import React, { useContext, useState } from "react";
 import { CalendarioContext } from "@/contexts/CalendarioContext";
+import { CheckIcon } from "lucide-react";
 
-const labelsClasses = [
+
+//TODO: ASOCIAL A YOUTUBE, FACEBOOK, INSTAGRAM,TIKTOK, TWITTER
+export const labelsClasses = [
   "indigo",
   "gray",
   "green",
@@ -11,6 +14,15 @@ const labelsClasses = [
   "purple",
 ];
 
+//convertir de Nombre de red social a color:
+const labelsProviderToColor = {
+  youtube: "red",
+  facebook: "blue",
+  instagram: "purple",
+  tiktok: "gray",
+  twitter: "blue",
+};
+
 export default function EventModal() {
   const {
     setShowEventModal,
@@ -18,6 +30,7 @@ export default function EventModal() {
     dispatchCalEvent,
     selectedEvent,
   } = useContext(CalendarioContext);
+
 
   const [title, setTitle] = useState(
     selectedEvent ? selectedEvent.title : ""
@@ -117,7 +130,7 @@ export default function EventModal() {
                 >
                   {selectedLabel === lblClass && (
                     <span className="material-icons-outlined text-white text-sm">
-                      check
+                      <CheckIcon />
                     </span>
                   )}
                 </span>

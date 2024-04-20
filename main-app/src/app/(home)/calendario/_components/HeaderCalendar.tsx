@@ -11,9 +11,6 @@ export default function HeaderCalendar() {
 
   const { monthIndex, setMonthIndex } = useContext(CalendarioContext);
 
-  useEffect(() => {
-    console.log("monthIndex - UseEffect", monthIndex);
-  }, [monthIndex]);
   
   function handlePrevMonth() {
     const nuevoMes = monthIndex - 1;
@@ -32,7 +29,7 @@ export default function HeaderCalendar() {
     setMonthIndex(indexReset);
   }
   return (
-    <header className="px-4 py-2 flex items-center">
+    <header className="px-4 flex items-center">
       <img src={logoCalendario.src} alt="calendar" className="mr-2 w-12 h-12" />
       <h1 className="mr-10 text-xl text-gray-500 fond-bold">Calendar</h1>
       <button onClick={handleReset} className="border rounded py-2 px-4 mr-5">

@@ -1,3 +1,6 @@
+"use client";
+import { getMonthDaysjs } from "@/lib/utils";
+import { da } from "date-fns/locale";
 import dayjs from "dayjs";
 import React, {
   useState,
@@ -23,11 +26,16 @@ export interface ILabelCalendar {
   checked: boolean;
 }
 
+///CONTEXT INTERFACE:
 export interface ICalendarioContext {
+  currenMonthMatrix: dayjs.Dayjs[][] | undefined;
+  setCurrentMonthMatrix: React.Dispatch<
+    React.SetStateAction<dayjs.Dayjs[][] | undefined>
+  >;
   monthIndex: number;
   setMonthIndex: React.Dispatch<React.SetStateAction<number>>;
-  smallCalendarMonth: number|null;
-  setSmallCalendarMonth: React.Dispatch<React.SetStateAction<number|null>>;
+  smallCalendarMonth: number | null;
+  setSmallCalendarMonth: React.Dispatch<React.SetStateAction<number | null>>;
   daySelected: dayjs.Dayjs | null;
   setDaySelected: React.Dispatch<React.SetStateAction<dayjs.Dayjs>>;
   showEventModal: boolean;
@@ -42,10 +50,13 @@ export interface ICalendarioContext {
   filteredEvents: IEventCalendar[];
 }
 
+///CONTEXT:
 const CalendarioContext = React.createContext<ICalendarioContext>({
-  monthIndex: 0,
+  currenMonthMatrix: undefined,
+  setCurrentMonthMatrix: () => {},
+  monthIndex: dayjs().month(),
   setMonthIndex: () => {},
-  smallCalendarMonth: 0,
+  smallCalendarMonth: dayjs().month(),
   setSmallCalendarMonth: () => {},
   daySelected: null,
   setDaySelected: () => {},
@@ -77,16 +88,24 @@ function savedEventsReducer(
       throw new Error();
   }
 }
+
 function initEvents() {
   const storageEvents = localStorage.getItem("savedEvents");
   const parsedEvents = storageEvents ? JSON.parse(storageEvents) : [];
   return parsedEvents;
 }
 
+///PROVIDER:
 const CalendarioProvider = ({ children }: { children: ReactNode }) => {
   const [monthIndex, setMonthIndex] = useState<number>(dayjs().month());
-  const [smallCalendarMonth, setSmallCalendarMonth] =
-    useState<number|null>(null); //TODO: NO IDEA WHAT THIS IS
+  const [smallCalendarMonth, setSmallCalendarMonth] = useState<number | null>(
+    null
+  ); //TODO: NO IDEA WHAT THIS IS
+
+  const [currenMonthMatrix, setCurrentMonthMatrix] = useState<
+    dayjs.Dayjs[][] | undefined
+  >(undefined);
+
   const [daySelected, setDaySelected] = useState<dayjs.Dayjs>(dayjs());
   const [showEventModal, setShowEventModal] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<IEventCalendar | null>(
@@ -137,6 +156,11 @@ const CalendarioProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [showEventModal]);
 
+  useEffect(() => {
+    console.log("monthIndex", monthIndex);
+    setCurrentMonthMatrix(getMonthDaysjs(monthIndex));
+  }, [monthIndex]);
+
   function updateLabel(label: ILabelCalendar) {
     setLabels(labels.map((lbl) => (lbl.label === label.label ? label : lbl)));
   }
@@ -144,8 +168,10 @@ const CalendarioProvider = ({ children }: { children: ReactNode }) => {
   return (
     <CalendarioContext.Provider
       value={{
-        monthIndex,
-        setMonthIndex,
+        currenMonthMatrix,
+        setCurrentMonthMatrix,
+        monthIndex: monthIndex,
+        setMonthIndex: setMonthIndex,
         smallCalendarMonth,
         setSmallCalendarMonth,
         daySelected,

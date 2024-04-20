@@ -1,11 +1,10 @@
 "use client";
 import { MisMarcasContext } from "@/contexts/MisMarcasContext";
-import React, { use, useContext } from "react";
+import React, { useContext } from "react";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -21,11 +20,8 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { IUser } from "@/lib/models/user.model";
-import MarcaNewTeamMember from "@/components/marcas/MarcaNewTeamMember";
 import { Button } from "@/components/ui/button";
 import { CircleX, Pencil } from "lucide-react";
-import { set } from "mongoose";
 import {
   deleteMarcaAction,
   deleteTeamMembersOnMarcaAction,
@@ -46,7 +42,6 @@ function DetallesMarcaEditable() {
     setMarcaGlobalSeleccionada,
     marcas,
   } = useContext(MisMarcasContext);
-  const { data: session } = useSession();
 
   //Rename
   const [isOpenModalRename, setIsOpenModalRename] =
@@ -88,6 +83,8 @@ function DetallesMarcaEditable() {
     setNewName("");
   };
 
+  console.log("DetallesMarcaEditable", marcaGlobalSeleccionada);
+
   return (
     <div className="flex-grow">
       {!marcaGlobalSeleccionada ? (
@@ -128,11 +125,18 @@ function DetallesMarcaEditable() {
                 <TabsContent value="redes">
                   <h1 className="font-bold">Redes sociales</h1>
 
-                  <ol className="list-disc list-inside ">
-                    <li key="insta">Instagram</li>
-                    <li key="Face">Facebook</li>
-                    <li key="X">Twitter</li>
-                  </ol>
+                  {marcaGlobalSeleccionada?.socialMedia.length > 0 && (
+                    <ol className="list-disc list-inside ">
+                      {marcaGlobalSeleccionada.socialMedia.map((social) => (
+                        <li key={social._id}>{social.name}</li>
+                      ))}
+                    </ol>
+                  )}
+
+                  {marcaGlobalSeleccionada?.socialMedia.length === 0 && (
+                    <p>No hay redes sociales</p>
+                  )}
+
                   <Separator className="my-2" />
 
                   <div className="flex justify-end">
@@ -140,7 +144,7 @@ function DetallesMarcaEditable() {
                       <Button className="">Agregar red social</Button>
                     </Link>
                   </div>
-                  <NuevaRedSocial/>
+                  <NuevaRedSocial />
                 </TabsContent>
                 <TabsContent value="equipo">
                   <EquipoCrud />

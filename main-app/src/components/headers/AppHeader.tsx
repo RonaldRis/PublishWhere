@@ -81,7 +81,7 @@ export default function AppHeader() {
         <div className="flex gap-4 justify-start">
           {/* Nombre de la app */}
           <Link
-            href="/"
+            href="/calendario"
             className="flex items-center space-x-3 rtl:space-x-reverse"
           >
             {/* <img src={Logo.src} className="h-8" alt="Kibo Logo" /> */}

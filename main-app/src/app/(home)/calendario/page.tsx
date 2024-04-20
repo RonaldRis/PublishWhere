@@ -10,16 +10,13 @@ import { use } from "passport";
 import dayjs from "dayjs";
 
 function DashboardPage() {
-  const {setMonthIndex, setSmallCalendarMonth,smallCalendarMonth, monthIndex, showEventModal } = useContext(CalendarioContext);
+  const {setMonthIndex, setSmallCalendarMonth, currenMonthMatrix, showEventModal } = useContext(CalendarioContext);
 
-  const [currenMonth, setCurrentMonth] = useState<dayjs.Dayjs[][]>(getMonthDaysjs());
-
-
-  //TODO: REVISAR EL QUE AGARRE EL MES CORRECTO AL INICIAR LA APP
   useEffect(() => {
-    console.log("monthIndex - UseEffect", monthIndex);
-    setCurrentMonth(getMonthDaysjs(monthIndex));
-  }, [monthIndex]);
+    const mes = dayjs().month();
+    setMonthIndex(mes);
+    setSmallCalendarMonth(mes);
+  }, []);
 
 
   return (
@@ -27,11 +24,11 @@ function DashboardPage() {
       {showEventModal && <EventModal />}
 
       <Suspense>
-        <div className="h-screen flex flex-col">
+        <div className="h-full flex flex-col mt-0 top-0">
           <HeaderCalendar />
           <div className="flex flex-1">
             <SidebarCalendario />
-            <Month month={currenMonth} />
+            <Month month={currenMonthMatrix} />
           </div>
         </div>
       </Suspense>
