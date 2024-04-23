@@ -12,6 +12,7 @@ import {
   ISocialMediaAccount,
   ISocialMediaAccountPost,
 } from "../models/socialMediaAccount.model";
+import mongoose from "mongoose";
 
 export async function postOauthDataAction({
   marcaId,
@@ -36,20 +37,15 @@ export async function postOauthDataAction({
 
     //TODO: vamos a conseguir tokens de mayor duración primero:
 
-    //Ahora guardo el oauthData en la base de datos
-    const oauthDataQuery = await Oauth.create({
-      provider: oauthData.provider,
-      access_token: oauthData.access_token,
-      expires_in: oauthData.expires_in,
-      refresh_token: oauthData.refresh_token,
-      scope: oauthData.scope,
-      token_type: oauthData.token_type,
-    });
+    // //Ahora guardo el oauthData en la base de datos
+    // const oauthDataQuery = await Oauth.create({
+    //   ...oauthData,
+    // });
 
-    const oauthDataResult = JSON.parse(
-      JSON.stringify(oauthDataQuery)
-    ) as IOauth;
-    console.log("OauthDataResult: ", oauthDataResult);
+    // const oauthDataResult = JSON.parse(
+    //   JSON.stringify(oauthDataQuery)
+    // ) as IOauth;
+    // console.log("OauthDataResult: ", oauthDataResult);
 
     if (oauthData.provider == "youtube") {
       console.log("\n\n\nData: postOauthDataAction");
@@ -65,8 +61,6 @@ export async function postOauthDataAction({
           access_token: oauthData.access_token,
         });
 
-        console.log("\n\nResponse: ");
-        console.log(response);
         console.log("\n\nResponse.data.items: ");
         console.log(response.data.items);
 
@@ -80,31 +74,45 @@ export async function postOauthDataAction({
 
         ///Gaurdo el oauthData en la base de datos
 
-        response.data.items?.forEach(async (channel) => {
-          const channelData: ISocialMediaAccountPost = {
-            name: channel.snippet?.title!,
-            username: channel.snippet?.title!,
-            description: channel.snippet?.description!,
-            thumbnail: channel.snippet?.thumbnails?.default?.url!, //TODO: REVISAR SI ESTÁ DIMENSION ESTÁ BIEN
-            kind: channel.kind!,
-            _idOnProvider: channel.id!,
-            urlPage: channel.snippet?.customUrl!,
-            provider: "youtube",
-            userCreator: userId,
-            oauth: oauthDataResult._id,
-          };
+        await response.data.items?.forEach(async (channel) => {
+         
 
           //TODO: URGENTE THIS IS NOT WORKING -Almacenar cuenta de youtube en la base de datos
-          const socialMediaAccountQuery = await SocialMediaAccount.create(
-            channelData
-          );
+          const socialMediaAccountQuery = new SocialMediaAccount({
+            _idOnProvider: channel.id,
+            name: channel.snippet?.title,
+            description: channel.snippet?.description,
+            provider: "youtube",
+            userCreator: userId,
+            thumbnail: channel.snippet?.thumbnails?.default?.url,
+            username: channel.snippet?.customUrl,
+            urlPage: `https://www.youtube.com/channel/${channel.id}`,
+            kind: "channel",
+          });
+
+          socialMediaAccountQuery.oauth.create(oauthData);
+
+
+          await socialMediaAccountQuery.save();
+
+
+
           const socialMediaAccountResult = JSON.parse(
             JSON.stringify(socialMediaAccountQuery)
           ) as ISocialMediaAccount;
 
-          console.log("Channel Data: ", channelData);
 
           console.log("SocialMediaAccountResult: ", socialMediaAccountResult);
+
+
+          // al campo de socialMedia de la marca hacer un push del id de la cuenta de youtube
+          const marcaQuery = await Marca.findByIdAndUpdate(marcaId, {
+            $push: { socialMedia: socialMediaAccountResult._id },
+          });
+
+          ///INVERTIR DE TODO A NADA: -> OBTENER LA MARCA, AGREGAR 
+
+
 
           ///LUEGO TENER CUIDADO DE NO AGREGAR UN CANAL QUE YA ESTÁ EN LA BASE DE DATOS DE LA MISMA MARCA
 
@@ -112,7 +120,7 @@ export async function postOauthDataAction({
         });
 
         return {
-          data: oauthDataResult,
+          data: null,
           isOk: true,
           message: "Canal de youtube agregado correctamente",
         };
@@ -125,25 +133,6 @@ export async function postOauthDataAction({
       //https://developers.google.com/identity/protocols/oauth2/web-server#offline
     }
 
-    // var fechaExp = new Date();
-    // fechaExp.setSeconds(fechaExp.getSeconds() + data.oauthData.expires_in - 5); ///5 Segundo relativo al timepo que tarda esto en ejecutarse
-
-    // const resultQuery = await OauthData.create({
-    //   provider: data.provider,
-    //   access_token: data.oauthData.access_token,
-    //   expireDate: fechaExp,
-    //   refresh_token: data.oauthData.refresh_token,
-    //   scope: data.oauthData.scope,
-    //   token_type: data.oauthData.token_type,
-    // });
-
-    // const result = JSON.parse(JSON.stringify(resultQuery)) as IOauthData;
-
-    // //Primero llame al URL del OAUTH segun el provider y obtengo los datos
-
-    // ///También tengo que general el token de larga duración si es que lo tiene
-
-    // //Ahora esto tengo que guardarlo en la marca
 
     return { data: null, isOk: true, message: "FUNCIONAAA CARAJO" };
   } catch (error: any) {

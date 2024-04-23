@@ -51,10 +51,12 @@ const IndividualUploadFile = ({
   file,
   marcaId,
   userId,
+  isUpdate = false
 }: {
   file: File;
   marcaId: string;
   userId: string;
+  isUpdate?: boolean;
 }) => {
   //CONTEXT
   const{fetchFilesContext} = useContext(BibliotecaContext);  
@@ -218,7 +220,7 @@ const IndividualUploadFile = ({
                 });
               }}
             >
-              Subir
+              {isUpdate ? "Actualizar" : "Subir"}
             </Button>
             {isUploading && (
               <div className="flex flex-col gap-8 w-full items-center mt-24">
@@ -246,6 +248,7 @@ function UploadFiles({
   const { data: session } = useSession();
   const { marcaGlobalSeleccionada } = useContext(MisMarcasContext);
   const [files, setFiles] = useState<File[]>([]);
+  const [fileUploadLauncher, setFileUploadLauncher] = useState<void[]>([]);
 
   const handleFileInputOnChangeEvent = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target?.files) {
@@ -268,6 +271,10 @@ function UploadFiles({
   const onDragOver = useCallback((event: any) => {
     event.preventDefault();
   }, []);
+
+  const handlerUploadAll = async() =>{
+    
+  }
 
   return (
     <AlertDialog onOpenChange={setIsOpenModalNewFile} open={isOpenModalNewFile}>
@@ -354,7 +361,7 @@ function UploadFiles({
         {/* FOOTER */}
         <AlertDialogFooter className="bottom-0">
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction>Continue</AlertDialogAction>
+          <AlertDialogAction onClick={handlerUploadAll}>Subir todos</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

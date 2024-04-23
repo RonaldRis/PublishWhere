@@ -3,7 +3,7 @@
 import { Table } from "@tanstack/react-table"
 
 
-import {  statuses, types } from "@/lib/constantes"
+import {  statuses, typesMultimedia } from "@/lib/constantes"
 import { DataTableFacetedFilter } from "./data-table-faceted-filter"
 import { CircleX, CrossIcon } from "lucide-react"
 import { Input } from "@/components/ui/input"
@@ -34,7 +34,7 @@ export function DataTableToolbar<TData>({
           <DataTableFacetedFilter
             column={table.getColumn("type")}
             title="Type"
-            options={types}
+            options={typesMultimedia}
           />
         )}
         

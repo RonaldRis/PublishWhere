@@ -39,6 +39,9 @@ import MarcaNueva from "../marcas/MarcaNueva";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { BibliotecaContext } from "@/contexts/BibliotecaContext";
 import UploadFiles from "../files/UploadFiles";
+import { toast } from "sonner";
+import NewPublicacion from "../publicacion/NewPublicacion";
+import { CalendarioContext } from "@/contexts/CalendarioContext";
 
 export default function AppHeader() {
   const {
@@ -50,7 +53,11 @@ export default function AppHeader() {
     setIsOpenModalNuevaMarca,
   } = useContext(MisMarcasContext);
 
-  const{setIsOpenModalNewFile, isOpenModalNewFile} = useContext(BibliotecaContext);
+  const { setIsOpenModalNewFile, isOpenModalNewFile } =
+    useContext(BibliotecaContext);
+
+  const { isOpenModalNewPost, setIsOpenModalNewPost } =
+    useContext(CalendarioContext);
 
   const { data: session, status } = useSession();
 
@@ -65,7 +72,7 @@ export default function AppHeader() {
     e.preventDefault();
     setMarcaGlobalSeleccionada(null);
 
-    signIn("google", { callbackUrl: "/dashboard" });
+    signIn("google", { callbackUrl: "/Calendario" });
   };
 
   const handlerMarcaSelectedChanged = (idSelected: string) => {
@@ -74,10 +81,20 @@ export default function AppHeader() {
     setMarcaGlobalSeleccionada(marcaSelected || null);
   };
 
+  const setIsOpenModalNewFileHandler = () => {
+    if (marcaGlobalSeleccionada?._id) setIsOpenModalNewFile(true);
+    else toast.info("Selecciona una marca primero");
+  };
+
+  const setIsOpenModalNewPostHandler = () => {
+    if (marcaGlobalSeleccionada?._id) setIsOpenModalNewPost(true);
+    else toast.info("Selecciona una marca primero");
+  };
+
   return (
     // TODO: 1/3 ver como modificar el Header para que se vea bien en mobile, modificar h-20 tanto en el layout como aca
-    <nav className="fixed h-20 w-full top-0 start-0 bg-slate-900">
-      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+    <nav className="w-full top-0 start-0 bg-slate-900">
+      <div className="flex  flex-wrap items-center justify-between w-full px-4">
         <div className="flex gap-4 justify-start">
           {/* Nombre de la app */}
           <Link
@@ -107,7 +124,10 @@ export default function AppHeader() {
               <p className="text-slate-100">Cargando...</p>
             ) : // <p className="text-slate-100">Hay datos</p>
             marcas?.length <= 0 ? (
-              <Button className="flex gap-2" onClick={() => setIsOpenModalNuevaMarca(true)}>
+              <Button
+                className="flex gap-2"
+                onClick={() => setIsOpenModalNuevaMarca(true)}
+              >
                 <CirclePlus size={16} absoluteStrokeWidth />
                 Crea tu primer marca
               </Button>
@@ -144,22 +164,40 @@ export default function AppHeader() {
           {/* BOTON DE AGREAR UN NUEVO POST, MARCA, RED SOCIAL */}
           {session && (
             <HoverCard openDelay={1} closeDelay={5}>
-              <HoverCardTrigger >
+              <HoverCardTrigger>
                 <CircleFadingPlus
                   className="m-4 p-0 cursor-pointer"
                   size={24}
                   color="#ffffff"
                   absoluteStrokeWidth
-                  onClick={() => setIsOpenModalNewFile(true)}
-
+                  onClick={setIsOpenModalNewPostHandler}
                 />
               </HoverCardTrigger>
               <HoverCardContent className="m-0 p-0 ">
                 <div>
-                  <Button className="m-0 w-full gap-1 " variant={"ghost"}>
+                  <Button
+                    className="m-0 w-full gap-1 "
+                    variant={"ghost"}
+                    onClick={setIsOpenModalNewPostHandler}
+                  >
                     <CircleFadingPlus size={16} absoluteStrokeWidth />
                     Publicación
                   </Button>
+                  <Button
+                    className="m-0 w-full gap-1"
+                    variant={"ghost"}
+                    onClick={setIsOpenModalNewFileHandler}
+                  >
+                    <ImageUp size={16} absoluteStrokeWidth />
+                    Multimedia
+                  </Button>
+
+                  <Link href="/perfil/marcas">
+                    <Button className="m-0 w-full gap-1" variant={"ghost"}>
+                      <CircleFadingPlus size={16} absoluteStrokeWidth />
+                      Red social
+                    </Button>
+                  </Link>
                   <Button
                     className="m-0 w-full gap-1"
                     variant={"ghost"}
@@ -167,16 +205,6 @@ export default function AppHeader() {
                   >
                     <CircleFadingPlus size={16} absoluteStrokeWidth />
                     marca
-                  </Button>
-                  <Button className="m-0 w-full gap-1" variant={"ghost"}>
-                    <CircleFadingPlus size={16} absoluteStrokeWidth />
-                    Red social
-                  </Button>
-                  <Button className="m-0 w-full gap-1" variant={"ghost"}
-                    onClick={() => setIsOpenModalNewFile(true)}
-                    >
-                    <ImageUp size={16} absoluteStrokeWidth />
-                    Multimedia
                   </Button>
                 </div>
               </HoverCardContent>
@@ -243,10 +271,14 @@ export default function AppHeader() {
       />
 
       <UploadFiles
-
         isOpenModalNewFile={isOpenModalNewFile}
         setIsOpenModalNewFile={setIsOpenModalNewFile}
-        />
+      />
+
+      <NewPublicacion
+        isOpenModalNewPost={isOpenModalNewPost}
+        setIsOpenModalNewPost={setIsOpenModalNewPost}
+      />
     </nav>
   );
 }

@@ -8,12 +8,13 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { getServerSessionAuth } from "@/lib/auth";
 import { postCreateFileAction } from "@/lib/actions/files.actions";
 import { IFile, IFilePost } from "../models/file.model";
+import { file } from "googleapis/build/src/apis/file";
 
 const s3Client = new S3Client({
-  region: process.env.BUCKET_REGION_AWS!,
+  region: process.env.BUCKET_REGION!,
   credentials: {
-    accessKeyId: process.env.ACCESS_KEY_AWS!,
-    secretAccessKey: process.env.SECRET_ACCESS_KEY_AWS!,
+    accessKeyId: process.env.BUCKET_ACCESS_KEY!,
+    secretAccessKey: process.env.BUCKET_SECRET_ACCESS_KEY!,
   },
 });
 
@@ -41,6 +42,13 @@ export const getSignedURL = async ({
 
   const session = await getServerSessionAuth();
 
+  console.log(fileSize, fileType, checksum, newFile.marcaId);
+
+  if(!newFile.marcaId)
+    {
+      return { data: null, isOk: false, message: "Selecciona una marca primero" };
+    }
+
   if (!fileSize || !fileType || !checksum || !newFile.marcaId)
     return { data: null, isOk: false, message: "Faltan datos" };
 
@@ -66,7 +74,7 @@ export const getSignedURL = async ({
   console.log("FILE SIZE: ", fileSize);
 
   const putObjectCommand = new PutObjectCommand({
-    Bucket: process.env.BUCKET_NAME_AWS!,
+    Bucket: process.env.BUCKET_NAME!,
     Key: newFile.bucketFileName,
     ContentType: fileType,
     ContentLength: fileSize,

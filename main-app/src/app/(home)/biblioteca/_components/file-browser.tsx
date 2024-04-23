@@ -22,8 +22,9 @@ import { MisMarcasContext } from "@/contexts/MisMarcasContext";
 import { useSession } from "next-auth/react";
 import { Label } from "@/components/ui/label";
 import { BibliotecaContext } from "@/contexts/BibliotecaContext";
+import { Button } from "@/components/ui/button";
 
-function Placeholder() {
+function Placeholder({ text }: { text: string }) {
   return (
     <div className="flex flex-col gap-8 w-full items-center mt-24">
       <Image
@@ -32,7 +33,7 @@ function Placeholder() {
         height="300"
         src="/empty.svg"
       />
-      <div className="text-2xl">No hay archivos</div>
+      <div className="text-2xl">{text}</div>
       {/* <UploadButton /> */}
     </div>
   );
@@ -64,6 +65,7 @@ export function FileBrowser({
     setFavoritesOnly,
     setNotUsedOnly,
     setUsedOnly,
+    setIsOpenModalNewFile,
   } = useContext(BibliotecaContext);
 
   //TODO: BARRA DE BUSQUEDA! PENDIENTE DE IMPLEMENTAR
@@ -77,12 +79,9 @@ export function FileBrowser({
     setUsedOnly(usedOnly);
 
     fetchFilesContext();
-
   }, []);
 
   useEffect(() => {
-   
-
     //Para que no se ejecute al inicio
     if (marcaGlobalSeleccionada && session) {
       setDeletedOnly(deletedOnly);
@@ -111,63 +110,71 @@ export function FileBrowser({
           {/* <SearchBar query={query} setQuery={setQuery} />  TODO: HACER SEARCHBAR*/}
         </div>
 
-        <div className="w-1/3 mr-0">{/* <UploadButton /> */}</div>
+        <Button onClick={() => setIsOpenModalNewFile(true)}>
+          Sube un archivo
+        </Button>
       </div>
 
-      <Tabs defaultValue="grid">
-        <div className="flex justify-between items-center">
-          <TabsList className="mb-2">
-            <TabsTrigger value="grid" className="flex gap-2 items-center">
-              <GridIcon />
-              Grid
-            </TabsTrigger>
-            <TabsTrigger value="table" className="flex gap-2 items-center">
-              <RowsIcon /> Table
-            </TabsTrigger>
-          </TabsList>
+      {marcaGlobalSeleccionada && session ? (
+        <Tabs defaultValue="grid">
+          <div className="flex justify-between items-center">
+            <TabsList className="mb-2">
+              <TabsTrigger value="grid" className="flex gap-2 items-center">
+                <GridIcon />
+                Grid
+              </TabsTrigger>
+              <TabsTrigger value="table" className="flex gap-2 items-center">
+                <RowsIcon /> Table
+              </TabsTrigger>
+            </TabsList>
 
-          <div className="flex gap-2 items-center">
-            <Label htmlFor="type-select">Type Filter</Label>
-            <Select
-              value={type}
-              onValueChange={(newType) => {
-                setType(newType as any);
-              }}
-            >
-              <SelectTrigger id="type-select" className="w-[180px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All</SelectItem>
-                <SelectItem value="image">Image</SelectItem>
-                <SelectItem value="video">Video</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="flex gap-2 items-center">
+              <Label htmlFor="type-select">Type Filter</Label>
+              <Select
+                value={type}
+                onValueChange={(newType) => {
+                  setType(newType as any);
+                }}
+              >
+                <SelectTrigger id="type-select" className="w-[180px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All</SelectItem>
+                  <SelectItem value="image">Image</SelectItem>
+                  <SelectItem value="video">Video</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
-        </div>
 
-        {isLoading && (
-          <div className="flex flex-col gap-8 w-full items-center mt-24">
-            <Loader2 className="h-32 w-32 animate-spin text-gray-500" />
-            <div className="text-2xl">Cargando tus ...</div>
-          </div>
-        )}
-
-        <TabsContent value="grid">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {modifiedFiles?.map((file) => {
-              return <FileCard key={file._id} file={file} />;
-            })}
-          </div>
-        </TabsContent>
-        <TabsContent value="table">
-          {modifiedFiles.length > 0 && (
-            <DataTable columns={columns} data={modifiedFiles} />
+          {isLoading && (
+            <div className="flex flex-col gap-8 w-full items-center mt-24">
+              <Loader2 className="h-32 w-32 animate-spin text-gray-500" />
+              <div className="text-2xl">Cargando tus ...</div>
+            </div>
           )}
-        </TabsContent>
-      </Tabs>
 
-      {files?.length === 0 && <Placeholder />}
+          <TabsContent value="grid">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {modifiedFiles?.map((file) => {
+                return <FileCard key={file._id} file={file} />;
+              })}
+            </div>
+          </TabsContent>
+          <TabsContent value="table">
+            {modifiedFiles.length > 0 && (
+              <DataTable columns={columns} data={modifiedFiles} />
+            )}
+          </TabsContent>
+        </Tabs>
+      ) : (
+        <Placeholder text="Selecciona una marca primero" />
+      )}
+
+      {files?.length === 0 && (
+        <Placeholder text="No hay archivos, sube alguno" />
+      )}
     </div>
   );
 }

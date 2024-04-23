@@ -35,15 +35,11 @@ export default async function RootLayout({
           <MisMarcasProvider>
             <BibliotecaProvider>
               <CalendarioProvider>
-                
                 <Suspense>
                   <HeaderDynamic />
                 </Suspense>
-                <main className="m-auto pt-20 h-screen ">
-                  <div className=" w-full h-full py-10">{children}</div>
-                </main>
+                <main className="w-full h-full">{children}</main>
                 <Toaster position="bottom-right" richColors />
-
               </CalendarioProvider>
             </BibliotecaProvider>
           </MisMarcasProvider>

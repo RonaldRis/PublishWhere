@@ -35,7 +35,7 @@ export const allowedFileTypes = [
 // video/quicktime
 // video/webm
 
-export const types = [
+export const typesMultimedia = [
   {
     value: "image",
     label: "Imagenes",

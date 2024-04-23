@@ -15,7 +15,7 @@ import {
   SquarePlay,
   VideoIcon,
 } from "lucide-react";
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import Image from "next/image";
 import { FileCardActions } from "./file-card-actions";
 import { IFile } from "@/lib/models/file.model";
@@ -23,9 +23,21 @@ import { IUser } from "@/lib/models/user.model";
 import { z } from "zod";
 import { es } from "date-fns/locale";
 import { getMediaUrl } from "@/lib/constantes";
+import { set } from "mongoose";
+import FullScreenMultimediaFileDialog from "../../calendario/_components/FullScreenMultimediaFileDialog";
 
 export function FileCard({ file }: { file: IFile & { isFavorited: boolean } }) {
   const userProfile = file.creatorId as IUser;
+
+  const [isOpenModalBigFile, setIsOpenModalBigFile] = useState(false);
+  
+  const handlerDoubleClick = () => {
+    console.log("doble click", file.bucketFileName);
+    setIsOpenModalBigFile(true);
+  }
+
+
+
 
   const typeIcons = {
     image: <ImageIcon />,
@@ -38,7 +50,7 @@ export function FileCard({ file }: { file: IFile & { isFavorited: boolean } }) {
         <CardTitle className="flex justify-start gap-2 text-base font-normal w-[200px]">
           <div className="flex justify-center ">{typeIcons[file.type]}</div>{" "}
           {/* TODO: QUE SE VEA BIEN EL TEXTO SI ES MUY LARGO */}
-          <span className="w-auto whitespace-pre">{file.name}</span>
+          <span className="w-full text-ellipsis overflow-hidden">{file.name}</span>
 
         </CardTitle>
         <div className="absolute top-2 right-2">
@@ -55,20 +67,18 @@ export function FileCard({ file }: { file: IFile & { isFavorited: boolean } }) {
               alt={file.name}
               fill={true}
               style={{ objectFit: "contain" }}
+              onDoubleClick={handlerDoubleClick}
             />
           </div>
         )}
 
-        {file.type === "csv" && <GanttChartIcon className="w-20 h-20" />}
-        {file.type === "pdf" && <FileTextIcon className="w-20 h-20" />}
         {file.type === "video" && (
           // <VideoIcon className="w-20 h-20" />
           //TODO: URGENTE: HACER QUE LOS VIDEOS SE VEAN EN EL CARD
           <video
-            className="h-20 w-20"
+          style={{ position: "relative", width: "200px", height: "200px" }}
             src={getMediaUrl(file.bucketFileName)}
             controls
-            autoPlay
           ></video>
         )}
       </CardContent>
@@ -89,6 +99,7 @@ export function FileCard({ file }: { file: IFile & { isFavorited: boolean } }) {
           </div>
         </div>
       </CardFooter>
+      <FullScreenMultimediaFileDialog file={file} isOpenModalBigFile={isOpenModalBigFile} setIsOpenModalBigFile={setIsOpenModalBigFile} />
     </Card>
   );
 }

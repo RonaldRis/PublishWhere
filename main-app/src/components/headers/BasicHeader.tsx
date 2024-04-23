@@ -33,13 +33,13 @@ export default function BasicHeader() {
     e.preventDefault();
     setMarcaGlobalSeleccionada(null);
 
-    signIn("google", { callbackUrl: "/dashboard" })
+    signIn("google", { callbackUrl: "/Calendario" })
   };
 
 
   return (
-    <nav className="fixed h-20 w-full top-0 start-0 bg-slate-900">
-      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+    <nav className="w-full top-0 start-0 bg-slate-900">
+    <div className="flex  flex-wrap items-center justify-between w-full px-4">
 
 
         <Button className="m-0 w-full" variant={"ghost"}>Hola</Button>
@@ -59,7 +59,7 @@ export default function BasicHeader() {
 
           {/* BOTON DE AGREAR UN NUEVO POST, MARCA, RED SOCIAL */}
           {session && (
-            <Link href="/dashboard">
+            <Link href="/Calendario">
               <Button className="m-0 w-full" >Abrir app</Button>
             </Link>
 

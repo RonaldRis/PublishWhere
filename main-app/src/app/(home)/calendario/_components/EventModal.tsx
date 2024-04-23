@@ -2,26 +2,9 @@
 import React, { useContext, useState } from "react";
 import { CalendarioContext } from "@/contexts/CalendarioContext";
 import { CheckIcon } from "lucide-react";
+import { labelsClasses } from "./Labels";
 
 
-//TODO: ASOCIAL A YOUTUBE, FACEBOOK, INSTAGRAM,TIKTOK, TWITTER
-export const labelsClasses = [
-  "indigo",
-  "gray",
-  "green",
-  "blue",
-  "red",
-  "purple",
-];
-
-//convertir de Nombre de red social a color:
-const labelsProviderToColor = {
-  youtube: "red",
-  facebook: "blue",
-  instagram: "purple",
-  tiktok: "gray",
-  twitter: "blue",
-};
 
 export default function EventModal() {
   const {

@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from "next/server"
 
 export const config = {
 
-    matcher: ["/dashboard/:path*", "/perfil/:path*", "/marcas/:path*", "/biblioteca/:path*", "/reportes/:path*", "/configuracion/:path*", "/publicaciones/:path*" ]
+    matcher: ["/Calendario/:path*", "/perfil/:path*", "/marcas/:path*", "/biblioteca/:path*", "/reportes/:path*", "/configuracion/:path*", "/publicaciones/:path*" ]
 }
 
 

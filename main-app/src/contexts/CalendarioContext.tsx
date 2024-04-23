@@ -24,6 +24,7 @@ export interface ILabelCalendar {
   // Define the shape of your label objects here
   label: string;
   checked: boolean;
+  socialMedia?:string;
 }
 
 ///CONTEXT INTERFACE:
@@ -48,6 +49,9 @@ export interface ICalendarioContext {
   setLabels: React.Dispatch<React.SetStateAction<ILabelCalendar[]>>;
   updateLabel: (label: ILabelCalendar) => void;
   filteredEvents: IEventCalendar[];
+
+  isOpenModalNewPost: boolean;
+  setIsOpenModalNewPost: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 ///CONTEXT:
@@ -70,6 +74,8 @@ const CalendarioContext = React.createContext<ICalendarioContext>({
   labels: [],
   updateLabel: () => {},
   filteredEvents: [],
+  isOpenModalNewPost: false,
+  setIsOpenModalNewPost: () => {},
 });
 
 // TODO: IEvent[] no estoy seguro si es el tipo correcto
@@ -106,6 +112,7 @@ const CalendarioProvider = ({ children }: { children: ReactNode }) => {
     dayjs.Dayjs[][] | undefined
   >(undefined);
 
+  const [isOpenModalNewPost, setIsOpenModalNewPost] = useState(false);
   const [daySelected, setDaySelected] = useState<dayjs.Dayjs>(dayjs());
   const [showEventModal, setShowEventModal] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<IEventCalendar | null>(
@@ -186,6 +193,8 @@ const CalendarioProvider = ({ children }: { children: ReactNode }) => {
         labels,
         updateLabel,
         filteredEvents,
+        isOpenModalNewPost,
+        setIsOpenModalNewPost
       }}
     >
       {children}

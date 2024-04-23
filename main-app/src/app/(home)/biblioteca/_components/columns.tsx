@@ -9,9 +9,10 @@ import { IFile } from "@/lib/models/file.model";
 import { IUser } from "@/lib/models/user.model";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown, Check } from "lucide-react";
+import { typesMultimedia } from "@/lib/constantes";
+import { Badge } from "@/components/ui/badge";
 
-function UserCell({ user }: { user: IUser}) {
-  
+function UserCell({ user }: { user: IUser }) {
   return (
     <div className="flex gap-2 text-xs text-gray-700 w-40 items-center">
       <Avatar className="w-6 h-6">
@@ -23,10 +24,11 @@ function UserCell({ user }: { user: IUser}) {
   );
 }
 
-export const columns: ColumnDef<IFile& { isFavorited: boolean }>[] = [
+export const columns: ColumnDef<IFile & { isFavorited: boolean }>[] = [
+  
   {
     accessorKey: "alreadyUsed",
-    header:  ({ column }) => {
+    header: ({ column }) => {
       return (
         <Button
           variant="ghost"
@@ -35,28 +37,10 @@ export const columns: ColumnDef<IFile& { isFavorited: boolean }>[] = [
           Usado
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
-      )
+      );
     },
     cell: ({ row }) => {
-      return (
-        <div>
-          {row.original.alreadyUsed ? <Check /> : "No"}
-        </div>
-      );
-    }
-  },
-  {
-    accessorKey: "name",
-    header:  ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Nombre
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      )
+      return <div>{row.original.alreadyUsed ? <Check /> : "No"}</div>;
     },
   },
   {
@@ -70,11 +54,42 @@ export const columns: ColumnDef<IFile& { isFavorited: boolean }>[] = [
           Tipo
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
-      )
+      );
+    },
+    cell: ({ row }) => {
+      const data = typesMultimedia.find(
+        (type) => type.value === row.original.type
+      );
+
+      return (
+        <div className="mr-2 flex h-4 w-4 items-center justify-center ">
+          <span>
+            {data?.icon && (
+              <data.icon className="mr-2 h-4 w-4 text-muted-foreground" />
+            )}
+          </span>
+          <span>{data?.value}</span>
+        </div>
+      );
     },
   },
   {
-    accessorKey: "creatorId.name",  //TODO: REVVVISAR SI FUNCIONA EL CREADOR CUANDO HAYAN MAS USUARIOS
+    accessorKey: "name",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Nombre
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+  },
+  
+  {
+    accessorKey: "creatorId.name", //TODO: REVVVISAR SI FUNCIONA EL CREADOR CUANDO HAYAN MAS USUARIOS
     header: ({ column }) => {
       return (
         <Button
@@ -84,10 +99,10 @@ export const columns: ColumnDef<IFile& { isFavorited: boolean }>[] = [
           Creador
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
-      )
+      );
     },
     cell: ({ row }) => {
-      return <UserCell user={(row.original.creatorId as IUser)} />;
+      return <UserCell user={row.original.creatorId as IUser} />;
     },
   },
   {
@@ -101,12 +116,14 @@ export const columns: ColumnDef<IFile& { isFavorited: boolean }>[] = [
           Fecha de creación
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
-      )
+      );
     },
     cell: ({ row }) => {
       return (
         <div>
-          {formatRelative(new Date(row.original.createdAt), new Date(), { locale: es })}
+          {formatRelative(new Date(row.original.createdAt), new Date(), {
+            locale: es,
+          })}
         </div>
       );
     },

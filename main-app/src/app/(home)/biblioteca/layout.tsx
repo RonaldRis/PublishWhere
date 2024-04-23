@@ -5,7 +5,7 @@
 
 import { SideNav } from "./side-nav";
 
-export default function DashboardLayout({
+export default function BibliotecaLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -14,9 +14,9 @@ export default function DashboardLayout({
 
 
   return (
-    <main className=" min-h-screen flex gap-4">
+    <main className=" min-h-screen flex gap-4 pt-2">
         <SideNav />
-        <div className="w-full">{children}</div>
+        <div className="w-full px-2 overflow-auto">{children}</div>
     </main>
   );
 }

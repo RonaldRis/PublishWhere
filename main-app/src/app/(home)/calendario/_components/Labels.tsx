@@ -2,7 +2,26 @@
 import { CalendarioContext } from "@/contexts/CalendarioContext";
 import { Calendar } from "lucide-react";
 import React, { useContext } from "react";
-import { labelsClasses } from "./EventModal";
+
+
+//TODO: ASOCIAL A YOUTUBE, FACEBOOK, INSTAGRAM,TIKTOK, TWITTER
+export const labelsClasses = [
+  "indigo",
+  "gray",
+  // "green",
+  "blue",
+  "red",
+  "purple",
+];
+
+//convertir de Nombre de red social a color:
+export const labelsProviderToColor = {
+  "indigo": "twitter",
+  "gray": "tiktok",
+  "blue": "facebook",
+  "red": "youtube",
+  "purple": "instagram",
+};
 
 
 export default function Labels() {
@@ -20,7 +39,7 @@ export default function Labels() {
             }
             className={`form-checkbox h-5 w-5 accent-${lbl}-400 rounded focus:ring-0 cursor-pointer`}
           />
-          <span className="ml-2 text-gray-700 capitalize">{lbl}</span>
+          <span className="ml-2 text-gray-700 capitalize">{labelsProviderToColor[lbl]}</span>
         </label>
       ))}
     </React.Fragment>

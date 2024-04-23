@@ -9,7 +9,7 @@ import Month from "./_components/Month";
 import { use } from "passport";
 import dayjs from "dayjs";
 
-function DashboardPage() {
+function CalendarioPage() {
   const {setMonthIndex, setSmallCalendarMonth, currenMonthMatrix, showEventModal } = useContext(CalendarioContext);
 
   useEffect(() => {
@@ -36,4 +36,4 @@ function DashboardPage() {
   );
 }
 
-export default DashboardPage;
+export default CalendarioPage;
