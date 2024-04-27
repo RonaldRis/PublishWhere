@@ -99,6 +99,7 @@ export function FileBrowser({
     favoritesOnly,
     notUsedOnly,
     usedOnly,
+    
   ]);
 
   return (
