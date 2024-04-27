@@ -29,6 +29,7 @@ import axios from "axios";
 import { postCreateFileAction } from "@/lib/actions/files.actions";
 import { Progress } from "../ui/progress";
 import { BibliotecaContext } from "@/contexts/BibliotecaContext";
+import { bytesToSize } from "@/lib/utils";
 
 // export const computeSHA256 = async (file: File) => {
 //   const buffer = await file.arrayBuffer();
@@ -51,7 +52,7 @@ const IndividualUploadFile = ({
   file,
   marcaId,
   userId,
-  isUpdate = false
+  isUpdate = false,
 }: {
   file: File;
   marcaId: string;
@@ -59,10 +60,11 @@ const IndividualUploadFile = ({
   isUpdate?: boolean;
 }) => {
   //CONTEXT
-  const{fetchFilesContext} = useContext(BibliotecaContext);  
+  const { fetchFilesContext } = useContext(BibliotecaContext);
 
   //LOCAL
   const [isUploading, setIsUploading] = useState(false);
+  const [wasUploadingSuccessful, setWasUploadingSuccessful] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
 
   const [nombre, setNombre] = useState<string>("");
@@ -103,14 +105,14 @@ const IndividualUploadFile = ({
 
       const checksum = await computeSHA256(file);
 
-      const fileData= {
+      const fileData = {
         fileSize: file.size,
         fileType: file.type,
         checksum: checksum,
-      }
+      };
       var resultSigningURL = await getSignedURL({
         newFile: fileObject,
-        fileData: fileData, 
+        fileData: fileData,
       });
 
       if (!resultSigningURL.isOk) {
@@ -156,16 +158,15 @@ const IndividualUploadFile = ({
         return;
       }
 
-      if(resultDb.data){
+      if (resultDb.data) {
         //Necesito que esto altere el estado se muestre en el UI
-
       }
 
-
       //Actualizar la lista de archivos
-      
+
       toast.success("Archivo subido correctamente");
-      fetchFilesContext()
+      setWasUploadingSuccessful(true);
+      fetchFilesContext();
     } catch (error) {
       toast.error("Error al subir el archivo : " + error);
       console.log(error);
@@ -185,12 +186,28 @@ const IndividualUploadFile = ({
             <div
               style={{ position: "relative", width: "400px", height: "400px" }}
             >
-              <Image
-                src={URL.createObjectURL(file)}
-                alt=""
-                fill={true}
-                style={{ objectFit: "contain" }}
-              />
+              {file.type.startsWith("video")  && (
+                // <VideoIcon className="w-20 h-20" />
+                //TODO: URGENTE: HACER QUE LOS VIDEOS SE VEAN EN EL CARD
+                <video
+                  style={{
+                    position: "relative",
+                    width: "400px",
+                    height: "400px",
+                  }}
+                  src={URL.createObjectURL(file)}
+                  controls
+                ></video>
+              )}
+
+              {file.type.startsWith("image") && (
+                <Image
+                  src={URL.createObjectURL(file)}
+                  alt=""
+                  fill={true}
+                  style={{ objectFit: "contain" }}
+                />
+              )}
             </div>
           </Card>
 
@@ -205,23 +222,31 @@ const IndividualUploadFile = ({
               value={nombre}
               onChange={(e) => setNombre(e.target.value)}
             />
-            <p>{(file.size / (1024 * 1024)).toPrecision(2)} MB</p>
+            <p>{bytesToSize(file.size)}</p>
             <p>ETIQUETAS?? </p>
             <p>Type: {" " + file.type} </p>
             {/* TODO: ETIQUETAS ?? */}
-            <Button
-              className="w-full"
-              onClick={async () => {
-                await HandlerUploadFileAction({
-                  fileName: nombre,
-                  file: file,
-                  marcaId: marcaId,
-                  userId: userId,
-                });
-              }}
-            >
-              {isUpdate ? "Actualizar" : "Subir"}
-            </Button>
+            {wasUploadingSuccessful && (
+              <p className="font-bold w-full m-auto p-auto">
+                Archivo subido correctamente
+              </p>
+            )}
+            {!wasUploadingSuccessful && (
+              <Button
+                className="w-full"
+                onClick={async () => {
+                  await HandlerUploadFileAction({
+                    fileName: nombre,
+                    file: file,
+                    marcaId: marcaId,
+                    userId: userId,
+                  });
+                }}
+                disabled={isUploading}
+              >
+                {isUpdate ? "Actualizar" : "Subir"}
+              </Button>
+            )}
             {isUploading && (
               <div className="flex flex-col gap-8 w-full items-center mt-24">
                 <Loader2 className="animate-spin text-gray-500" size={24} />
@@ -250,7 +275,9 @@ function UploadFiles({
   const [files, setFiles] = useState<File[]>([]);
   const [fileUploadLauncher, setFileUploadLauncher] = useState<void[]>([]);
 
-  const handleFileInputOnChangeEvent = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileInputOnChangeEvent = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     if (e.target?.files) {
       let selectedFiles = Array.from(e.target.files);
       setFiles(selectedFiles);
@@ -265,16 +292,13 @@ function UploadFiles({
       let selectedFiles = Array.from(event.dataTransfer.files) as File[];
       setFiles(selectedFiles);
     }
-
   }, []);
 
   const onDragOver = useCallback((event: any) => {
     event.preventDefault();
   }, []);
 
-  const handlerUploadAll = async() =>{
-    
-  }
+  const handlerUploadAll = async () => {};
 
   return (
     <AlertDialog onOpenChange={setIsOpenModalNewFile} open={isOpenModalNewFile}>
@@ -361,7 +385,9 @@ function UploadFiles({
         {/* FOOTER */}
         <AlertDialogFooter className="bottom-0">
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={handlerUploadAll}>Subir todos</AlertDialogAction>
+          <AlertDialogAction onClick={handlerUploadAll}>
+            Subir todos
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
