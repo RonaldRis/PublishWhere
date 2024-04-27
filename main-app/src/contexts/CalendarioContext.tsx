@@ -96,7 +96,10 @@ function savedEventsReducer(
 }
 
 function initEvents() {
-  const storageEvents = localStorage.getItem("savedEvents");
+  let storageEvents = null;
+  if (typeof window !== 'undefined') {
+    storageEvents = window.localStorage.getItem("savedEvents");
+  }
   const parsedEvents = storageEvents ? JSON.parse(storageEvents) : [];
   return parsedEvents;
 }

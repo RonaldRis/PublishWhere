@@ -72,7 +72,7 @@ export default function AppHeader() {
     e.preventDefault();
     setMarcaGlobalSeleccionada(null);
 
-    signIn("google", { callbackUrl: "/Calendario" });
+    signIn("google", { callbackUrl: "/calendario" });
   };
 
   const handlerMarcaSelectedChanged = (idSelected: string) => {
