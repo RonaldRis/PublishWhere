@@ -13,7 +13,8 @@ const User = mongoose.models.User || mongoose.model<IUser>("User", userSchema);
 const Marca = mongoose.models.Marca || mongoose.model<IMarca>("Marca", marcaSchema);
 const File = mongoose.models.File || mongoose.model<IFile>("File", fileSchema);
 const Oauth = mongoose.models.Oauth || mongoose.model<IOauth>("Oauth", oauthDataSchema);
-const SocialMediaAccount = mongoose.models.SocialMediaAccount || mongoose.model<ISocialMediaAccount>("SocialMediaAccount", socialMediaAccountSchema);
+const SocialMediaAccount = mongoose.models.SocialMediaAccount 
+                        || mongoose.model<ISocialMediaAccount>("SocialMediaAccount", socialMediaAccountSchema);
 
 //BORRAR
 // User.find({}).then((users) => {

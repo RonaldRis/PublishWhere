@@ -142,17 +142,17 @@ const CalendarioProvider = ({ children }: { children: ReactNode }) => {
   }, [savedEvents]);
 
   //TODO: REPASAR ESTO PARA QUE FUNCIONA O VER DONDE SE USA Y COMO
-  useEffect(() => {
-    setLabels((prevLabels) => {
-      return [...new Set(savedEvents.map((evt) => evt.label))].map((label) => {
-        const currentLabel = prevLabels.find((lbl) => lbl.label === label);
-        return {
-          label,
-          checked: currentLabel ? currentLabel.checked : true,
-        };
-      });
-    });
-  }, [savedEvents]);
+  // useEffect(() => {
+  //   setLabels((prevLabels) => {
+  //     return [...new Set(savedEvents.map((evt) => evt.label))].map((label) => {
+  //       const currentLabel = prevLabels.find((lbl) => lbl.label === label);
+  //       return {
+  //         label,
+  //         checked: currentLabel ? currentLabel.checked : true,
+  //       };
+  //     });
+  //   });
+  // }, [savedEvents]);
 
   useEffect(() => {
     if (smallCalendarMonth !== null) {

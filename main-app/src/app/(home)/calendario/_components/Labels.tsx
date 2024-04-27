@@ -15,13 +15,15 @@ export const labelsClasses = [
 ];
 
 //convertir de Nombre de red social a color:
-export const labelsProviderToColor = {
+export const labelsProviderToColor: Record<string,string> ={
   "indigo": "twitter",
   "gray": "tiktok",
   "blue": "facebook",
   "red": "youtube",
   "purple": "instagram",
 };
+
+
 
 
 export default function Labels() {
@@ -39,7 +41,7 @@ export default function Labels() {
             }
             className={`form-checkbox h-5 w-5 accent-${lbl}-400 rounded focus:ring-0 cursor-pointer`}
           />
-          <span className="ml-2 text-gray-700 capitalize">{labelsProviderToColor[lbl]}</span>
+          <span className="ml-2 text-gray-700 capitalize">{labelsProviderToColor[lbl] ?? ""}</span>
         </label>
       ))}
     </React.Fragment>
