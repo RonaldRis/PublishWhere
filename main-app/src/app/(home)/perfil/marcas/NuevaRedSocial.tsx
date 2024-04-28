@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -14,6 +14,9 @@ import { Facebook, FacebookIcon, Instagram, InstagramIcon, TwitterIcon, YoutubeI
 
 import Image from "next/image";
 import Link from "next/link";
+import { use } from "passport";
+import { fetch_URL_SOCIAL_MEDIA_CONNECTION_SERVICE } from "@/lib/actions/env.actions";
+import { set } from "mongoose";
 
 
 interface IsocialMediaData {
@@ -23,7 +26,16 @@ interface IsocialMediaData {
 }
 
 function NuevaRedSocial() {
-  const backendUrl = "http://localhost:3001/auth/";
+  const [backendUrl, setBackendUrl] = useState<string>("http://localhost:3001/auth/");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await fetch_URL_SOCIAL_MEDIA_CONNECTION_SERVICE();
+
+      setBackendUrl(res.data!);
+    }
+  }, []); 
+
 
   const socialmente: IsocialMediaData[] = [
     {
