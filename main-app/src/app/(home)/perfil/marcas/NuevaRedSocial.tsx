@@ -32,8 +32,9 @@ function NuevaRedSocial() {
     const fetchData = async () => {
       const res = await fetch_URL_SOCIAL_MEDIA_CONNECTION_SERVICE();
 
-      setBackendUrl(res.data!);
+      setBackendUrl(res.data!+"/auth/");
     }
+    fetchData();
   }, []); 
 
 
