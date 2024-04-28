@@ -19,5 +19,8 @@ export async function middleware(request: NextRequest) {
         return Response.redirect(new URL('/', request.url))
     }
 
+    console.log("middleware.ts: nextUrl - ", request.nextUrl)
+    console.log("middleware.ts: url     - ", request.url)
+
     return NextResponse.next()
 }
