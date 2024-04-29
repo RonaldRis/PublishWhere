@@ -14,9 +14,9 @@ function PerfilMarcasPage() {
 
 
   return (
-    <div className='flex gap-2 w-full h-full '>
+    <div className='flex gap-2 w-full h-[80vh] '>
       {/* Sidebar */}
-      <div className='w-400px h-full'>
+      <div className='w-[400px] max-w-[400px] min-w-[400px] h-full'>
 
 
         <MarcaSeleccionadaBuscador

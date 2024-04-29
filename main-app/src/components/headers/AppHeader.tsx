@@ -42,6 +42,8 @@ import UploadFiles from "../files/UploadFiles";
 import { toast } from "sonner";
 import NewPublicacion from "../publicacion/NewPublicacion";
 import { CalendarioContext } from "@/contexts/CalendarioContext";
+import HoverAdmin from "../HoverAdmin";
+import { IUser } from "@/lib/models/user.model";
 
 export default function AppHeader() {
   const {
@@ -150,7 +152,14 @@ export default function AppHeader() {
                       value={marca._id}
                       key={marca._id}
                     >
-                      {marca.name}
+                      <div className="w-full flex justify-start items-center gap-3">
+                        <span className="w-4">
+                          {(marca.admin as IUser)._id === session?.user._id && (
+                            <HoverAdmin />
+                          )}
+                        </span>
+                        <span>{marca.name}</span>
+                      </div>
                     </SelectItem>
                   ))}
                 </SelectContent>
