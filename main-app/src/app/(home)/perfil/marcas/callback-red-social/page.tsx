@@ -1,7 +1,7 @@
 "use client";
 
 import { MisMarcasContext } from "@/contexts/MisMarcasContext";
-import { postOauthDataAction } from "@/lib/actions/oauth.actions";
+import { postOauthDataActionYoutube } from "@/lib/actions/oauth.actions";
 import { IOauthPost } from "@/lib/models/Oauth.model";
 import { el } from "date-fns/locale";
 import { useSession } from "next-auth/react";
@@ -67,7 +67,7 @@ export default function CallbackRedSocialPage() {
       userId: string,
       data: IOauthPost
     ) => {
-      const response = await postOauthDataAction({
+      const response = await postOauthDataActionYoutube({
         marcaId: idMarca,
         userId: userId,
         oauthData: data,
