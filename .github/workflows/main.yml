@@ -41,7 +41,8 @@ jobs:
             script: |
               cd /home/ubuntu/ris/PublishWhere
               git pull origin main
-              pm2 restart all
+              /root/.nvm/versions/node/v20.12.2/bin/pm2 restart all
+              exit
 # # All environment variables are stored as secrets in GitHub Secrets
 # env:
 #   MONGODB_URL: ${{ secrets.MONGODB_URL }}
