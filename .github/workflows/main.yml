@@ -36,7 +36,7 @@ jobs:
           with:
             host: ${{ secrets.VPS_IP }}
             username: "root" # Adjust to your actual username
-            key: ${{ secrets.SSH_PRIVATE_KEY }} # Use SSH password or private key
+            password: ${{ secrets.VPS_PASSWORD }} # Use SSH password or private key
             port: 22
             script: |
               cd /home/ubuntu/ris/PublishWhere
