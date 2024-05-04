@@ -19,10 +19,10 @@ jobs:
 
       - name: Install Dependencies autoprefixer
         run: npm install autoprefixer
-        
+
       - name: Dependencies and Build Application
         working-directory: main-app # Change directory to your application folder
-        run: npm i && npm run build # Run build script
+        run: npm ci && npm run build # Run build script
 
   vps-pull-restart:
     runs-on: ubuntu-latest
