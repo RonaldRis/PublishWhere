@@ -1,0 +1,33 @@
+name: Update VPS Repo with Build
+
+on:
+  push:
+    branches: [ main ]  # Trigger on pushes to the main branch
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest  # This job runs on an Ubuntu virtual machine
+    steps:
+      - uses: actions/checkout@v3  # Checkout your code from the repository
+      - name: Install Dependencies
+        uses: actions/setup-node@v3  # Install Node.js and npm
+        with:
+          node-version: '20'  # Replace with your desired Node.js version (if needed)
+      - name: Build Application
+        working-directory: main-app  # Change directory to your application folder
+        run: npm run build  # Run build script
+
+      - name: Connect to VPS (SSH)
+        uses: appleboy/ssh-action@master  # Action to connect to VPS via SSH
+        with:
+          host: ${{ secrets.VPS_IP }}  # Replace with your VPS hostname or IP
+          username: 'root'  # Replace with your VPS username
+          password: ${{ secrets.VPS_PASSWORD }}  # Access password stored as secret
+      - name: Upload Build (if successful build)
+        run: |  # Script to run on the VPS (conditional)
+          if [ $? -eq 0 ]; then  # Check if previous step (build) exited successfully
+            cd /home/ubuntu/ris/PublishWhere  # Change directory to deployment location
+            git pull origin main
+            pm2 restart all
+          fi
+        # Exit code of 0 indicates successful build, non-zero indicates failure
