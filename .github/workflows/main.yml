@@ -2,47 +2,41 @@ name: Update VPS Repo with Build
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
-    types: [ closed ]
+    branches: [main]
+    types: [closed]
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3  # Checkout your code from the repository
+      - uses: actions/checkout@v3 # Checkout your code from the repository
       - name: Install Dependencies
-        uses: actions/setup-node@v3  # Install Node.js and npm
+        uses: actions/setup-node@v3 # Install Node.js and npm
         with:
-          node-version: '20'      # Replace with your desired Node.js version (if needed)
+          node-version: "20" # Replace with your desired Node.js version (if needed)
 
       - name: Build Application
-        working-directory: main-app  # Change directory to your application folder
-        run: npm run build          # Run build script
+        working-directory: main-app # Change directory to your application folder
+        run: npm run build # Run build script
 
   vps-pull-restart:
-    needs: [ build-and-deploy ]  # This job depends on the successful completion of build-and-deploy
+    runs-on: ubuntu-latest
+    needs: [build-and-deploy] # This job depends on the successful completion of build-and-deploy
     steps:
-      uses: appleboy/ssh-action@master  # Action to connect to VPS via SSH
-      with:
-        host: ${{ secrets.VPS_IP }}      # Replace with your VPS hostname or IP
-        username: 'root'                 # Replace with your VPS username
-        password: ${{ secrets.VPS_PASSWORD }}  # Access password stored as secret
-
+      - uses: appleboy/ssh-action@master # Action to connect to VPS via SSH
+        with:
+          host: ${{ secrets.VPS_IP }} # Replace with your VPS hostname or IP
+          username: "root" # Replace with your VPS username
+          password: ${{ secrets.VPS_PASSWORD }} # Access password stored as secret
       - name: Connect to VPS (SSH)
-        run: |  # Conditional script to ensure successful build and handle errors
-          if [ $? -eq 0 ]; then
-            cd /home/ubuntu/ris/PublishWhere  # Change directory to deployment location
-            git pull origin main             # Pull updates from the main branch
-            pm2 restart all                 # Restart the application using pm2
-          else
-            echo "Build failed. Skipping VPS deployment."  # Informative error message
-            exit 1                                         # Exit with non-zero code
-          fi
-
+        run: | # Conditional script to ensure successful build and handle errors
+          cd /home/ubuntu/ris/PublishWhere  # Change directory to deployment location
+          git pull origin main             # Pull updates from the main branch
+          pm2 restart all                 # Restart the application using pm2
       - name: Disconnect from VPS
-        run: exit  # Gracefully disconnect from VPS
+        run: exit # Gracefully disconnect from VPS
 
 # All environment variables are stored as secrets in GitHub Secrets
 env:
