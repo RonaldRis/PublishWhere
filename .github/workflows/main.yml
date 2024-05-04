@@ -10,6 +10,8 @@ on:
 jobs:
   # build-and-test:
   #   runs-on: ubuntu-latest
+      # environment: "VPS Prod" # Refer to the environment
+
   #   steps:
   #     - uses: actions/checkout@v4 # Checkout your code from the repository
   #     - name: Setup Nodejs 20
@@ -27,6 +29,8 @@ jobs:
     vps-pull-restart:
       runs-on: ubuntu-latest
       # needs: [build-and-test]
+      environment: "VPS Prod" # Refer to the environment
+
       steps:
         - uses: appleboy/ssh-action@v0.1.7 # Specify a version
           with:
