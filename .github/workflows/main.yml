@@ -11,33 +11,40 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v3  # Checkout your code from the repository
       - name: Install Dependencies
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v3  # Install Node.js and npm
         with:
-          node-version: '20'
+          node-version: '20'      # Replace with your desired Node.js version (if needed)
 
       - name: Build Application
-        working-directory: main-app
-        run: npm run build
+        working-directory: main-app  # Change directory to your application folder
+        run: npm run build          # Run build script
+
+  vps-pull-restart:
+    needs: [ build-and-deploy ]  # This job depends on the successful completion of build-and-deploy
+    steps:
+      uses: appleboy/ssh-action@master  # Action to connect to VPS via SSH
+      with:
+        host: ${{ secrets.VPS_IP }}      # Replace with your VPS hostname or IP
+        username: 'root'                 # Replace with your VPS username
+        password: ${{ secrets.VPS_PASSWORD }}  # Access password stored as secret
 
       - name: Connect to VPS (SSH)
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.VPS_IP }}
-          username: 'root'
-          password: ${{ secrets.VPS_PASSWORD }}
-
-      - name: Upload Build (if successful build)
-        run: |
+        run: |  # Conditional script to ensure successful build and handle errors
           if [ $? -eq 0 ]; then
-            cd /home/ubuntu/ris/PublishWhere
-            git pull origin main
-            pm2 restart all
+            cd /home/ubuntu/ris/PublishWhere  # Change directory to deployment location
+            git pull origin main             # Pull updates from the main branch
+            pm2 restart all                 # Restart the application using pm2
+          else
+            echo "Build failed. Skipping VPS deployment."  # Informative error message
+            exit 1                                         # Exit with non-zero code
           fi
 
+      - name: Disconnect from VPS
+        run: exit  # Gracefully disconnect from VPS
 
-# ALL ENVIROMENT VARIABLES ARE FAKE, REAL ONES ARE ON SERVER, IF NO ON GITHUB NOR ON SERVER, APP WILL BE UPLOADED TO VPS
+# All environment variables are stored as secrets in GitHub Secrets
 env:
   MONGODB_URL: ${{ secrets.MONGODB_URL }}
   NODE_ENV: "production"
@@ -48,6 +55,5 @@ env:
   BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
   BUCKET_REGION: ${{ secrets.BUCKET_REGION }}
   BUCKET_ACCESS_KEY: ${{ secrets.BUCKET_ACCESS_KEY }}
-  BUCKET_SECRET_ACCESS_KEY: ${{ secrets.BUCKET_SECRET_ACCESS_KEY }}
+  BUCKET_SECRET_ACCESS_KEY: ${{ secrets.BUCKET_ACCESS_KEY }}
   URL_SOCIAL_MEDIA_CONNECTION_SERVICE: ${{ secrets.URL_SOCIAL_MEDIA_CONNECTION_SERVICE }}
-
