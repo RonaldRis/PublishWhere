@@ -9,7 +9,7 @@ export default function HomePage() {
 
   return (
     <div>
-      HOME xd
+      HOMEEEEEE
     </div>
   )
 }

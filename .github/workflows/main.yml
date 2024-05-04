@@ -2,7 +2,10 @@ name: Update VPS Repo with Build
 
 on:
   push:
-    branches: [ main ]  # Trigger on pushes to the main branch
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+    types: [ closed ]
 
 jobs:
   build-and-deploy:
