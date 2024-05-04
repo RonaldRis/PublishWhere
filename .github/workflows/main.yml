@@ -8,7 +8,7 @@ on:
     types: [closed]
 
 jobs:
-  build-and-deploy:
+  build-and-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3 # Checkout your code from the repository
@@ -17,13 +17,13 @@ jobs:
         with:
           node-version: "20" # Replace with your desired Node.js version (if needed)
 
-      - name: Build Application
+      - name: Dependencies and Build Application
         working-directory: main-app # Change directory to your application folder
-        run: npm ci && npm run build # Run build script
+        run: npm i && npm run build # Run build script
 
   vps-pull-restart:
     runs-on: ubuntu-latest
-    needs: [build-and-deploy] # This job depends on the successful completion of build-and-deploy
+    needs: [build-and-test] # This job depends on the successful completion of build-and-deploy
     steps:
       - uses: appleboy/ssh-action@master # Action to connect to VPS via SSH
         with:
