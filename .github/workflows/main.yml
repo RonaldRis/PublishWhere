@@ -20,10 +20,6 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Install Dependencies autoprefixer
-        run: npm install autoprefixer
-        working-directory: main-app
-
       - name: Dependencies and Build Application
         working-directory: main-app
         run: npm ci && npm run build
