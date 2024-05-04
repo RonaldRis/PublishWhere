@@ -17,6 +17,9 @@ jobs:
         with:
           node-version: "20" # Replace with your desired Node.js version (if needed)
 
+      - name: Install Dependencies autoprefixer
+        run: npm install autoprefixer
+        
       - name: Dependencies and Build Application
         working-directory: main-app # Change directory to your application folder
         run: npm i && npm run build # Run build script
