@@ -8,25 +8,25 @@ on:
     types: [closed]
 
 jobs:
-  build-and-test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4 # Checkout your code from the repository
-      - name: Setup Nodejs 20
-        uses: actions/setup-node@v4 # Install Node.js and npm
-        with:
-          node-version: "20" # Replace with your desired Node.js version (if needed)
+  # build-and-test:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4 # Checkout your code from the repository
+  #     - name: Setup Nodejs 20
+  #       uses: actions/setup-node@v4 # Install Node.js and npm
+  #       with:
+  #         node-version: "20" # Replace with your desired Node.js version (if needed)
 
-      - name: Install Dependencies autoprefixer
-        run: npm install autoprefixer
+  #     - name: Install Dependencies autoprefixer
+  #       run: npm install autoprefixer
 
-      - name: Dependencies and Build Application
-        working-directory: main-app # Change directory to your application folder
-        run: npm ci && npm run build # Run build script
+  #     - name: Dependencies and Build Application
+  #       working-directory: main-app # Change directory to your application folder
+  #       run: npm ci && npm run build # Run build script
 
   vps-pull-restart:
     runs-on: ubuntu-latest
-    needs: [build-and-test] # This job depends on the successful completion of build-and-deploy
+    # needs: [build-and-test] # This job depends on the successful completion of build-and-deploy
     steps:
       - uses: appleboy/ssh-action@master # Action to connect to VPS via SSH
         with:

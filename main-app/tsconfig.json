@@ -26,6 +26,6 @@
       "@lib/*": ["./src/lib/*"],
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/(home)/calendario/_components/Day copy.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts","./src/**/*.ts", "./src/**/*.tsx"],
   "exclude": ["node_modules"]
 }
