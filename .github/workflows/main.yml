@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4 # Checkout your code from the repository
-      - name: Install Dependencies
+      - name: Setup Nodejs 20
         uses: actions/setup-node@v4 # Install Node.js and npm
         with:
           node-version: "20" # Replace with your desired Node.js version (if needed)
