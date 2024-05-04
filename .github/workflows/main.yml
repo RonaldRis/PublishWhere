@@ -30,15 +30,13 @@ jobs:
       steps:
         - uses: appleboy/ssh-action@v0.1.7 # Specify a version
           with:
-            host: ${{ secrets.VPS_HOST }}
+            host: ${{ secrets.VPS_IP }}
             username: "root" # Adjust to your actual username
-            password: ${{ secrets.VPS_PASSWORD }} # Use SSH password or private key
+            key: ${{ secrets.VPS_PASSWORD }} # Use SSH password or private key
             port: 22
             script: |
-              cd /path/to/app
+              cd /home/ubuntu/ris/PublishWhere
               git pull origin main
-              npm install
-              npm run build
               pm2 restart all
 # # All environment variables are stored as secrets in GitHub Secrets
 # env:
