@@ -19,11 +19,11 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
-      "@/app/*": ["./src/app/*"],
-      "@/assets/*": ["./src/assets/*"],
-      "@/components/*": ["./src/components/*"],
-      "@/contexts/*": ["./src/contexts/*"],
-      "@/lib/*": ["./src/lib/*"],
+      "@app/*": ["./src/app/*"],
+      "@assets/*": ["./src/assets/*"],
+      "@components/*": ["./src/components/*"],
+      "@contexts/*": ["./src/contexts/*"],
+      "@lib/*": ["./src/lib/*"],
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/(home)/calendario/_components/Day copy.js"],
