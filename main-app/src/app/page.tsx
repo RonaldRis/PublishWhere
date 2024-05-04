@@ -9,7 +9,7 @@ export default function HomePage() {
 
   return (
     <div>
-      HOMEEEEEE - Key UPLOADED - IT WORKS CI/CD - pm2 restart
+      HOMEEEEEE - Key UPLOADED - IT WORKS CI/CD - pm2 restart - test build and deploy together
     </div>
   )
 }

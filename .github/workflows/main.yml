@@ -8,41 +8,41 @@ on:
     types: [closed]
 
 jobs:
-  # build-and-test:
-  #   runs-on: ubuntu-latest
-      # environment: "VPS Prod" # Refer to the environment
+  build-and-test:
+    runs-on: ubuntu-latest
+    environment: "VPS Prod" # Refer to the environment
 
-  #   steps:
-  #     - uses: actions/checkout@v4 # Checkout your code from the repository
-  #     - name: Setup Nodejs 20
-  #       uses: actions/setup-node@v4 # Install Node.js and npm
-  #       with:
-  #         node-version: "20" # Replace with your desired Node.js version (if needed)
+    steps:
+      - uses: actions/checkout@v4 # Checkout your code from the repository
+      - name: Setup Nodejs 20
+        uses: actions/setup-node@v4 # Install Node.js and npm
+        with:
+          node-version: "20" # Replace with your desired Node.js version (if needed)
 
-  #     - name: Install Dependencies autoprefixer
-  #       run: npm install autoprefixer
+      - name: Install Dependencies autoprefixer
+        run: npm install autoprefixer
 
-  #     - name: Dependencies and Build Application
-  #       working-directory: main-app # Change directory to your application folder
-  #       run: npm ci && npm run build # Run build script
+      - name: Dependencies and Build Application
+        working-directory: main-app # Change directory to your application folder
+        run: npm ci && npm run build # Run build script
 
-    vps-pull-restart:
-      runs-on: ubuntu-latest
-      # needs: [build-and-test]
-      environment: "VPS Prod" # Refer to the environment
+  vps-pull-restart:
+    runs-on: ubuntu-latest
+    needs: [build-and-test]
+    environment: "VPS Prod" # Refer to the environment
 
-      steps:
-        - uses: appleboy/ssh-action@v0.1.7 # Specify a version
-          with:
-            host: ${{ secrets.VPS_IP }}
-            username: "root" # Adjust to your actual username
-            password: ${{ secrets.VPS_PASSWORD }} # Use SSH password or private key
-            port: 22
-            script: |
-              cd /home/ubuntu/ris/PublishWhere
-              git pull origin main
-              /root/.nvm/versions/node/v20.12.2/bin/pm2 restart all
-              exit
+    steps:
+      - uses: appleboy/ssh-action@v0.1.7 # Specify a version
+        with:
+          host: ${{ secrets.VPS_IP }}
+          username: "root" # Adjust to your actual username
+          password: ${{ secrets.VPS_PASSWORD }} # Use SSH password or private key
+          port: 22
+          script: |
+            cd /home/ubuntu/ris/PublishWhere
+            git pull origin main
+            /root/.nvm/versions/node/v20.12.2/bin/pm2 restart all
+            exit
 # # All environment variables are stored as secrets in GitHub Secrets
 # env:
 #   MONGODB_URL: ${{ secrets.MONGODB_URL }}
