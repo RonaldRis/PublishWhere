@@ -13,18 +13,32 @@ jobs:
     environment: "VPS Prod" # Refer to the environment
 
     steps:
-      - uses: actions/checkout@v4 # Checkout your code from the repository
-      - name: Setup Nodejs 20
-        uses: actions/setup-node@v4 # Install Node.js and npm
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: "20" # Replace with your desired Node.js version (if needed)
+          node-version: "20"
 
       - name: Install Dependencies autoprefixer
         run: npm install autoprefixer
+        working-directory: main-app
 
       - name: Dependencies and Build Application
-        working-directory: main-app # Change directory to your application folder
-        run: npm ci && npm run build # Run build script
+        working-directory: main-app
+        run: npm ci && npm run build
+        env:
+          MONGODB_URL: ${{ secrets.MONGODB_URL }}
+          NODE_ENV: "production"
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
+          BUCKET_REGION: ${{ secrets.BUCKET_REGION }}
+          BUCKET_ACCESS_KEY: ${{ secrets.BUCKET_ACCESS_KEY }}
+          BUCKET_SECRET_ACCESS_KEY: ${{ secrets.BUCKET_ACCESS_KEY }}
+          URL_SOCIAL_MEDIA_CONNECTION_SERVICE: ${{ secrets.URL_SOCIAL_MEDIA_CONNECTION_SERVICE }}
 
   vps-pull-restart:
     runs-on: ubuntu-latest
@@ -32,29 +46,13 @@ jobs:
     environment: "VPS Prod" # Refer to the environment
 
     steps:
-      - uses: appleboy/ssh-action@v0.1.7 # Specify a version
+      - uses: appleboy/ssh-action@v0.1.7
         with:
           host: ${{ secrets.VPS_IP }}
-          username: "root" # Adjust to your actual username
-          password: ${{ secrets.VPS_PASSWORD }} # Use SSH password or private key
+          username: "root"
+          password: ${{ secrets.VPS_PASSWORD }}
           port: 22
           script: |
             cd /home/ubuntu/ris/PublishWhere
             git pull origin main
             /root/.nvm/versions/node/v20.12.2/bin/pm2 restart all
-            exit
-# # All environment variables are stored as secrets in GitHub Secrets
-# env:
-#   MONGODB_URL: ${{ secrets.MONGODB_URL }}
-#   NODE_ENV: "production"
-#   NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
-#   NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
-#   GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
-#   GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-#   BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
-#   BUCKET_REGION: ${{ secrets.BUCKET_REGION }}
-#   BUCKET_ACCESS_KEY: ${{ secrets.BUCKET_ACCESS_KEY }}
-#   BUCKET_SECRET_ACCESS_KEY: ${{ secrets.BUCKET_ACCESS_KEY }}
-#   URL_SOCIAL_MEDIA_CONNECTION_SERVICE: ${{ secrets.URL_SOCIAL_MEDIA_CONNECTION_SERVICE }}
-#   VPS_IP: ${{ secrets.VPS_IP }}
-#   VPS_PASSWORD: ${{ secrets.VPS_PASSWORD }}
