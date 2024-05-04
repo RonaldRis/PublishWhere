@@ -24,23 +24,22 @@ jobs:
   #       working-directory: main-app # Change directory to your application folder
   #       run: npm ci && npm run build # Run build script
 
-  vps-pull-restart:
-    runs-on: ubuntu-latest
-    # needs: [build-and-test] # This job depends on the successful completion of build-and-deploy
-    steps:
-      - uses: appleboy/ssh-action@master # Action to connect to VPS via SSH
-        with:
-          host: ${{ secrets.VPS_IP }} # Replace with your VPS hostname or IP
-          username: "root" # Replace with your VPS username
-          password: ${{ secrets.VPS_PASSWORD }} # Access password stored as secret
-      - name: Connect to VPS (SSH)
-        run: | # Conditional script to ensure successful build and handle errors
-          cd /home/ubuntu/ris/PublishWhere  # Change directory to deployment location
-          git pull origin main             # Pull updates from the main branch
-          pm2 restart all                 # Restart the application using pm2
-      - name: Disconnect from VPS
-        run: exit # Gracefully disconnect from VPS
-
+    vps-pull-restart:
+      runs-on: ubuntu-latest
+      # needs: [build-and-test]
+      steps:
+        - uses: appleboy/ssh-action@v0.1.7 # Specify a version
+          with:
+            host: ${{ secrets.VPS_HOST }}
+            username: "root" # Adjust to your actual username
+            password: ${{ secrets.VPS_PASSWORD }} # Use SSH password or private key
+            port: 22
+            script: |
+              cd /path/to/app
+              git pull origin main
+              npm install
+              npm run build
+              pm2 restart all
 # All environment variables are stored as secrets in GitHub Secrets
 env:
   MONGODB_URL: ${{ secrets.MONGODB_URL }}
@@ -54,3 +53,5 @@ env:
   BUCKET_ACCESS_KEY: ${{ secrets.BUCKET_ACCESS_KEY }}
   BUCKET_SECRET_ACCESS_KEY: ${{ secrets.BUCKET_ACCESS_KEY }}
   URL_SOCIAL_MEDIA_CONNECTION_SERVICE: ${{ secrets.URL_SOCIAL_MEDIA_CONNECTION_SERVICE }}
+  VPS_IP: ${{ secrets.VPS_IP }}
+  VPS_PASSWORD: ${{ secrets.VPS_PASSWORD }}
