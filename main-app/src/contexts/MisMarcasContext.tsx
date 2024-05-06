@@ -16,6 +16,7 @@ interface IGlobalContextProps {
     isMarcaLoading: boolean;
     setIsMarcaLoading: React.Dispatch<React.SetStateAction<boolean>>;
     fetchRefreshMarcas:  () => void; 
+    updateMarcaGlobal: () => void;
     isOpenModalNuevaMarca: boolean;
     setIsOpenModalNuevaMarca: React.Dispatch<React.SetStateAction<boolean>>;
 
@@ -33,6 +34,7 @@ const MisMarcasContext = React.createContext<IGlobalContextProps>
         isMarcaLoading: false,
         setIsMarcaLoading: () => { },
         fetchRefreshMarcas: async () =>{},
+        updateMarcaGlobal: () => {},
         isOpenModalNuevaMarca: false,
         setIsOpenModalNuevaMarca: () => {},
     });
@@ -60,6 +62,17 @@ const MisMarcasProvider = ({ children }: { children: ReactNode }) => {
         setIsMarcaLoading(false);
 
     };
+
+    const updateMarcaGlobal = () => {
+        //Actualizo la marca global seleccionada
+        if (marcaGlobalSeleccionada) {
+          const marcaEncontrada = marcas.find(
+            (marca) => marca._id === marcaGlobalSeleccionada._id
+          );
+          if (marcaEncontrada) setMarcaGlobalSeleccionada(marcaEncontrada);
+          setMarcaGlobalSeleccionada(null);
+        }
+      };
 
 
 
@@ -89,6 +102,7 @@ const MisMarcasProvider = ({ children }: { children: ReactNode }) => {
             isMarcaLoading: isMarcaLoading,
             setIsMarcaLoading: setIsMarcaLoading,
             fetchRefreshMarcas: fetchRefreshMarcas,
+            updateMarcaGlobal: updateMarcaGlobal,
             isOpenModalNuevaMarca: isOpenModalNuevaMarca,
             setIsOpenModalNuevaMarca: setIsOpenModalNuevaMarca,
         }}>

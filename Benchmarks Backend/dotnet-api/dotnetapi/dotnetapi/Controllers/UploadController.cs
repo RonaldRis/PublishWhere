@@ -21,8 +21,8 @@ namespace dotnetapi.Controllers
         }
 
         [HttpPost]
-        [RequestSizeLimit(bytes: 2_147_483_648)]
-        public async Task<IActionResult> Post(IFormFile image, IFormFile video, [FromForm] string id)
+        [RequestSizeLimit(bytes: 4_147_483_648)]
+        public async Task<IActionResult> Post([FromForm] string id, IFormFile? image=null, IFormFile? video = null)
         {
             if (image == null && video == null)
             {

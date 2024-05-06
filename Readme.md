@@ -2,9 +2,10 @@
 
 # Microservicios
     Propios
-    *   main-app                            Port 3000
-    *   socialmedia-connection-service      Port 3001
-    *   content-upload-service              Port 3002
+    *   main-app                            Puerto 3000
+    *   socialmedia-connection-service      Puerto 3001
+    *   content-upload-service              Puerto 3002
+    *   cron-service                        Puerto 3003
     Externos
     *   S3 Bucket                           URL
     *   Mongo Database                      URL

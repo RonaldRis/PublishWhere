@@ -15,3 +15,89 @@ AGREGAR LAS HISTORIAS:
     * Conexión a la base de datos
     * Definir schemas de la base de datos 
     * Diseñar sistema???? 
+
+
+
+
+SPRINT 0 - DARLE SEMANAS -3 SEMANAS - ELEGIR TECNOLOGIA, INVESTIGAR Y ESO
+
+
+
+HISTORIAS DE USUARIO FINALES
+
+
+Analisis inicial
+	Diseño de la solución
+    Selección de tecnologías
+
+
+Configuración de entorno
+	Creación de la estructura del proyectos
+	Selección de librerías auxiliares (?????)
+	Configuración de la base de datos
+	Diagrama entidad-relación
+	Librerias UI 
+	
+	
+	
+	
+Autenticación de usuarios
+	Selección de metodo de autentificación
+	Iniciar sesión
+	Cerrar sesión
+	
+	
+Administración de marcas
+	Crear una marcas
+	Visualizar las marcas
+	Seleccionar una marca global
+	Modificar el nombre de una marca 
+	Agregar miembros a la marca (admin)
+    Ver miembros del equipo
+	Eliminar miembros a la marca (admin)
+	
+Administración de redes sociales de una marca
+	Agregar cuenta de YouTube 
+	Agregar cuenta de Facebook
+	Agregar cuenta de Tiktok
+	Agregar cuenta de Instagram 
+	Agregar cuenta de Twitter (X)
+    Eliminar cuenta de red social (admin)
+	Actualizar tokens de acceso automaticamente 
+
+
+
+Biblioteca digital compartida
+	Configurar bucket
+	Subir archivos de manera segura
+    Ver imagenes subidas
+    Ver videos subidos
+    Ordenar por tipo de archivo 
+    Buscar archivos por nombre 
+    Visualizar quién subió los archivos
+	Clasificar los archivos por etiquetas
+	Marcar archivos como favoritos
+	Eliminar archivos 
+	Visualizar los archivos que no han sido usado en publicaciones
+	Visualizar los archivos que ya han sido usado en publicaciones
+	Visualizar los archivos que han sido programados para publicar
+	Descargar achivos subidos 
+
+
+	
+	
+	
+	
+Publicación en redes sociales
+	Publicar un video en Facebook 
+	Publicar un video en TikTok 
+	Publicar un video en Instagram 
+	Publicar un video en YouTube
+	Publicar un video en Twitter (X)
+
+	Publicar una imagen en Facebook 
+	Publicar una imagen en Instagram 
+	Publicar una imagen en Twitter (X)
+	
+
+Despliegue

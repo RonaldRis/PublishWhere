@@ -2,16 +2,7 @@ import mongoose, { Schema } from "mongoose";
 import { IUser } from "./user.model";
 import { IFile } from "./file.model";
 import { IOauth } from "./Oauth.model";
-
-export interface ISocialMedia {
-    _id: string;
-    provider: string;
-    name: string;
-    imgUrl: string;
-    username: string;
-    oauthData?: IOauth;
-}
-
+import { ISocialMediaAccount } from "./socialMediaAccount.model";
 
 export interface IMarca {
     _id: string;
@@ -19,7 +10,7 @@ export interface IMarca {
     admin: string | IUser;
     equipo: string[] | IUser[]; // References to other User documents
     files: string[] | IFile[]; // References to File documents
-    socialMedia: ISocialMedia[]
+    socialMedia: ISocialMediaAccount[]
 }
 
 const marcaSchema: Schema = new Schema({

@@ -82,12 +82,12 @@ export function FileCardActions({
             }}
             className="flex gap-1 items-center cursor-pointer"
           >
-            <FileIcon className="w-4 h-4" /> Download
+            <FileIcon className="w-4 h-4" /> Descargar
           </DropdownMenuItem>
 
           <DropdownMenuItem
             onClick={() => {
-              toast.error("Not implemented yet");
+              toast.error("Todavia no se ha implementado");
               // toggleFavorite({
               //   fileId: file._id,
               // });
@@ -96,11 +96,11 @@ export function FileCardActions({
           >
             {isFavorited ? (
               <div className="flex gap-1 items-center">
-                <StarIcon className="w-4 h-4" /> Unfavorite
+                <StarIcon className="w-4 h-4" /> Quitar favorito
               </div>
             ) : (
               <div className="flex gap-1 items-center">
-                <StarHalf className="w-4 h-4" /> Favorite
+                <StarHalf className="w-4 h-4" /> Añadir favorito
               </div>
             )}
           </DropdownMenuItem>
@@ -119,11 +119,11 @@ export function FileCardActions({
           >
             {file.shouldDelete ? (
               <div className="flex gap-1 text-green-600 items-center cursor-pointer">
-                <UndoIcon className="w-4 h-4" /> Restore
+                <UndoIcon className="w-4 h-4" /> Restaurar
               </div>
             ) : (
               <div className="flex gap-1 text-red-600 items-center cursor-pointer">
-                <TrashIcon className="w-4 h-4" /> Delete
+                <TrashIcon className="w-4 h-4" /> Eliminar
               </div>
             )}
           </DropdownMenuItem>

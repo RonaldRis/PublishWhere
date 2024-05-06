@@ -85,8 +85,6 @@ export async function postOauthDataActionYoutube({
           access_token: oauthData.access_token,
         });
 
-        console.log("\n\nResponse.data.items: ");
-        console.log(response.data.items);
 
         if (response.data.items && response.data.items.length == 0) {
           return {
@@ -111,18 +109,15 @@ export async function postOauthDataActionYoutube({
             _idOnProvider: channel.id,
             provider: "youtube",
           });
-          console.log("ExistSocialMedia: ", existSocialMedia);
 
           //Verifico que existe
           if (existSocialMedia) {
-            console.log("El canal de youtube ya existe en la base de datos");
 
             const oldOauth = existSocialMedia.oauthID;
             //Elimino el old oauth
             await Oauth.deleteMany({_id: oldOauth._id});
 
             existSocialMedia.oauthID = oauthID;
-            await existSocialMedia.ouathID.save();
             
             existSocialMedia.name = channel.snippet?.title;
             existSocialMedia.description = channel.snippet?.description;
