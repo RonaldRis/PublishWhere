@@ -21,7 +21,7 @@ builder.Services.Configure<FormOptions>(x =>
 builder.WebHost.ConfigureKestrel(serverOptions =>
 {
     // Aumenta el tamaño máximo del cuerpo de la solicitud para soportar archivos grandes
-    serverOptions.Limits.MaxRequestBodySize = 2L * 1024 * 1024 * 1024; // 2 GB
+    serverOptions.Limits.MaxRequestBodySize = 2L * 1024 * 1024 * 1024*3; // 2 GB
 
     // Aumenta los tiempos de espera para conexiones lentas
     serverOptions.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(10);

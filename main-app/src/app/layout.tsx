@@ -38,7 +38,7 @@ export default async function RootLayout({
                 <Suspense>
                   <HeaderDynamic />
                 </Suspense>
-                <main className="w-full h-full">{children}</main>
+                <main className="w-full h-full pt-4">{children}</main>
                 <Toaster position="bottom-right" richColors />
               </CalendarioProvider>
             </BibliotecaProvider>

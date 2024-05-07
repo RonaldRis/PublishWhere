@@ -141,9 +141,9 @@ export function FileBrowser({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All</SelectItem>
-                  <SelectItem value="image">Image</SelectItem>
-                  <SelectItem value="video">Video</SelectItem>
+                  <SelectItem value="all">Todos</SelectItem>
+                  <SelectItem value="image">Imágenes</SelectItem>
+                  <SelectItem value="video">Videos</SelectItem>
                 </SelectContent>
               </Select>
             </div>

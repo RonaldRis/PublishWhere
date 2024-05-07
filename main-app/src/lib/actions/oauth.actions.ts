@@ -12,9 +12,33 @@ import {
   ISocialMediaAccount,
   ISocialMediaAccountPost,
 } from "../models/socialMediaAccount.model";
-import mongoose from "mongoose";
+import mongoose, { Document } from "mongoose";
 
-export async function postOauthDataAction({
+async function agregarSocialMediaAccoutToMarca(social:Document, marcaId:string ){
+  const marcaQuery = await Marca.findById(marcaId).populate('socialMedia');
+
+
+
+  if (marcaQuery) {
+    const channelExists = marcaQuery.socialMedia.some((account:any) => 
+                account._idOnProvider === (social as any)._idOnProvider 
+                && account.provider === (social as any).provider);
+  
+    // Si el canal no existe, lo agregamos
+    if (!channelExists) {
+      marcaQuery.socialMedia.push(social._id);
+      await marcaQuery.save();
+      console.log("Canal de youtube agregado a la marca");
+    } else {
+      console.log("El canal de youtube ya existe en la marca");
+    }
+  }
+
+
+}
+
+
+export async function postOauthDataActionYoutube({
   marcaId,
   userId,
   oauthData,
@@ -61,8 +85,6 @@ export async function postOauthDataAction({
           access_token: oauthData.access_token,
         });
 
-        console.log("\n\nResponse.data.items: ");
-        console.log(response.data.items);
 
         if (response.data.items && response.data.items.length == 0) {
           return {
@@ -74,11 +96,47 @@ export async function postOauthDataAction({
 
         ///Gaurdo el oauthData en la base de datos
 
-        await response.data.items?.forEach(async (channel) => {
-         
+        var oauthID = new Oauth(oauthData);
+        await oauthID.save();
 
-          //TODO: URGENTE THIS IS NOT WORKING -Almacenar cuenta de youtube en la base de datos
-          const socialMediaAccountQuery = new SocialMediaAccount({
+
+
+
+        await response.data.items?.forEach(async (channel) => {
+          //Creo un canal de youtube
+
+          const existSocialMedia = await SocialMediaAccount.findOne({
+            _idOnProvider: channel.id,
+            provider: "youtube",
+          });
+
+          //Verifico que existe
+          if (existSocialMedia) {
+
+            const oldOauth = existSocialMedia.oauthID;
+            //Elimino el old oauth
+            await Oauth.deleteMany({_id: oldOauth._id});
+
+            existSocialMedia.oauthID = oauthID;
+            
+            existSocialMedia.name = channel.snippet?.title;
+            existSocialMedia.description = channel.snippet?.description;
+            existSocialMedia.thumbnail = channel.snippet?.thumbnails?.default?.url;
+            existSocialMedia.username = channel.snippet?.customUrl;
+            existSocialMedia.urlPage = `https://www.youtube.com/channel/${channel.id}`;
+            existSocialMedia.kind = "channel";
+            await existSocialMedia.save();
+
+            await agregarSocialMediaAccoutToMarca(existSocialMedia, marcaId);
+            
+
+            return 1;
+          }
+
+          
+
+          //No existe el canal en la base de datos, lo creo y guardo sus datos del token
+          const socialMediaAccountQueryNew = new SocialMediaAccount({
             _idOnProvider: channel.id,
             name: channel.snippet?.title,
             description: channel.snippet?.description,
@@ -88,35 +146,17 @@ export async function postOauthDataAction({
             username: channel.snippet?.customUrl,
             urlPage: `https://www.youtube.com/channel/${channel.id}`,
             kind: "channel",
+            oauthID: oauthID,
+            marcaId: marcaId,
           });
 
-          socialMediaAccountQuery.oauth.create(oauthData);
+          await socialMediaAccountQueryNew.save();
+          console.log("Canal de youtube guardado en la base de datos");
+
+          //Agrego el canal de youtube a la marca
+          await agregarSocialMediaAccoutToMarca(socialMediaAccountQueryNew, marcaId);
 
 
-          await socialMediaAccountQuery.save();
-
-
-
-          const socialMediaAccountResult = JSON.parse(
-            JSON.stringify(socialMediaAccountQuery)
-          ) as ISocialMediaAccount;
-
-
-          console.log("SocialMediaAccountResult: ", socialMediaAccountResult);
-
-
-          // al campo de socialMedia de la marca hacer un push del id de la cuenta de youtube
-          const marcaQuery = await Marca.findByIdAndUpdate(marcaId, {
-            $push: { socialMedia: socialMediaAccountResult._id },
-          });
-
-          ///INVERTIR DE TODO A NADA: -> OBTENER LA MARCA, AGREGAR 
-
-
-
-          ///LUEGO TENER CUIDADO DE NO AGREGAR UN CANAL QUE YA ESTÁ EN LA BASE DE DATOS DE LA MISMA MARCA
-
-          console.log("This is the channel: ", channel);
         });
 
         return {
@@ -132,7 +172,6 @@ export async function postOauthDataAction({
       //Llamar al servicio de youtube para conseguir el token de mayor duración
       //https://developers.google.com/identity/protocols/oauth2/web-server#offline
     }
-
 
     return { data: null, isOk: true, message: "FUNCIONAAA CARAJO" };
   } catch (error: any) {

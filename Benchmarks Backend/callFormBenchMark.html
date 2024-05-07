@@ -106,8 +106,10 @@ function sendDataDOTNET(image, video, id) {
     })
     .then(response => {
         if (!response.ok) {
+            console.error(response);
             throw new Error('Network response was not ok');
         }
+        console.log(response);
         return response; // Retorna la respuesta para su verificación posterior
     })
     .catch(error => {
@@ -119,8 +121,12 @@ function sendDataDOTNET(image, video, id) {
 // Función para enviar datos
 function sendDataSpringBoot(image, video, id) {
     const formData = new FormData();
-    formData.append('image', image);
-    formData.append('video', video);
+    if (image) {
+        formData.append('image', image);
+    }
+    if (video) {
+        formData.append('video', video);
+    }
     formData.append('id', id);
 
     // Implementación básica de fetch para enviar datos
@@ -150,7 +156,7 @@ function checkBackendStatus() {
     const backends = [
         { name: 'Express', url: 'http://localhost:5000/upload' },
         { name: '.NET', url: 'http://localhost:5057/upload' },
-        { name: 'Spring Boot', url: 'http://localhost:6007/upload' }
+        // { name: 'Spring Boot', url: 'http://localhost:6007/upload' }
     ];
 
     backends.forEach(backend => {
