@@ -22,7 +22,7 @@ jobs:
 
       - name: Dependencies and Build Application
         working-directory: main-app
-        run: npm ci && npm run build
+        run: npx @next/codemod built-in-next-font . && npm ci && npm run build
         env:
           MONGODB_URL: ${{ secrets.MONGODB_URL }}
           NODE_ENV: "production"
