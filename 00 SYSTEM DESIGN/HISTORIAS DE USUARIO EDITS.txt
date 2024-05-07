@@ -3,101 +3,106 @@ PONDERACIÓN
     1   GET-DELETE Backend-Fronted
     2   POST-PUT Backend-Fronted una tabla
     3   POST-PUT Backend-Fronted entidades que dependen de otras entidades
-    5   Integración con software de terceros (GET-DELET)
+    5   Integración con software de terceros (GET-DELETE)
     7   Integración con software de terceros (POST-PUT)
-
+   
+GET-DELETE Backend-Fronted
+POST-PUT Backend-Fronted una tabla
+POST-PUT Backend-Fronted entidades que dependen de otras entidades
+Integración con software de terceros (GET-DELETE)
+Integración con software de terceros (POST-PUT)
 
 
 SPRINT 0
-    
-
-AGREGAR LAS HISTORIAS:
+    AGREGAR LAS HISTORIAS:
     * Conexión a la base de datos
     * Definir schemas de la base de datos 
     * Diseñar sistema???? 
+SPRINT 0 - DARLE SEMANAS -3 SEMANAS - ELEGIR TECNOLOGIA, INVESTIGAR Y ESOHISTORIAS DE USUARIO FINALES
 
 
-
-
-SPRINT 0 - DARLE SEMANAS -3 SEMANAS - ELEGIR TECNOLOGIA, INVESTIGAR Y ESO
-
-
-
-HISTORIAS DE USUARIO FINALES
+HISTORIAS DE USUARIO 
 
 
 Analisis inicial
-	Diseño de la solución
-    Selección de tecnologías
-
+Diseño de la solución
+Selección de tecnologías
 
 Configuración de entorno
-	Creación de la estructura del proyectos
-	Selección de librerías auxiliares (?????)
-	Configuración de la base de datos
-	Diagrama entidad-relación
-	Librerias UI 
-	
-	
-	
-	
+Creación de la estructura repositorio
+Configuración de la base de datos
+Diagrama entidad-relación
+Libreria de UI
+
 Autenticación de usuarios
-	Selección de metodo de autentificación
-	Iniciar sesión
-	Cerrar sesión
-	
-	
+Selección de metodo de autentificación
+Iniciar sesión
+Cerrar sesión
+Verificar sesión en las páginas dentro de la aplicación
+
 Administración de marcas
-	Crear una marcas
-	Visualizar las marcas
-	Seleccionar una marca global
-	Modificar el nombre de una marca 
-	Agregar miembros a la marca (admin)
-    Ver miembros del equipo
-	Eliminar miembros a la marca (admin)
-	
+Crear una marcas
+Visualizar las marcas
+Seleccionar una marca global
+Modificar el nombre de una marca 
+Agregar miembros a la marca (admin)
+Ver miembros del equipo
+Eliminar miembros a la marca (admin)
+
 Administración de redes sociales de una marca
-	Agregar cuenta de YouTube 
-	Agregar cuenta de Facebook
-	Agregar cuenta de Tiktok
-	Agregar cuenta de Instagram 
-	Agregar cuenta de Twitter (X)
-    Eliminar cuenta de red social (admin)
-	Actualizar tokens de acceso automaticamente 
-
-
+Agregar cuenta de YouTube 
+Agregar cuenta de Facebook
+Agregar cuenta de Tiktok
+Agregar cuenta de Instagram 
+Agregar cuenta de Twitter (X)
+Eliminar cuenta de red social (admin)
+Actualizar tokens de acceso automaticamente 
 
 Biblioteca digital compartida
-	Configurar bucket
-	Subir archivos de manera segura
-    Ver imagenes subidas
-    Ver videos subidos
-    Ordenar por tipo de archivo 
-    Buscar archivos por nombre 
-    Visualizar quién subió los archivos
-	Clasificar los archivos por etiquetas
-	Marcar archivos como favoritos
-	Eliminar archivos 
-	Visualizar los archivos que no han sido usado en publicaciones
-	Visualizar los archivos que ya han sido usado en publicaciones
-	Visualizar los archivos que han sido programados para publicar
-	Descargar achivos subidos 
+Configurar bucket
+Subir archivos de manera segura
+Ver imagenes subidas
+Ver videos subidos
+Ordenar por tipo de archivo 
+Buscar archivos por nombre 
+Visualizar quién subió los archivos
+Clasificar los archivos por etiquetas
+Marcar archivos como favoritos
+Eliminar archivos 
+Visualizar los archivos que no han sido usado en publicaciones
+Visualizar los archivos que ya han sido usado en publicaciones
+Visualizar los archivos que han sido programados para publicar
+Descargar achivos subidos 
 
-
-	
-	
-	
-	
 Publicación en redes sociales
-	Publicar un video en Facebook 
-	Publicar un video en TikTok 
-	Publicar un video en Instagram 
-	Publicar un video en YouTube
-	Publicar un video en Twitter (X)
-
-	Publicar una imagen en Facebook 
-	Publicar una imagen en Instagram 
-	Publicar una imagen en Twitter (X)
-	
+Publicar un video en Facebook 
+Publicar un video en TikTok 
+Publicar un video en Instagram 
+Publicar un video en YouTube
+Publicar un video en Twitter (X)
+Publicar una imagen en Facebook 
+Publicar una imagen en Instagram 
+Publicar una imagen en Twitter (X)
+Publicar una imagen en multiples redes sociales 
+Publicar un video en múltiples redes sociales 
+Publicar una imagen o video en una fecha futura
+Visualizar las publicaciones por marca en forma de calendario
+Calendario público no editable para enviar a clientes
+Publicar múltiples fotos en Facebook 
+Publicar múltiples fotos en Instagram 
+Publicar múltiples fotos en Twitter (X) 
+Publicar múltiples videos en Facebook
+Publicar múltiples videos en Instagram 
+Publicar múltiples videos en Twitter
 
 Despliegue
+Comprar dominio
+Comprar VPS 
+Configurar seguridad básica
+Instalar software en el VPS 
+Configurar repositorio
+Crear los archivos .env para producción 
+Configurar sitios web y DNS 
+Iniciar las aplicaciones utilizando un administrador de procesos
+Configurar monitorización y rendimiento 
+Configurar CI/CD 
