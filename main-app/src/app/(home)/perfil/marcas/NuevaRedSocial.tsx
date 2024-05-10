@@ -10,14 +10,20 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Facebook, FacebookIcon, Instagram, InstagramIcon, TwitterIcon, YoutubeIcon } from "lucide-react";
+import {
+  Facebook,
+  FacebookIcon,
+  Instagram,
+  InstagramIcon,
+  TwitterIcon,
+  YoutubeIcon,
+} from "lucide-react";
 
 import Image from "next/image";
 import Link from "next/link";
 import { use } from "passport";
 import { fetch_URL_SOCIAL_MEDIA_CONNECTION_SERVICE } from "@/lib/actions/env.actions";
 import { set } from "mongoose";
-
 
 interface IsocialMediaData {
   name: string;
@@ -26,17 +32,18 @@ interface IsocialMediaData {
 }
 
 function NuevaRedSocial() {
-  const [backendUrl, setBackendUrl] = useState<string>("http://localhost:3001/auth/");
+  const [backendUrl, setBackendUrl] = useState<string>(
+    "http://localhost:3001/auth/"
+  );
 
   useEffect(() => {
     const fetchData = async () => {
       const res = await fetch_URL_SOCIAL_MEDIA_CONNECTION_SERVICE();
 
-      setBackendUrl(res.data!+"/auth/");
-    }
+      setBackendUrl(res.data! + "/auth/");
+    };
     fetchData();
-  }, []); 
-
+  }, []);
 
   const socialmente: IsocialMediaData[] = [
     {
@@ -44,16 +51,16 @@ function NuevaRedSocial() {
       imageUrl: "https://icons8.com/icon/19318/youtube",
       url: backendUrl + "youtube",
     },
-    {
-      name: "Facebook",
-      imageUrl: "https://icons8.com/icon/118497/facebook",
-      url: backendUrl + "facebook",
-    },
-    {
-      name: "Instagram",
-      imageUrl: "https://icons8.com/icon/32323/instagram",
-      url: backendUrl + "instagram",
-    },
+    // {
+    //   name: "Facebook",
+    //   imageUrl: "https://icons8.com/icon/118497/facebook",
+    //   url: backendUrl + "facebook",
+    // },
+    // {
+    //   name: "Instagram",
+    //   imageUrl: "https://icons8.com/icon/32323/instagram",
+    //   url: backendUrl + "instagram",
+    // },
     {
       name: "Twitter X",
       imageUrl: "https://icons8.com/icon/phOKFKYpe00C/twitterx",
@@ -67,14 +74,16 @@ function NuevaRedSocial() {
   ];
 
   return (
-    <Card className="container">
-      <CardHeader>
-        <CardTitle>Agregar nueva red social </CardTitle>
-        <CardDescription>Selecciona una red social</CardDescription>
-      </CardHeader>
+    <div >
+      <br/>
+      <br/>
+      
+      <h1 className="font-bold">Agregar nueva red social</h1>
+      <br/>
+      <br/>
 
-      <CardContent className="h-2/3 ">
-        <div className="flex gap-8 flex-wrap items-center justify-between">
+      <div className="h-2/3 ">
+        <div className="flex gap-8 flex-wrap items-center justify-evenly">
           {socialmente.map((item: IsocialMediaData) => (
             <Link key={item.url} href={item.url}>
               <Button className="flex flex-col items-center justify-center bg-black">
@@ -83,14 +92,8 @@ function NuevaRedSocial() {
             </Link>
           ))}
         </div>
-      </CardContent>
-
-      <Separator className="my-2" />
-
-      <CardFooter>
-        <Button className="w-full">Nueva marca</Button>
-      </CardFooter>
-    </Card>
+      </div>
+    </div>
   );
 }
 

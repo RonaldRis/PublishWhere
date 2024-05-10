@@ -95,3 +95,34 @@ export const statuses = [
     icon: CircleX,
   },
 ];
+
+
+
+//TODO: ASOCIAL A YOUTUBE, FACEBOOK, INSTAGRAM,TIKTOK, TWITTER
+export const labelsClasses = [
+  "indigo",
+  "gray",
+  // "green",
+  "blue",
+  "red",
+  "purple",
+];
+
+//convertir de Nombre de red social a color:
+export const labelsColorToProvider: Record<string,string> ={
+  "blue": "twitter",
+  "gray": "tiktok",
+  "indigo": "facebook",
+  "red": "youtube",
+  "purple": "instagram",
+};
+
+// Convertir de color a nombre de red social:
+export const labelsProviderToColor: Record<string, string> = {
+  "twitter": "blue",
+  "tiktok": "gray",
+  "facebook": "indigo",
+  "youtube": "red",
+  "instagram": "purple",
+};
+

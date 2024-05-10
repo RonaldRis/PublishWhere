@@ -67,7 +67,7 @@ export default function CallbackRedSocialPage() {
         if (response.isOk) {
           toast.success(response.message!);
           await fetchRefreshMarcas();
-          await updateMarcaGlQWJLKMQL,´Ñobal();  //TODO: SHIT HAPPENS! Y NO SE ACTUALIZA LA MARCCA GLOBAL SELECCIONADA
+          // await updateMarcaGlQWJLKMQL,´Ñobal();  //TODO: SHIT HAPPENS! Y NO SE ACTUALIZA LA MARCCA GLOBAL SELECCIONADA
 
           //Redirecciono a la pagina de marcas
           router.push("/perfil/marcas");

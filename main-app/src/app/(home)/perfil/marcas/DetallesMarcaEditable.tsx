@@ -21,7 +21,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { CircleX, Pencil } from "lucide-react";
+import { CircleX, DeleteIcon, Pencil } from "lucide-react";
 import {
   deleteMarcaAction,
   deleteTeamMembersOnMarcaAction,
@@ -34,6 +34,51 @@ import { Input } from "@/components/ui/input";
 import EquipoCrud from "./EquipoCrud";
 import Link from "next/link";
 import NuevaRedSocial from "./NuevaRedSocial";
+import { ISocialMediaAccount } from "@lib/models/socialMediaAccount.model";
+import { map } from "zod";
+import { labelsProviderToColor } from "@lib/constantes";
+
+function RedSocialCardItem({ social }: { social: ISocialMediaAccount }) {
+  const xd = [1, 1, 1, 1, 1, 1, 1, 1];
+
+  console.log(social);
+
+  const color = labelsProviderToColor[social.provider];
+
+  const handlerDeleteMarcaClick = async () => {
+    toast.info("No implementado aún");
+    //TODO: delete marca // Only admin
+
+    // const result = await deleteMarcaAction(social._id);
+    // if (!result.isOk) {
+    //   toast.error(result.message!);
+    //   return;
+    // }
+
+    // toast.success("Red social eliminada correctamente");
+  };
+
+  return (
+    <div>
+      <Card className={`w-auto h-auto bg-${color}-500`}>
+        <CardContent className="flex flex-col items-center p-3">
+          <Link href={social.urlPage!} target="_blank">
+            <p className="text-center font-bold m-0 text-xl pb-2">
+              {social.name}
+            </p>
+          </Link>
+        </CardContent>
+      </Card>
+      <div className="relative">
+        <p className="text-center">{social.provider}</p>
+        <DeleteIcon
+          className="absolute right-0 top-0 cursor-pointer"
+          onClick={handlerDeleteMarcaClick}
+        />
+      </div>
+    </div>
+  );
+}
 
 function DetallesMarcaEditable() {
   const {
@@ -126,24 +171,18 @@ function DetallesMarcaEditable() {
                   <h1 className="font-bold">Redes sociales</h1>
 
                   {marcaGlobalSeleccionada?.socialMedia.length > 0 && (
-                    <ol className="list-disc list-inside ">
+                    <div className="flex items-center gap-4 flex-wrap justify-evenly">
                       {marcaGlobalSeleccionada.socialMedia.map((social) => (
-                        <li key={social._id}>{social.name}</li>
+                        <RedSocialCardItem key={social._id} social={social} />
                       ))}
-                    </ol>
+                    </div>
                   )}
 
                   {marcaGlobalSeleccionada?.socialMedia.length === 0 && (
                     <p>No hay redes sociales</p>
                   )}
 
-                  <Separator className="my-2" />
 
-                  <div className="flex justify-end">
-                    <Link href="/perfil/marcas/nueva-red-social">
-                      <Button className="">Agregar red social</Button>
-                    </Link>
-                  </div>
                   <NuevaRedSocial />
                 </TabsContent>
                 <TabsContent value="equipo">

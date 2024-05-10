@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 const routerYoutube = require("./routes/youtubeV3Oauth");
+const routerTikTok = require('./routes/tiktokOauth');
 
 
 
@@ -26,6 +27,7 @@ app.get("/auth", (req, res) => {
   res.json({message: "http://localhost:3001/auth/youtube"})
 });
 app.use("/auth", routerYoutube);
+app.use("/auth",routerTikTok)
 
 
 const PORT = process.env.PORT || 3001;
