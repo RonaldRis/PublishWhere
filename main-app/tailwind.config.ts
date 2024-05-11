@@ -22,6 +22,7 @@ const config = {
     // to the safe list so the purge does not remove that
     safelist: [
       ...labelsClasses.map((lbl) => `bg-${lbl}-500`),
+      ...labelsClasses.map((lbl) => `border-${lbl}-500`),
       ...labelsClasses.map((lbl) => `bg-${lbl}-400`),
       ...labelsClasses.map((lbl) => `bg-${lbl}-200`),
       ...labelsClasses.map((lbl) => `text-${lbl}-400`),

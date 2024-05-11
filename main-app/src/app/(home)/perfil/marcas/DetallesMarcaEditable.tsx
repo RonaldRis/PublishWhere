@@ -5,6 +5,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -37,11 +38,9 @@ import NuevaRedSocial from "./NuevaRedSocial";
 import { ISocialMediaAccount } from "@lib/models/socialMediaAccount.model";
 import { map } from "zod";
 import { labelsProviderToColor } from "@lib/constantes";
+import Image from "next/image";
 
 function RedSocialCardItem({ social }: { social: ISocialMediaAccount }) {
-  const xd = [1, 1, 1, 1, 1, 1, 1, 1];
-
-  console.log(social);
 
   const color = labelsProviderToColor[social.provider];
 
@@ -59,24 +58,31 @@ function RedSocialCardItem({ social }: { social: ISocialMediaAccount }) {
   };
 
   return (
-    <div>
-      <Card className={`w-auto h-auto bg-${color}-500`}>
-        <CardContent className="flex flex-col items-center p-3">
-          <Link href={social.urlPage!} target="_blank">
-            <p className="text-center font-bold m-0 text-xl pb-2">
-              {social.name}
-            </p>
-          </Link>
-        </CardContent>
-      </Card>
-      <div className="relative">
-        <p className="text-center">{social.provider}</p>
-        <DeleteIcon
-          className="absolute right-0 top-0 cursor-pointer"
-          onClick={handlerDeleteMarcaClick}
-        />
-      </div>
-    </div>
+    <Card className={`w-40 h-full border-4 border-${color}-500`}>
+      <CardContent className="flex flex-col justify-between items-center p-3 h-full">
+        <Link className="flex flex-col justify-between items-center" href={social.urlPage ?? "#"} target="_blank">
+          <Image
+            src={social.thumbnail}
+            width={50}
+            height={50}
+            className="rounded-full"
+            alt="Description of the image"
+            style={{ objectFit: "contain" }}
+          />
+
+          <p className="text-center font-bold m-0 text-xl pb-2">
+            {social.name}
+          </p>
+        </Link>
+        <div className="relative w-full">
+          <p className="text-center mx-6">{social.provider}</p>
+          <DeleteIcon
+            className="absolute right-2 top-0 cursor-pointer"
+            onClick={handlerDeleteMarcaClick}
+          />
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -171,7 +177,9 @@ function DetallesMarcaEditable() {
                   <h1 className="font-bold">Redes sociales</h1>
 
                   {marcaGlobalSeleccionada?.socialMedia.length > 0 && (
-                    <div className="flex items-center gap-4 flex-wrap justify-evenly">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 grid-flow-row justify-items-center justify-center">
+
+                      {/* <div className="flex items-center gap-4 flex-wrap justify-evenly"> */}
                       {marcaGlobalSeleccionada.socialMedia.map((social) => (
                         <RedSocialCardItem key={social._id} social={social} />
                       ))}

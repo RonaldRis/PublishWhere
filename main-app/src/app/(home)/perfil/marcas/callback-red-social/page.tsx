@@ -4,6 +4,8 @@ import { MisMarcasContext } from "@/contexts/MisMarcasContext";
 import { postOauthDataActionYoutube } from "@/lib/actions/oauth.actions";
 import { IOauthPost } from "@/lib/models/Oauth.model";
 import { el } from "date-fns/locale";
+import { LoaderCircleIcon } from "lucide-react";
+import { set } from "mongoose";
 import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useContext, useEffect, useMemo, useState } from "react";
@@ -13,7 +15,7 @@ export default function CallbackRedSocialPage() {
   const { data: session } = useSession();
   const userId: string = session?.user.id as string;
 
-  const { marcaGlobalSeleccionada, fetchRefreshMarcas, updateMarcaGlobal } =
+  const { marcaGlobalSeleccionada, fetchRefreshMarcas, updateMarcaGlobal, setMarcaGlobalSeleccionada, marcas } =
     useContext(MisMarcasContext);
   const marcaId = marcaGlobalSeleccionada?._id as string;
 
@@ -67,6 +69,7 @@ export default function CallbackRedSocialPage() {
         if (response.isOk) {
           toast.success(response.message!);
           await fetchRefreshMarcas();
+          await updateMarcaGlobal(marcaId);
           // await updateMarcaGlQWJLKMQL,´Ñobal();  //TODO: SHIT HAPPENS! Y NO SE ACTUALIZA LA MARCCA GLOBAL SELECCIONADA
 
           //Redirecciono a la pagina de marcas
@@ -84,8 +87,9 @@ export default function CallbackRedSocialPage() {
   }, []);
 
   return (
-    <div className="containser mx-auto">
-      <h1>Callback</h1>
+    <div className=" w-full h-full flex justify-center items-center">
+
+      <LoaderCircleIcon className="w-16 h-16 animate-spin" />
 
       {/* Renderiza los parámetros de consulta para verificar que se están recibiendo correctamente */}
       {/* <p>Token: {searchParams.get('token')}</p> */}

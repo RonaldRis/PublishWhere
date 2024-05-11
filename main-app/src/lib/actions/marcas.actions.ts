@@ -14,7 +14,7 @@ import { IServerResponse } from "./ServerResponse";
 export async function fetchMarcaAction(marcaId: string): Promise<IServerResponse<IMarca>> {
     try {
 
-        var result = await Marca.findOne({ _id: marcaId }).populate('admin').populate('equipo');
+        var result = await Marca.findOne({ _id: marcaId }).populate('admin').populate('equipo').populate("socialMedia");
         if (!result) {
             return { data: null, isOk: false, message: "No hay marca" };
         }
