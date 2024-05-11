@@ -3,6 +3,7 @@ import React, { Suspense, use, useContext, useEffect } from 'react';
 
 
 import dynamic from 'next/dynamic';
+import { toast } from 'sonner';
 
 // Importa dinámicamente MarcaSeleccionadaBuscador
 const MarcaSeleccionadaBuscador = dynamic(() => import('@/components/marcas/MarcaSeleccionadaBuscador'));
@@ -10,6 +11,15 @@ const DetallesMarcaEditable = dynamic(() => import('./DetallesMarcaEditable'));
 
 
 function PerfilMarcasPage() {
+
+  //Obtener de manera dinamica del URL el marcaId si existe y actualizarlo
+   useEffect(() => {
+    const marcaId = new URLSearchParams(window.location.search).get('marcaId');
+    if (marcaId) {
+    }
+  }
+  ,[]);
+
 
 
 
