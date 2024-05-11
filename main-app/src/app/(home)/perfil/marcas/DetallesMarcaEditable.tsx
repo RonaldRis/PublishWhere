@@ -58,10 +58,9 @@ function RedSocialCardItem({ social }: { social: ISocialMediaAccount }) {
   };
 
   return (
-  <Card className={`w-40 h-full border-4 border-${color}-500`}>
-    <CardContent className="flex flex-col justify-between items-center p-3 h-full">
-      <div className="flex flex-col justify-center items-center">
-        <Link href={social.urlPage ?? "#"} target="_blank">
+    <Card className={`w-40 h-full border-4 border-${color}-500`}>
+      <CardContent className="flex flex-col justify-between items-center p-3 h-full">
+        <Link className="flex flex-col justify-between items-center" href={social.urlPage ?? "#"} target="_blank">
           <Image
             src={social.thumbnail}
             width={50}
@@ -75,17 +74,16 @@ function RedSocialCardItem({ social }: { social: ISocialMediaAccount }) {
             {social.name}
           </p>
         </Link>
-      </div>
-      <div className="relative w-full">
-        <p className="text-center mx-6">{social.provider}</p>
-        <DeleteIcon
-          className="absolute right-2 top-0 cursor-pointer"
-          onClick={handlerDeleteMarcaClick}
-        />
-      </div>
-    </CardContent>
-  </Card>
-);
+        <div className="relative w-full">
+          <p className="text-center mx-6">{social.provider}</p>
+          <DeleteIcon
+            className="absolute right-2 top-0 cursor-pointer"
+            onClick={handlerDeleteMarcaClick}
+          />
+        </div>
+      </CardContent>
+    </Card>
+  );
 }
 
 function DetallesMarcaEditable() {
