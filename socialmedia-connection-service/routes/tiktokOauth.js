@@ -37,9 +37,9 @@ routerTikTok.get('/tiktok/callback', async (req, res) => {
     const { code, state } = req.query;
     const storedState = req.cookies.csrfState;
 
-    if (state !== storedState) {
-        return res.status(403).json({ error: 'Invalid state parameter' });
-    }
+    // if (state !== storedState) {
+    //     return res.status(403).json({ error: 'Invalid state parameter' });
+    // }
 
     try {
         const response = await fetch('https://www.tiktok.com/v2/auth/access_token/', {
