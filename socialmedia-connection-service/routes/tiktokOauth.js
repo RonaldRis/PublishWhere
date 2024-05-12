@@ -17,19 +17,34 @@ console.log("TIKTOK_API_CALLBACK", TIKTOK_API_CALLBACK);
 
 const routerTikTok = router;
 
-routerTikTok.get('/tiktok', (req, res) => {
+routerTikTok.get('/tiktok2', (req, res) => {
     const csrfState = Math.random().toString(36).substring(2);
     res.cookie('csrfState', csrfState, { maxAge: 60000 });
 
-    const params = new URLSearchParams({
-        client_key: TIKTOK_API_KEY,
+
+    const params = {
+        client_key: process.env.TIKTOK_API_KEY,
         response_type: 'code',
         scope: 'user.info.basic,video.publish,video.upload',
         redirect_uri: TIKTOK_API_CALLBACK,
         state: csrfState
-    });
+    };
 
-    const url = `https://www.tiktok.com/v2/auth/authorize/?${params.toString()}`;
+    const url = `https://www.tiktok.com/v2/auth/authorize?${qs.stringify(params)}`;
+    console.log("urlTIKTOK_OAUTH", url);
+    res.redirect(url);
+});
+
+routerTikTok.get("/tiktok", (req, res) => {
+    const csrfState = Math.random().toString(36).substring(2);
+    res.cookie("csrfState", csrfState, { maxAge: 60000 });
+    let url = "https://www.tiktok.com/v2/auth/authorize/";
+    // the following params need to be in `application/x-www-form-urlencoded` format.
+    url += "?client_key=" + "awo9tmh9u2lhxzsb"; //process.env.TIKTOK_API_KEY;
+    url += "&scope=user.info.basic,user.info.profile,user.info.stats,video.list";
+    url += "&response_type=code";
+    url += "&redirect_uri=" + "https://auth.publishwhere.com/auth/tiktok/callback";
+    url += "&state=" + csrfState;
     res.redirect(url);
 });
 
