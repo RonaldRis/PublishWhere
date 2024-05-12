@@ -15,6 +15,7 @@ import {
   FacebookIcon,
   Instagram,
   InstagramIcon,
+  PlusCircleIcon,
   TwitterIcon,
   YoutubeIcon,
 } from "lucide-react";
@@ -86,8 +87,12 @@ function NuevaRedSocial() {
         <div className="flex gap-8 flex-wrap items-center justify-evenly">
           {socialmente.map((item: IsocialMediaData) => (
             <Link key={item.url} href={item.url}>
-              <Button className="flex flex-col items-center justify-center bg-black">
+              <Button className="flex items-center justify-center bg-black ">
+                <PlusCircleIcon className="mx-2"/>
+                <span className="mx-2">
+
                 {item.name}
+                </span>
               </Button>
             </Link>
           ))}

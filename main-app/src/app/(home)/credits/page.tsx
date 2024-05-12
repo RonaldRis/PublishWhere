@@ -18,4 +18,4 @@ function CeditosPage() {
   );
 }
 
-export default CeditosPage;
+  export default CeditosPage;
