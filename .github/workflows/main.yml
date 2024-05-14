@@ -19,6 +19,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
+
+      - name: Install Global Dependencies
+        run: |
+          npm install -g autoprefixer postcss sharp
+          npm install -g @next/codemod
+          
       - name: Installing shared dependencies
         working-directory: shared-lib
         run: npm ci && npx tsc
