@@ -78,6 +78,7 @@ export default function EventModal() {
       isSchedule: false,
       programmedDate: daySelected?.toDate() as Date,
       programmedTime: daySelected?.toDate() as Date,
+      isPostingInProgress: false,
       socialMedia: selectedRedesSocialesList.map(red => ({
         provider: red.provider,
         idPublicacionOnProvider: "",

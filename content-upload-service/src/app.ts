@@ -8,7 +8,7 @@ import { routerPublish } from './publish/routerPublish';
 connectToDatabase(process.env.MONGODB_URL!);
 
 const app = express();
-const port = process.env.PORT || 3004; // Use environment variables
+const port = process.env.PORT || 3003; // Use environment variables
 
 // Define a simple route for the root path ('/')
 app.get('/', (req: Request, res: Response) => {
