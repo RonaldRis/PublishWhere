@@ -2,7 +2,7 @@
   "name": "socialmedia-connection-service",
   "version": "1.0.0",
   "description": "Auth.PublishWhere.com",
-  "type": "module",
+  "type": "commonjs",
   "main": "server.js",
   
   "directories": {
