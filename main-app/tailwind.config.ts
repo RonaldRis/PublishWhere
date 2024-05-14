@@ -10,6 +10,7 @@ const config = {
     "./components/**/*.{ts,tsx}",
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
+    './src/**/*.{js,ts,jsx,tsx}',
   ],
   variants: {
     extend: {
