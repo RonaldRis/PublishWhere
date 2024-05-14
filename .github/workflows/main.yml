@@ -19,6 +19,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
+      - name: Installing shared dependencies
+        working-directory: shared-lib
+        run: npm ci && npx tsc
 
       - name: Dependencies and Build Application
         working-directory: main-app
