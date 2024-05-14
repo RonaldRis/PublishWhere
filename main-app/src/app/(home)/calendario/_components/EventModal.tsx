@@ -1,7 +1,7 @@
 "use client";
 import { CalendarioContext } from "@/contexts/CalendarioContext";
 import { CheckIcon } from "lucide-react";
-import { labelsClasses } from "@lib/constantes";
+import { labelsClasses } from "@/lib/constantes";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import {
   AlertDialog,
@@ -17,14 +17,14 @@ import { CircleX, Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { MisMarcasContext } from "@/contexts/MisMarcasContext";
 import { toast } from "sonner";
-import { FileBrowser } from "@app/(home)/biblioteca/_components/file-browser";
-import { Button } from "@components/ui/button";
-import { Dialog, DialogContent } from "@components/ui/dialog";
-import { FileCard } from "@app/(home)/biblioteca/_components/file-card";
+import { FileBrowser } from "@/app/(home)/biblioteca/_components/file-browser";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { FileCard } from "@/app/(home)/biblioteca/_components/file-card";
 import RedSocialCardChip from "./RedSocialCardChip";
 import { ISocialMediaAccount } from "shared-lib/models/socialMediaAccount.model";
 import { IPublicationPost } from "shared-lib/models/publicaction.model";
-import { postPublicationAction } from "@lib/actions/publications.actions";
+import { postPublicationAction } from "@/lib/actions/publications.actions";
 import { set } from "mongoose";
 
 

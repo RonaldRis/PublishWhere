@@ -1,4 +1,4 @@
-import { Footer } from "@components/footer";
+import { Footer } from "@/components/footer";
 import Link from "next/link";
 
 function PoliticaPrivacidadPage() {

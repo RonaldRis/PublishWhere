@@ -37,7 +37,7 @@ import Link from "next/link";
 import NuevaRedSocial from "./NuevaRedSocial";
 import { ISocialMediaAccount } from "shared-lib/models/socialMediaAccount.model";
 import { map } from "zod";
-import { labelsProviderToColor } from "@lib/constantes";
+import { labelsProviderToColor } from "@/lib/constantes";
 import Image from "next/image";
 
 function RedSocialCardItem({ social }: { social: ISocialMediaAccount }) {

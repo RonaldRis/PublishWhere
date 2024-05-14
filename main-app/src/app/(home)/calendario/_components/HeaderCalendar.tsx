@@ -2,7 +2,7 @@
 import dayjs from "dayjs";
 import React, { useContext, useEffect } from "react";
 import { CalendarioContext } from "@/contexts/CalendarioContext";
-import { logoCalendario } from "@/assets";
+import logoCalendario  from "@/assets/logoCalendario.png";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import "dayjs/locale/es"; // importa el locale español
 

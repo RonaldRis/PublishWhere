@@ -16,7 +16,7 @@ import {
   Mail,
 } from "lucide-react";
 import Image from "next/image";
-import { perfilProfile } from "@/assets";
+import  perfilProfile  from "@/assets/perfil_user.png";
 import {
   Select,
   SelectContent,

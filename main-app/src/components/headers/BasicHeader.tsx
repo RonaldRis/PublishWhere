@@ -6,7 +6,7 @@ import { Button } from "../ui/button";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/hover-card";
 import { ChevronDown, CircleFadingPlus, CirclePlus, ImageUp, Mail } from "lucide-react";
 import Image from "next/image";
-import { perfilProfile } from "@/assets";
+import  perfilProfile  from "@/assets/perfil_user.png";
 import { useContext } from "react";
 import { MisMarcasContext } from "@/contexts/MisMarcasContext";
 

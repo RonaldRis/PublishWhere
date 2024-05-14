@@ -1,6 +1,6 @@
 "use client";
 import { CalendarioContext } from "@/contexts/CalendarioContext";
-import { labelsColorToProvider } from "@lib/constantes";
+import { labelsColorToProvider } from "@/lib/constantes";
 import { Calendar } from "lucide-react";
 import React, { useContext } from "react";
 

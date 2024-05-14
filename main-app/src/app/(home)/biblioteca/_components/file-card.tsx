@@ -21,7 +21,7 @@ import { IUser } from "shared-lib/models/user.model";
 import { es, se } from "date-fns/locale";
 import { getMediaUrl } from "@/lib/constantes";
 import FullScreenMultimediaFileDialog from "../../calendario/_components/FullScreenMultimediaFileDialog";
-import { CalendarioContext } from "@contexts/CalendarioContext";
+import { CalendarioContext } from "@/contexts/CalendarioContext";
 
 export function FileCard({ file }: { file: IFileFavorite }) {
   const userProfile = file.creatorId as IUser;

@@ -23,7 +23,7 @@ import { useSession } from "next-auth/react";
 import { Label } from "@/components/ui/label";
 import { BibliotecaContext } from "@/contexts/BibliotecaContext";
 import { Button } from "@/components/ui/button";
-import { CalendarioContext } from "@contexts/CalendarioContext";
+import { CalendarioContext } from "@/contexts/CalendarioContext";
 
 function Placeholder({ text }: { text: string }) {
   return (

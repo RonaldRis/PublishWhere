@@ -1,6 +1,6 @@
-import { Card, CardContent } from "@components/ui/card";
-import { CalendarioContext } from "@contexts/CalendarioContext";
-import { labelsProviderToColor } from "@lib/constantes";
+import { Card, CardContent } from "@/components/ui/card";
+import { CalendarioContext } from "@/contexts/CalendarioContext";
+import { labelsProviderToColor } from "@/lib/constantes";
 import { ISocialMediaAccount } from "shared-lib/models/socialMediaAccount.model";
 import { DeleteIcon } from "lucide-react";
 import { set } from "mongoose";

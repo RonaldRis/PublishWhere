@@ -1,7 +1,7 @@
 "use client";
 import React, { useContext } from "react";
 import { CalendarioContext } from "@/contexts/CalendarioContext";
-import { plusImg } from "@/assets";
+import plusImg from "@/assets/plus.svg";
 export default function CreateEventButton() {
   const { setIsOpenModalNewPost } = useContext(CalendarioContext);
   return (

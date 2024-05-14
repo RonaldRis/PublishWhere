@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { CalendarioContext } from "@contexts/CalendarioContext";
+import { CalendarioContext } from "@/contexts/CalendarioContext";
 import clsx from "clsx";
 import {
   FileIcon,
