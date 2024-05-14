@@ -85,7 +85,7 @@ routerYoutube.get("/youtube/callback", async function (req, res) {
 
     tokensDATA.provider = "youtube";
 
-    const page = "/perfil/marcas/callback-red-social?";
+    const page = "/perfil/marcas/callback-youtube?";
     res.redirect(CLIENT_URL+page+qs.stringify(tokensDATA));
 
 
