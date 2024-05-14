@@ -6,7 +6,7 @@ import {
   fetchMarcaAction,
   renameMarcaAction,
 } from "@/lib/actions/marcas.actions";
-import { IUser } from "@/lib/models/user.model";
+import { IUser } from "shared-lib/models/user.model";
 import { CircleX, ShieldCheck } from "lucide-react";
 import React, { useContext } from "react";
 import { toast } from "sonner";

@@ -1,9 +1,9 @@
 "use server";
 
 import { youtube } from "googleapis/build/src/apis/youtube";
-import { IMarca } from "../models/marca.model";
-import { Marca, Oauth, SocialMediaAccount, User } from "../models/models";
-import { IOauth, IOauthPost } from "../models/Oauth.model";
+import { IMarca } from "shared-lib/models/marca.model";
+import { Marca, Oauth, SocialMediaAccount, User } from "@/lib/models/models";
+import { IOauth, IOauthPost } from "shared-lib/models/Oauth.model";
 import { IServerResponse } from "./ServerResponse";
 import google, { youtube_v3 } from "googleapis";
 import { custom } from "zod";
@@ -11,7 +11,7 @@ import { Console } from "console";
 import {
   ISocialMediaAccount,
   ISocialMediaAccountPost,
-} from "../models/socialMediaAccount.model";
+} from "shared-lib/models/socialMediaAccount.model";
 import mongoose, { Document } from "mongoose";
 
 async function agregarSocialMediaAccoutToMarca(social: Document, marcaId: string) {

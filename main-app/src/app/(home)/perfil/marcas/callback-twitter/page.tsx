@@ -2,8 +2,8 @@
 
 import { MisMarcasContext } from "@/contexts/MisMarcasContext";
 import { postOauthDataActionTwitter, postOauthDataActionYoutube } from "@/lib/actions/oauth.actions";
-import { IOauthPost } from "@/lib/models/Oauth.model";
-import { ISocialMediaAccountPost } from "@lib/models/socialMediaAccount.model";
+import { IOauthPost } from "shared-lib/models/Oauth.model";
+import { ISocialMediaAccountPost } from "shared-lib/models/socialMediaAccount.model";
 import { el } from "date-fns/locale";
 import { LoaderCircleIcon } from "lucide-react";
 import { set } from "mongoose";
@@ -47,6 +47,7 @@ export default function CallbackRedSocialPage() {
         token_type: searchParamsNext.get("token_type")!,
         expires_in: expiryDate, ///Nunca prácticamente, su valor es muy alto
       };
+      
 
       let socialData: ISocialMediaAccountPost = {
         _idOnProvider: searchParamsNext.get("_idOnProvider")!,
@@ -75,10 +76,12 @@ export default function CallbackRedSocialPage() {
         await updateMarcaGlobal(marcaId);
 
         //Redirecciono a la pagina de marcas
-        router.push("/perfil/marcas?marcaId=" + marcaId);
       } else {
         toast.error(response.message!);
       }
+
+      router.push("/perfil/marcas");
+
     };
 
     saveData();

@@ -1,7 +1,7 @@
 "use server";
 
-import { IMarca } from "../models/marca.model";
-import { Marca, User } from "../models/models";
+import { IMarca } from "shared-lib/models/marca.model";
+import { Marca, User } from "@/lib/models/models";
 import { IServerResponse } from "./ServerResponse";
 
 

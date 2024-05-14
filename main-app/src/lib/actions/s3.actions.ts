@@ -4,10 +4,9 @@ import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { allowedFileTypes } from "../constantes";
 import { IServerResponse } from "./ServerResponse";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-
+import {IFilePost} from "shared-lib/models/file.model";
 import { getServerSessionAuth } from "@/lib/auth";
 import { postCreateFileAction } from "@/lib/actions/files.actions";
-import { IFile, IFilePost } from "../models/file.model";
 import { file } from "googleapis/build/src/apis/file";
 
 const s3Client = new S3Client({

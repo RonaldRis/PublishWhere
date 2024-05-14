@@ -13,9 +13,9 @@ import { Button } from "@/components/ui/button"
 import { Input } from '../ui/input';
 import { toast } from 'sonner';
 import { useSession } from 'next-auth/react';
-import { IMarca } from '@/lib/models/marca.model';
+import { IMarca } from 'shared-lib/models/marca.model';
 import { ScrollArea } from '../ui/scroll-area';
-import { IUser } from '@/lib/models/user.model';
+import { IUser } from 'shared-lib/models/user.model';
 import { fetchAllUserAction } from '@/lib/actions/users.actions';
 import { Badge } from '../ui/badge';
 import { Separator } from '../ui/separator';

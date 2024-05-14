@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "../ui/button";
-import { IMarca } from "@/lib/models/marca.model";
+import { IMarca } from "shared-lib/models/marca.model";
 
 import { toast } from "sonner";
 import { Separator } from "@/components/ui/separator";
@@ -20,7 +20,7 @@ import { MisMarcasContext } from "@/contexts/MisMarcasContext";
 import { useSession } from "next-auth/react";
 import { ShieldCheck } from "lucide-react";
 import HoverAdmin from "../HoverAdmin";
-import { IUser } from "@/lib/models/user.model";
+import { IUser } from "shared-lib/models/user.model";
 
 interface Props {
   hasNewBotton: boolean;

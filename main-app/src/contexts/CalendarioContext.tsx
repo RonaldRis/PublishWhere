@@ -1,5 +1,7 @@
 "use client";
 import { getMonthDaysjs } from "@/lib/utils";
+import { IFileFavorite } from "shared-lib/models/file.model";
+import { ISocialMediaAccount } from "shared-lib/models/socialMediaAccount.model";
 import { da } from "date-fns/locale";
 import dayjs from "dayjs";
 import React, {
@@ -10,6 +12,7 @@ import React, {
   Dispatch,
   ReactNode,
 } from "react";
+import { useLocalStorage } from "usehooks-ts";
 
 export interface IEventCalendar {
   // Define the shape of your event objects here
@@ -24,7 +27,7 @@ export interface ILabelCalendar {
   // Define the shape of your label objects here
   label: string;
   checked: boolean;
-  socialMedia?:string;
+  socialMedia?: string;
 }
 
 ///CONTEXT INTERFACE:
@@ -39,8 +42,6 @@ export interface ICalendarioContext {
   setSmallCalendarMonth: React.Dispatch<React.SetStateAction<number | null>>;
   daySelected: dayjs.Dayjs | null;
   setDaySelected: React.Dispatch<React.SetStateAction<dayjs.Dayjs>>;
-  showEventModal: boolean;
-  setShowEventModal: React.Dispatch<React.SetStateAction<boolean>>;
   dispatchCalEvent: Dispatch<{ type: string; payload: any }>;
   savedEvents: IEventCalendar[];
   selectedEvent: IEventCalendar | null;
@@ -52,30 +53,41 @@ export interface ICalendarioContext {
 
   isOpenModalNewPost: boolean;
   setIsOpenModalNewPost: React.Dispatch<React.SetStateAction<boolean>>;
+  isCalendarPage: boolean;
+  setIscalendarPage: React.Dispatch<React.SetStateAction<boolean>>;
+  selectedFileList: IFileFavorite[];
+  setSelectedFileList: React.Dispatch<React.SetStateAction<IFileFavorite[]>>;
+  selectedRedesSocialesList: ISocialMediaAccount[];
+  setSelectedRedesSocialesList: React.Dispatch<React.SetStateAction<ISocialMediaAccount[]>>;
+
 }
 
 ///CONTEXT:
 const CalendarioContext = React.createContext<ICalendarioContext>({
   currenMonthMatrix: undefined,
-  setCurrentMonthMatrix: () => {},
+  setCurrentMonthMatrix: () => { },
   monthIndex: dayjs().month(),
-  setMonthIndex: () => {},
+  setMonthIndex: () => { },
   smallCalendarMonth: dayjs().month(),
-  setSmallCalendarMonth: () => {},
+  setSmallCalendarMonth: () => { },
   daySelected: null,
-  setDaySelected: () => {},
-  showEventModal: false,
-  setShowEventModal: () => {},
-  dispatchCalEvent: ({ type, payload }) => {},
+  setDaySelected: () => { },
+  dispatchCalEvent: ({ type, payload }) => { },
   savedEvents: [],
   selectedEvent: null,
-  setSelectedEvent: () => {},
-  setLabels: () => {},
+  setSelectedEvent: () => { },
+  setLabels: () => { },
   labels: [],
-  updateLabel: () => {},
+  updateLabel: () => { },
   filteredEvents: [],
   isOpenModalNewPost: false,
-  setIsOpenModalNewPost: () => {},
+  setIsOpenModalNewPost: () => { },
+  isCalendarPage: false,
+  setIscalendarPage: () => { },
+  selectedFileList: [],
+  setSelectedFileList: () => { },
+  selectedRedesSocialesList: [],
+  setSelectedRedesSocialesList: () => { },
 });
 
 // TODO: IEvent[] no estoy seguro si es el tipo correcto
@@ -115,9 +127,15 @@ const CalendarioProvider = ({ children }: { children: ReactNode }) => {
     dayjs.Dayjs[][] | undefined
   >(undefined);
 
+
+  const [isCalendarPage, setIscalendarPage] = useLocalStorage<boolean>("isCalendarPage", true);
+  const [selectedFileList, setSelectedFileList] = useLocalStorage<IFileFavorite[]>("selectedFileList", []);
+  const [selectedRedesSocialesList, setSelectedRedesSocialesList] = useLocalStorage<ISocialMediaAccount[]>("selectedRedesSocialesList", []);
+
+
+
   const [isOpenModalNewPost, setIsOpenModalNewPost] = useState(false);
   const [daySelected, setDaySelected] = useState<dayjs.Dayjs>(dayjs());
-  const [showEventModal, setShowEventModal] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<IEventCalendar | null>(
     null
   );
@@ -141,7 +159,7 @@ const CalendarioProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem("savedEvents", JSON.stringify(savedEvents));
   }, [savedEvents]);
 
-  //TODO: REPASAR ESTO PARA QUE FUNCIONA O VER DONDE SE USA Y COMO
+  // TODO: REPASAR ESTO PARA QUE FUNCIONA O VER DONDE SE USA Y COMO (Posiblmente no se use para editar)
   // useEffect(() => {
   //   setLabels((prevLabels) => {
   //     return [...new Set(savedEvents.map((evt) => evt.label))].map((label) => {
@@ -154,6 +172,28 @@ const CalendarioProvider = ({ children }: { children: ReactNode }) => {
   //   });
   // }, [savedEvents]);
 
+ 
+
+  useEffect(() => {
+    // Extraer los labels de los eventos guardados
+    const labelsFromEvents = savedEvents.map((evt) => evt.label);
+  
+    // Eliminar duplicados
+    const uniqueLabels = Array.from(new Set(labelsFromEvents));
+  
+    // Actualizar el estado de los labels
+    setLabels((prevLabels) => {
+      return uniqueLabels.map((label) => {
+        const currentLabel = prevLabels.find((lbl) => lbl.label === label);
+        return {
+          label,
+          checked: currentLabel ? currentLabel.checked : true,
+        };
+      });
+    });
+  }, [savedEvents]);
+  
+
   useEffect(() => {
     if (smallCalendarMonth !== null) {
       setMonthIndex(smallCalendarMonth);
@@ -161,10 +201,10 @@ const CalendarioProvider = ({ children }: { children: ReactNode }) => {
   }, [smallCalendarMonth]);
 
   useEffect(() => {
-    if (!showEventModal) {
+    if (!isOpenModalNewPost) {
       setSelectedEvent(null);
     }
-  }, [showEventModal]);
+  }, [isOpenModalNewPost]);
 
   useEffect(() => {
     console.log("monthIndex", monthIndex);
@@ -186,8 +226,6 @@ const CalendarioProvider = ({ children }: { children: ReactNode }) => {
         setSmallCalendarMonth,
         daySelected,
         setDaySelected,
-        showEventModal,
-        setShowEventModal,
         dispatchCalEvent,
         selectedEvent,
         setSelectedEvent,
@@ -197,7 +235,14 @@ const CalendarioProvider = ({ children }: { children: ReactNode }) => {
         updateLabel,
         filteredEvents,
         isOpenModalNewPost,
-        setIsOpenModalNewPost
+        setIsOpenModalNewPost,
+        isCalendarPage,
+        setIscalendarPage,
+        selectedFileList,
+        setSelectedFileList,
+        selectedRedesSocialesList,
+        setSelectedRedesSocialesList
+
       }}
     >
       {children}

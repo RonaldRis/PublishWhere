@@ -1,7 +1,7 @@
 "use client"
 
 import { fetchAllMarcasAction, fetchMarcaAction, fetchMisMarcasAction } from '@/lib/actions/marcas.actions';
-import { IMarca } from '@/lib/models/marca.model';
+import { IMarca } from 'shared-lib/models/marca.model';
 import { useSession } from 'next-auth/react';
 import React, { useState, useEffect, Context, createContext, ReactNode } from 'react';
 import { useLocalStorage } from "usehooks-ts"

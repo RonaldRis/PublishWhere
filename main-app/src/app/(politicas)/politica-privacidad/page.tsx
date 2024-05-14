@@ -28,7 +28,7 @@ function PoliticaPrivacidadPage() {
             <p>If you have questions or complaints about our privacy policy or practices, please contact us at <a className="underline text-blue-500" href="mailto:legal@publishwhere.com">legal@publishwhere.com</a>.</p>
 
             <h2>1. Who is PublishWhere?</h2>
-            <p><strong>PublishWhere</strong> is a European company based in Murcia, Spain. Founded in 2024, PublishWhere offers a software platform ("Service") that helps businesses and agencies manage their Social Profiles.</p>
+            <p><strong>PublishWhere</strong> is a European company based in Murcia, Spain. Founded in 2024, PublishWhere offers a software platform Service that helps businesses and agencies manage their Social Profiles.</p>
             <p>The Service consolidates social media management, enabling Customers to manage messages, comments, content scheduling, and analysis of results across their Social Profiles, as well as monitor conversations on Supported Platforms using selected keywords.</p>
             <p>PublishWhere adheres to the French Data Privacy law, encompassing all relevant EU Data Protection Laws.</p>
 

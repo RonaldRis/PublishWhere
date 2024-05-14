@@ -4,7 +4,7 @@
 // "include": ["next-env.d.ts"],
 
 // This file is used to extend the types of the NextAuth library
-import { IUser } from "@/lib/models/user.model"
+import { IUser } from "shared-lib/models/user.model"
 import NextAuth, { DefaultSession } from "next-auth"
 
 declare module "next-auth" {

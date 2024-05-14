@@ -1,14 +1,15 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { FileBrowser } from "./_components/file-browser";
+import { useLocalStorage } from 'usehooks-ts';
 
 function BibliotecaPage() {
-  const [isClient, setIsClient] = useState(false);
 
+  /// EVITA ERRORES DE HIDRATACIÓN
+  const [isClient, setIsClient] = useState(false);
   useEffect(() => {
     setIsClient(true);
   }, []);
-
   if (!isClient) {
     return <div>Loading...</div>;
   }

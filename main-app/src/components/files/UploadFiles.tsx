@@ -19,7 +19,7 @@ import { Label } from "../ui/label";
 import { AspectRatio } from "../ui/aspect-ratio";
 import { Card, CardContent } from "../ui/card";
 import { MisMarcasContext } from "@/contexts/MisMarcasContext";
-import { IFilePost } from "@/lib/models/file.model";
+import { IFilePost } from "shared-lib/models/file.model";
 import { getSignedURL } from "@/lib/actions/s3.actions";
 import { toast } from "sonner";
 import { se } from "date-fns/locale";
@@ -31,15 +31,6 @@ import { Progress } from "../ui/progress";
 import { BibliotecaContext } from "@/contexts/BibliotecaContext";
 import { bytesToSize } from "@/lib/utils";
 
-// export const computeSHA256 = async (file: File) => {
-//   const buffer = await file.arrayBuffer();
-//   const hashBuffer = await crypto.subtle.digest("SHA-256", buffer);
-//   const hashArray = Array.from(new Uint8Array(hashBuffer));
-//   const hashHex = hashArray
-//     .map((b) => b.toString(16).padStart(2, "0"))
-//     .join("");
-//   return hashHex;
-// };
 
 export const computeSHA256 = async (file: File) => {
   const buffer = await file.arrayBuffer();

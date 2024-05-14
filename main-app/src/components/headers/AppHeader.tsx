@@ -43,7 +43,8 @@ import { toast } from "sonner";
 import NewPublicacion from "../publicacion/NewPublicacion";
 import { CalendarioContext } from "@/contexts/CalendarioContext";
 import HoverAdmin from "../HoverAdmin";
-import { IUser } from "@/lib/models/user.model";
+import { IUser } from "shared-lib/models/user.model";
+import { useRouter } from "next/navigation";
 
 export default function AppHeader() {
   const {
@@ -54,6 +55,7 @@ export default function AppHeader() {
     isOpenModalNuevaMarca,
     setIsOpenModalNuevaMarca,
   } = useContext(MisMarcasContext);
+  const router = useRouter();
 
   const { setIsOpenModalNewFile, isOpenModalNewFile } =
     useContext(BibliotecaContext);
@@ -89,7 +91,13 @@ export default function AppHeader() {
   };
 
   const setIsOpenModalNewPostHandler = () => {
-    if (marcaGlobalSeleccionada?._id) setIsOpenModalNewPost(true);
+
+    if (marcaGlobalSeleccionada?._id)
+      {
+        setIsOpenModalNewPost(true);
+        router.push("/calendario");
+      } 
+        
     else toast.info("Selecciona una marca primero");
   };
 
@@ -125,46 +133,46 @@ export default function AppHeader() {
             {isMarcaLoading ? (
               <p className="text-slate-100">Cargando...</p>
             ) : // <p className="text-slate-100">Hay datos</p>
-            marcas?.length <= 0 ? (
-              <Button
-                className="flex gap-2"
-                onClick={() => setIsOpenModalNuevaMarca(true)}
-              >
-                <CirclePlus size={16} absoluteStrokeWidth />
-                Crea tu primer marca
-              </Button>
-            ) : (
-              <Select
-                onValueChange={handlerMarcaSelectedChanged}
-                value={
-                  marcaGlobalSeleccionada
-                    ? marcaGlobalSeleccionada?._id
-                    : undefined
-                }
-              >
-                <SelectTrigger className=" px-8">
-                  <SelectValue placeholder="Selecciona una marca" />
-                </SelectTrigger>
-                <SelectContent className="over-nav">
-                  {marcas?.map((marca) => (
-                    <SelectItem
-                      className="gap-5"
-                      value={marca._id}
-                      key={marca._id}
-                    >
-                      <div className="w-full flex justify-start items-center gap-3">
-                        <span className="w-4">
-                          {(marca.admin as IUser)._id === session?.user._id && (
-                            <HoverAdmin />
-                          )}
-                        </span>
-                        <span>{marca.name}</span>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
+              marcas?.length <= 0 ? (
+                <Button
+                  className="flex gap-2"
+                  onClick={() => setIsOpenModalNuevaMarca(true)}
+                >
+                  <CirclePlus size={16} absoluteStrokeWidth />
+                  Crea tu primer marca
+                </Button>
+              ) : (
+                <Select
+                  onValueChange={handlerMarcaSelectedChanged}
+                  value={
+                    marcaGlobalSeleccionada
+                      ? marcaGlobalSeleccionada?._id
+                      : undefined
+                  }
+                >
+                  <SelectTrigger className=" px-8">
+                    <SelectValue placeholder="Selecciona una marca" />
+                  </SelectTrigger>
+                  <SelectContent className="over-nav">
+                    {marcas?.map((marca) => (
+                      <SelectItem
+                        className="gap-5"
+                        value={marca._id}
+                        key={marca._id}
+                      >
+                        <div className="w-full flex justify-start items-center gap-3">
+                          <span className="w-4">
+                            {(marca.admin as IUser)._id === session?.user._id && (
+                              <HoverAdmin />
+                            )}
+                          </span>
+                          <span>{marca.name}</span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
           </div>
         )}
 
@@ -173,7 +181,7 @@ export default function AppHeader() {
           {/* BOTON DE AGREAR UN NUEVO POST, MARCA, RED SOCIAL */}
           {session && (
             <HoverCard openDelay={1} closeDelay={5}>
-              <HoverCardTrigger>
+              <HoverCardTrigger  onClick={setIsOpenModalNewPostHandler}>
                 <CircleFadingPlus
                   className="m-4 p-0 cursor-pointer"
                   size={24}
@@ -184,14 +192,16 @@ export default function AppHeader() {
               </HoverCardTrigger>
               <HoverCardContent className="m-0 p-0 ">
                 <div>
-                  <Button
-                    className="m-0 w-full gap-1 "
-                    variant={"ghost"}
-                    onClick={setIsOpenModalNewPostHandler}
-                  >
-                    <CircleFadingPlus size={16} absoluteStrokeWidth />
-                    Publicación
-                  </Button>
+                  <Link href="/calendario">
+                    <Button
+                      className="m-0 w-full gap-1 "
+                      variant={"ghost"}
+                      onClick={setIsOpenModalNewPostHandler}
+                    >
+                      <CircleFadingPlus size={16} absoluteStrokeWidth />
+                      Publicación
+                    </Button>
+                  </Link>
                   <Button
                     className="m-0 w-full gap-1"
                     variant={"ghost"}
@@ -284,10 +294,10 @@ export default function AppHeader() {
         setIsOpenModalNewFile={setIsOpenModalNewFile}
       />
 
-      <NewPublicacion
+      {/* <NewPublicacion
         isOpenModalNewPost={isOpenModalNewPost}
         setIsOpenModalNewPost={setIsOpenModalNewPost}
-      />
+      /> */}
     </nav>
   );
 }

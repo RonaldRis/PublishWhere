@@ -13,20 +13,11 @@ import {
 import { CircleX, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { IFile } from "@/lib/models/file.model";
+import { IFile } from "shared-lib/models/file.model";
 import Image from "next/image";
 import { getMediaUrl } from "@/lib/constantes";
 import { toast } from "sonner";
 
-// export const computeSHA256 = async (file: File) => {
-//   const buffer = await file.arrayBuffer();
-//   const hashBuffer = await crypto.subtle.digest("SHA-256", buffer);
-//   const hashArray = Array.from(new Uint8Array(hashBuffer));
-//   const hashHex = hashArray
-//     .map((b) => b.toString(16).padStart(2, "0"))
-//     .join("");
-//   return hashHex;
-// };
 
 interface IFullScreenFileProps {
   isOpenModalBigFile: boolean;

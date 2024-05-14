@@ -23,6 +23,7 @@ import { useSession } from "next-auth/react";
 import { Label } from "@/components/ui/label";
 import { BibliotecaContext } from "@/contexts/BibliotecaContext";
 import { Button } from "@/components/ui/button";
+import { CalendarioContext } from "@contexts/CalendarioContext";
 
 function Placeholder({ text }: { text: string }) {
   return (
@@ -68,6 +69,9 @@ export function FileBrowser({
     setIsOpenModalNewFile,
   } = useContext(BibliotecaContext);
 
+  const { isCalendarPage } = useContext(CalendarioContext);
+
+
   //TODO: BARRA DE BUSQUEDA! PENDIENTE DE IMPLEMENTAR
 
   useEffect(() => {
@@ -99,7 +103,7 @@ export function FileBrowser({
     favoritesOnly,
     notUsedOnly,
     usedOnly,
-    
+
   ]);
 
   return (
@@ -111,9 +115,13 @@ export function FileBrowser({
           {/* <SearchBar query={query} setQuery={setQuery} />  TODO: HACER SEARCHBAR*/}
         </div>
 
-        <Button onClick={() => setIsOpenModalNewFile(true)}>
-          Sube un archivo
-        </Button>
+        {/* //TODO: QUITAR BOTON CUANDO SE ABRE DESDE CALENDARIO */}
+
+        {!isCalendarPage && (
+          <Button onClick={() => setIsOpenModalNewFile(true)}>
+            Sube un archivo
+          </Button>
+        )}
       </div>
 
       {marcaGlobalSeleccionada && session ? (

@@ -27,9 +27,9 @@ import {
 } from "@/components/ui/table";
 import React, { useState } from "react";
 import { DataTableToolbar } from "./data-table-toolbar";
-import { IMarca } from "@/lib/models/marca.model";
+import { IMarca } from "shared-lib/models/marca.model";
 import FullScreenMultimediaFileDialog from "../../calendario/_components/FullScreenMultimediaFileDialog";
-import { IFile } from "@/lib/models/file.model";
+import { IFile } from "shared-lib/models/file.model";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -105,54 +105,6 @@ export function DataTable<TData, TValue>({
     <div className="w-full">
       <DataTableToolbar table={table} />
       <div className="rounded-md border">
-        {/* <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table> */}
 
         {/* TABLA DE SHADCN SAMPLE UI*/}
 

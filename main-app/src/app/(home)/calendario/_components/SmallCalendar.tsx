@@ -64,7 +64,7 @@ export default function SmallCalendar() {
       </header>
       <div className="grid grid-cols-7 grid-rows-6">
         {currentMonthMatrix[0].map((day, i) => (
-          <span key={i} className="text-sm py-1 text-center">
+          <span key={day.format("MM-dd")} className="text-sm py-1 text-center">
             {day.format("dd").charAt(0)}
           </span>
         ))}
@@ -72,7 +72,7 @@ export default function SmallCalendar() {
           <React.Fragment key={i}>
             {row.map((day, idx) => (
               <button
-                key={idx}
+                key={day.format("YYYY-MM-DD")}  
                 onClick={() => {
                   setSmallCalendarMonth(currentMonthIdx);
                   setDaySelected(day);

@@ -1,7 +1,7 @@
 "use server";
 
-import { IFile, IFilePost } from "../models/file.model";
-import { File, Marca } from "../models/models";
+import { IFile, IFilePost } from "shared-lib/models/file.model";
+import { File, Marca } from "@/lib/models/models";
 import { IServerResponse } from "./ServerResponse";
 
 

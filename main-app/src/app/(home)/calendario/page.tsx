@@ -8,9 +8,21 @@ import SidebarCalendario from "./_components/SidebarCalendario";
 import Month from "./_components/Month";
 import { use } from "passport";
 import dayjs from "dayjs";
+import { useLocalStorage } from "usehooks-ts";
+import { IFile, IFileFavorite } from "shared-lib/models/file.model";
 
 function CalendarioPage() {
-  const {setMonthIndex, setSmallCalendarMonth, currenMonthMatrix, showEventModal } = useContext(CalendarioContext);
+  const { selectedFileList, setSelectedFileList, isCalendarPage, setIscalendarPage, setSelectedRedesSocialesList } = useContext(CalendarioContext);
+
+
+  useEffect(() => {
+    setSelectedRedesSocialesList([]);
+    setIscalendarPage(true);
+    setSelectedFileList([]);
+  }, []);
+
+
+  const { setMonthIndex, setSmallCalendarMonth, currenMonthMatrix, isOpenModalNewPost } = useContext(CalendarioContext);
 
   useEffect(() => {
     const mes = dayjs().month();
@@ -21,17 +33,15 @@ function CalendarioPage() {
 
   return (
     <>
-      {showEventModal && <EventModal />}
+      {isOpenModalNewPost && <EventModal />}
 
-      <Suspense>
-        <div className="h-full flex flex-col mt-0 top-0">
-          <HeaderCalendar />
-          <div className="flex flex-1">
-            <SidebarCalendario />
-            <Month month={currenMonthMatrix} />
-          </div>
+      <div className="h-full flex flex-col mt-0 top-0">
+        <HeaderCalendar />
+        <div className="flex flex-1">
+          <SidebarCalendario />
+          <Month month={currenMonthMatrix} />
         </div>
-      </Suspense>
+      </div>
     </>
   );
 }

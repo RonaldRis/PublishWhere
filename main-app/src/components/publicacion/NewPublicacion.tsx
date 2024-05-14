@@ -19,7 +19,7 @@ import { Label } from "../ui/label";
 import { AspectRatio } from "../ui/aspect-ratio";
 import { Card, CardContent } from "../ui/card";
 import { MisMarcasContext } from "@/contexts/MisMarcasContext";
-import { IFilePost } from "@/lib/models/file.model";
+import { IFilePost } from "shared-lib/models/file.model";
 import { getSignedURL } from "@/lib/actions/s3.actions";
 import { toast } from "sonner";
 import { se } from "date-fns/locale";

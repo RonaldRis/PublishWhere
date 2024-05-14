@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { CalendarioContext } from "@contexts/CalendarioContext";
 import clsx from "clsx";
 import {
   FileIcon,
@@ -13,10 +14,19 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 export function SideNav() {
   const pathname = usePathname();
+
+  const { selectedFileList, setSelectedFileList, isCalendarPage, setIscalendarPage } = useContext(CalendarioContext);
+
+
+  useEffect(() => {
+    setIscalendarPage(false); //Biblioteca
+    setSelectedFileList([]);
+  }, []);
+
 
   const [show, setShow] = useState(true);
 

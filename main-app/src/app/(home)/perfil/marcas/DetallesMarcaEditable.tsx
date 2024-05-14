@@ -35,7 +35,7 @@ import { Input } from "@/components/ui/input";
 import EquipoCrud from "./EquipoCrud";
 import Link from "next/link";
 import NuevaRedSocial from "./NuevaRedSocial";
-import { ISocialMediaAccount } from "@lib/models/socialMediaAccount.model";
+import { ISocialMediaAccount } from "shared-lib/models/socialMediaAccount.model";
 import { map } from "zod";
 import { labelsProviderToColor } from "@lib/constantes";
 import Image from "next/image";
@@ -134,7 +134,6 @@ function DetallesMarcaEditable() {
     setNewName("");
   };
 
-  console.log("DetallesMarcaEditable", marcaGlobalSeleccionada);
 
   return (
     <div className="flex-grow">

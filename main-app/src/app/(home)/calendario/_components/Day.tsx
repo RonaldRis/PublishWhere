@@ -11,7 +11,7 @@ export default function Day({ day, rowIdx }: { day: dayjs.Dayjs; rowIdx: number 
   const [dayEvents, setDayEvents] = useState<IEventCalendar[]>([]);
   const {
     setDaySelected,
-    setShowEventModal,
+    setIsOpenModalNewPost,
     filteredEvents,
     setSelectedEvent,
   } = useContext(CalendarioContext);
@@ -47,12 +47,12 @@ export default function Day({ day, rowIdx }: { day: dayjs.Dayjs; rowIdx: number 
         className="flex-1 cursor-pointer"
         onClick={() => {
           setDaySelected(day);
-          setShowEventModal(true);
+          setIsOpenModalNewPost(true);
         }}
       >
         {dayEvents.map((evt, idx) => (
           <div
-            key={idx}
+            key={evt.id}
             onClick={() => setSelectedEvent(evt)}
             className={`bg-${evt.label}-200 p-1 mr-3 text-gray-600 text-sm rounded mb-1 truncate`}
           >

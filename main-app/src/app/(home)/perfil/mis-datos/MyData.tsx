@@ -1,7 +1,7 @@
 "use client"
 import { Button } from "@/components/ui/button";
 import { MisMarcasContext } from "@/contexts/MisMarcasContext";
-import { IUser } from "@/lib/models/user.model";
+import { IUser } from "shared-lib/models/user.model";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import React, { useContext } from "react";

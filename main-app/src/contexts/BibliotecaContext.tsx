@@ -4,7 +4,7 @@ import {
   fetchAllMarcasAction,
   fetchMisMarcasAction,
 } from "@/lib/actions/marcas.actions";
-import { IMarca } from "@/lib/models/marca.model";
+import { IMarca } from "shared-lib/models/marca.model";
 import { useSession } from "next-auth/react";
 import React, {
   useState,
@@ -23,7 +23,7 @@ import {
   restoreTrashFileAction,
   sendToTrashFileAction,
 } from "@/lib/actions/files.actions";
-import { IFile } from "@/lib/models/file.model";
+import { IFile } from "shared-lib/models/file.model";
 import { toast } from "sonner";
 
 interface IModifiedFile extends IFile {
@@ -113,6 +113,7 @@ const BibliotecaProvider = ({ children }: { children: ReactNode }) => {
   const recalcutateModifiedFiles = () => {
     if (files === undefined) return [];
 
+    //TODO: CAMBIAR AL MOMENTO DE HACER LOS ARCHIVOS FAVORITOS, LEER DE LA BASE DE DATOS
     var modifiedFilesNew =
       files?.map((file) => ({
         ...file,

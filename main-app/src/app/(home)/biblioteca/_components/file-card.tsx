@@ -9,31 +9,44 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatRelative } from "date-fns";
 
 import {
-  FileTextIcon,
-  GanttChartIcon,
   ImageIcon,
+  SquareMousePointer,
   SquarePlay,
-  VideoIcon,
 } from "lucide-react";
-import { ReactNode, useState } from "react";
+import { ReactNode, useContext, useState } from "react";
 import Image from "next/image";
 import { FileCardActions } from "./file-card-actions";
-import { IFile } from "@/lib/models/file.model";
-import { IUser } from "@/lib/models/user.model";
-import { z } from "zod";
-import { es } from "date-fns/locale";
+import { IFile, IFileFavorite } from "shared-lib/models/file.model";
+import { IUser } from "shared-lib/models/user.model";
+import { es, se } from "date-fns/locale";
 import { getMediaUrl } from "@/lib/constantes";
-import { set } from "mongoose";
 import FullScreenMultimediaFileDialog from "../../calendario/_components/FullScreenMultimediaFileDialog";
+import { CalendarioContext } from "@contexts/CalendarioContext";
 
-export function FileCard({ file }: { file: IFile & { isFavorited: boolean } }) {
+export function FileCard({ file }: { file: IFileFavorite }) {
   const userProfile = file.creatorId as IUser;
 
   const [isOpenModalBigFile, setIsOpenModalBigFile] = useState(false);
-  
+
+  const { selectedFileList, setSelectedFileList, isCalendarPage } = useContext(CalendarioContext);
+
+
+
   const handlerDoubleClick = () => {
-    console.log("doble click", file.bucketFileName);
-    setIsOpenModalBigFile(true);
+    if (!isCalendarPage)
+      setIsOpenModalBigFile(true);
+  }
+
+
+  const handlerOneClick = () => {
+    
+    const contains = selectedFileList.some((f) => f._id === file._id);
+    if (contains) {
+      const filtered = selectedFileList.filter((f) => f._id !== file._id);
+      setSelectedFileList(filtered);
+      return;
+    }
+    setSelectedFileList([...selectedFileList, file]);
   }
 
 
@@ -45,16 +58,27 @@ export function FileCard({ file }: { file: IFile & { isFavorited: boolean } }) {
   } as Record<string, ReactNode>;
 
   return (
-    <Card className="flex flex-col justify-between">
+    <Card className={" flex flex-col justify-between " + (selectedFileList.some(f => f._id == file._id) ? "bg-blue-300" : "")}
+      onClick={handlerOneClick}
+      onDoubleClick={handlerDoubleClick}>
       <CardHeader className=" relative mb-4">
-        <CardTitle className="flex justify-start gap-2 text-base font-normal w-[200px]">
-          <div className="flex justify-center ">{typeIcons[file.type]}</div>{" "}
+
+        <CardTitle className="flex justify-start gap-2 text-base font-normal w-[200px]" >
+          <div className="flex justify-center " >
+            {typeIcons[file.type]}
+          </div>
+          {" "}
           {/* TODO: QUE SE VEA BIEN EL TEXTO SI ES MUY LARGO */}
           <span className="w-full text-ellipsis overflow-hidden">{file.name}</span>
 
         </CardTitle>
         <div className="absolute top-2 right-2">
-          <FileCardActions isFavorited={file.isFavorited} file={file} />
+          <div>
+
+            <FileCardActions isFavorited={file.isFavorited} file={file} />
+            {selectedFileList.some(f => f._id == file._id) && <SquareMousePointer />}
+          </div>
+
         </div>
       </CardHeader>
       <CardContent className="h-[200px] flex justify-center items-center">
@@ -67,7 +91,6 @@ export function FileCard({ file }: { file: IFile & { isFavorited: boolean } }) {
               alt={file.name}
               fill={true}
               style={{ objectFit: "contain" }}
-              onDoubleClick={handlerDoubleClick}
             />
           </div>
         )}
@@ -76,7 +99,7 @@ export function FileCard({ file }: { file: IFile & { isFavorited: boolean } }) {
           // <VideoIcon className="w-20 h-20" />
           //TODO: URGENTE: HACER QUE LOS VIDEOS SE VEAN EN EL CARD
           <video
-          style={{ position: "relative", width: "200px", height: "200px" }}
+            style={{ position: "relative", width: "200px", height: "200px" }}
             src={getMediaUrl(file.bucketFileName)}
             controls
           ></video>

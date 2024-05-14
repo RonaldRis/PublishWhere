@@ -27,7 +27,7 @@ import {
   restoreTrashFileAction,
   sendToTrashFileAction,
 } from "@/lib/actions/files.actions";
-import { IFile } from "@/lib/models/file.model";
+import { IFile } from "shared-lib/models/file.model";
 import { toast } from "sonner";
 import { BibliotecaContext } from "@/contexts/BibliotecaContext";
 import { Button } from "@/components/ui/button";
