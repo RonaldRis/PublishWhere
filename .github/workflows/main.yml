@@ -20,18 +20,16 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Install Global Dependencies
-        run: |
-          npm install -g autoprefixer postcss sharp
-          npm install -g @next/codemod
-          
       - name: Installing shared dependencies
         working-directory: shared-lib
         run: npm ci && npx tsc
 
       - name: Dependencies and Build Application
         working-directory: main-app
-        run: npx @next/codemod built-in-next-font . && npm ci && npm run build
+        run: |
+          npx @next/codemod built-in-next-font . 
+          npm ci 
+          npm run build
         env:
           MONGODB_URL: ${{ secrets.MONGODB_URL }}
           NODE_ENV: "production"
@@ -42,7 +40,7 @@ jobs:
           BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
           BUCKET_REGION: ${{ secrets.BUCKET_REGION }}
           BUCKET_ACCESS_KEY: ${{ secrets.BUCKET_ACCESS_KEY }}
-          BUCKET_SECRET_ACCESS_KEY: ${{ secrets.BUCKET_ACCESS_KEY }}
+          BUCKET_SECRET_ACCESS_KEY: ${{ secrets.BUCKET_SECRET_ACCESS_KEY }}
           URL_SOCIAL_MEDIA_CONNECTION_SERVICE: ${{ secrets.URL_SOCIAL_MEDIA_CONNECTION_SERVICE }}
 
   vps-pull-restart:
