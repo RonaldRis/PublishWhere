@@ -1,11 +1,12 @@
-
 import mongoose from "mongoose";
-
 
 const connectDatabase = async () => {
   try {
-    const conn = await mongoose.connect(process.env.MONGODB_URL);
-
+    const conn = await mongoose.connect(process.env.MONGO_URL, //MONGO_URL_docker, 
+    {
+      useUnifiedTopology: true,
+      useNewUrlParser: true,
+    });
 
     console.log(`MongoDB Connected`);
     console.log("");
@@ -20,4 +21,4 @@ const connectDatabase = async () => {
   }
 };
 
-export { connectDatabase };
+export default connectDatabase;

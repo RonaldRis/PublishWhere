@@ -1,17 +1,25 @@
-import { Router } from 'express';
-import passport from 'passport';
-import axios from 'axios';
-import qs from 'qs';
-import TwitterStrategy from 'passport-twitter';
-import dotenv from 'dotenv';
-dotenv.config();
+const express = require("express");
+const router = express.Router();
+var passport = require('passport')
+var TwitterStrategy = require('passport-twitter');
+const axios = require("axios");
+const qs = require("qs");
+const TwitterApi = require('twitter-api-v2').TwitterApi;
+const fs = require('fs');
+
+
+
+
+require('dotenv').config();
 
 const TWITTER_API_KEY = process.env.TWITTER_API_KEY;
 const TWITTER_API_SECRET = process.env.TWITTER_API_SECRET;
 const TWITTER_API_CALLBACK = process.env.TWITTER_API_CALLBACK;
 const CLIENT_URL = process.env.CLIENT_URL;
+console.log("CLIENT_URL", CLIENT_URL);
+console.log("TWITTER_API_CALLBACK", TWITTER_API_CALLBACK);
 
-const routerTwitter = Router();
+
 
 passport.use(new TwitterStrategy({
     consumerKey: TWITTER_API_KEY,
@@ -33,15 +41,16 @@ passport.use(new TwitterStrategy({
 
 console.log("\n\n\n");
 
+const routerTwitter = router;
 
-routerTwitter.get("/",
+routerTwitter.get("/twitter",
     passport.authenticate('twitter', {
         // <6> Scopes
         scope: ['tweet.read', "tweet.write", 'users.read', 'offline.access'],
     })
 );
 routerTwitter.get(
-    '/callback',
+    '/twitter/callback',
     passport.authenticate('twitter'),
     async function (req, res) {
 
@@ -254,4 +263,4 @@ routerTwitter.get("/twitter/callback2", async function (req, res) {
 
 });
 
-export {routerTwitter}
+module.exports = routerTwitter;

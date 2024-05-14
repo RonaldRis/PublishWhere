@@ -1,11 +1,11 @@
+const express = require("express");
+const router = express.Router();
+const passport = require("passport");
+const YoutubeV3Strategy = require("passport-youtube-v3").Strategy;
+const axios = require("axios");
+const qs = require("qs");
 
-import qs from "qs";
-import axios from "axios";
-import { Router } from "express";
-import passport from "passport";
-import {Strategy as YoutubeV3Strategy} from 'passport-youtube-v3';
-import dotenv from 'dotenv';
-dotenv.config();
+require('dotenv').config();
 
 const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
 const YOUTUBE_API_SECRET = process.env.YOUTUBE_API_SECRET;
@@ -47,10 +47,10 @@ passport.use(
 );
 console.log("\n\n\n");
 
-const routerYoutube = Router();
+const routerYoutube = router;
 
-routerYoutube.get("/", passport.authenticate("youtube"));
-routerYoutube.get("/callback", async function (req, res) {
+routerYoutube.get("/youtube", passport.authenticate("youtube"));
+routerYoutube.get("/youtube/callback", async function (req, res) {
   console.log("req.query", req.query);
   const code = req.query.code;
 
@@ -85,9 +85,11 @@ routerYoutube.get("/callback", async function (req, res) {
 
     tokensDATA.provider = "youtube";
 
-    const page = "/perfil/marcas/callback-youtube?";
+    const page = "/perfil/marcas/callback-red-social?";
     res.redirect(CLIENT_URL+page+qs.stringify(tokensDATA));
 
 
 });
-export {routerYoutube}
+
+module.exports = routerYoutube;
+// Path: socialmedia-connection-service/routes/youtubeV3Oauth.js

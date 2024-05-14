@@ -1,7 +1,10 @@
-import { Router } from "express";
-import fetch from 'node-fetch';
-import qs from 'qs';
+const express = require("express");
+const router = express.Router();
+const passport = require("passport");
+const axios = require("axios");
+const qs = require("qs");
 
+require("dotenv").config();
 
 const TIKTOK_API_KEY = process.env.TIKTOK_API_KEY;
 // const TIKTOK_API_SECRET = process.env.TIKTOK_API_SECRET;
@@ -12,10 +15,27 @@ console.log("TIKTOK_API_CALLBACK", TIKTOK_API_CALLBACK);
 
 
 
-const routerTikTok = Router();
+const routerTikTok = router;
+
+routerTikTok.get('/tiktok2', (req, res) => {
+    const csrfState = Math.random().toString(36).substring(2);
+    res.cookie('csrfState', csrfState, { maxAge: 60000 });
 
 
-routerTikTok.get("/", (req, res) => {
+    const params = {
+        client_key: process.env.TIKTOK_API_KEY,
+        response_type: 'code',
+        scope: 'user.info.basic,video.publish,video.upload',
+        redirect_uri: TIKTOK_API_CALLBACK,
+        state: csrfState
+    };
+
+    const url = `https://www.tiktok.com/v2/auth/authorize?${qs.stringify(params)}`;
+    console.log("urlTIKTOK_OAUTH", url);
+    res.redirect(url);
+});
+
+routerTikTok.get("/tiktok", (req, res) => {
     const csrfState = Math.random().toString(36).substring(2);
     res.cookie("csrfState", csrfState, { maxAge: 60000 });
     let url = "https://www.tiktok.com/v2/auth/authorize/";
@@ -28,7 +48,7 @@ routerTikTok.get("/", (req, res) => {
     res.redirect(url);
 });
 
-routerTikTok.get('/callback', async (req, res) => {
+routerTikTok.get('/tiktok/callback', async (req, res) => {
     const { code, state } = req.query;
     const storedState = req.cookies.csrfState;
 
@@ -56,4 +76,5 @@ routerTikTok.get('/callback', async (req, res) => {
 
 
 
-export {routerTikTok}
+module.exports = routerTikTok;
+// Path: socialmedia-connection-service/routes/tiktokV3Oauth.js
