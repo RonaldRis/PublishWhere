@@ -23,18 +23,22 @@ export async function postPublicationAction(oPublication: IPublicationPost): Pro
             console.log("new Date()", new Date());
             if (oPublication.programmedDate <= new Date()) {
                 console.log("Publicar en el momento");
-                const URL = process.env.NEXTAUTH_URL+ "/api/post-content?id="+result._id;
+                const URL = process.env.NEXTAUTH_URL + "/api/post-content?id=" + result._id;
                 const resultGet = await axios.get(URL);
-                }
-            else {
-                console.log("Fecha del futuro");
+
+                return {
+                    data: JSON.parse(JSON.stringify(result)) as IPublication,
+                    isOk: true,
+                    message: resultGet.data.message
+                };
             }
         }
+        console.log("Fecha del futuro");
 
         return {
             data: JSON.parse(JSON.stringify(result)) as IPublication,
             isOk: true,
-            message: "Publicación creada"
+            message: "Publicación programada correctamente"
         };
 
     } catch (error: any) {

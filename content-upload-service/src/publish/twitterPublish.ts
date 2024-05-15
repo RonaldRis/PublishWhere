@@ -9,7 +9,7 @@ import { createResponse, Oauth, Publication, SocialMediaAccount } from "shared-l
 import { IPublication } from 'shared-lib/models/publicaction.model';
 import { IOauth } from 'shared-lib/models/Oauth.model';
 import { IFile } from 'shared-lib/models/file.model';
-import { updateSocialMediaPost } from './utils';
+import { deleteMultimediaFileFromS3, downloadMultimediaFileFromS3, updateSocialMediaPost } from './utils';
 
 
 
@@ -19,58 +19,6 @@ interface Tweet {
   data?: {
     id?: string;
   };
-}
-
-async function uploadMultimediaFileToTwitter(fileDb: IFile, client: TwitterApi): Promise<string | undefined> {
-  try {
-    const urlS3Image = "https://publishwhere-tfg.s3.eu-west-3.amazonaws.com/" + fileDb.bucketFileName;
-
-    console.log("urlS3Image", urlS3Image);
-    // Download the image
-    const response = await axios({
-      url: urlS3Image,
-      method: 'GET',
-      responseType: 'stream',
-    });
-
-    console.log("response", response);
-
-    // Create a unique filename
-    const filename = `./tmp/${Date.now()+fileDb.bucketFileName}`;
-    console.log(filename);
-
-    // Write the image to a file
-    console.log("Write the image to a file");
-    const writer = fs.createWriteStream(filename);
-    response.data.pipe(writer);
-
-    // Wait for the file to finish writing
-    console.log("Wait for the file to finish writing");
-    await new Promise((resolve, reject) => {
-      writer.on('finish', resolve);
-      writer.on('error', reject);
-    });
-
-    console.log("file written");
-
-    const mediaId = await client.v1.uploadMedia(filename);
-    console.log(mediaId);
-
-
-    // // Delete the file
-    // fs.unlink(filename, (error) => {
-
-    //   console.log("error", error);
-    // });
-    // console.log("file deleted");
-
-    return mediaId;
-
-  } catch (error) {
-    console.error("Error uploading file to Twitter", error);
-    return undefined;
-  }
-
 }
 
 
@@ -115,13 +63,19 @@ routerTwitterPublish.post("/", async function (req: Request, res: Response) {
   var filesId: string[] = [];
   console.log("archivos:", filesId);
 
-  for(let i = 0; i < publicationSelected.files.length; i++){
+  for (let i = 0; i < publicationSelected.files.length; i++) {
 
     console.log("file : " + i, " ", publicationSelected.files[i]);
-    const mediaId = await uploadMultimediaFileToTwitter(publicationSelected.files[i], client);
-    console.log("MediaId ON Twitter after uploading image", mediaId);
-    if (mediaId)
-      filesId.push(mediaId as string);
+
+    const filename = await downloadMultimediaFileFromS3(publicationSelected.files[i]);
+    if (filename) {
+      const mediaId = await client.v1.uploadMedia(filename);
+      console.log("MediaId ON Twitter after uploading image", mediaId);
+      if (mediaId)
+        filesId.push(mediaId as string);
+
+      await deleteMultimediaFileFromS3(filename);
+    }
   }
 
   console.log("archivos Subidos:", filesId);
@@ -141,7 +95,7 @@ routerTwitterPublish.post("/", async function (req: Request, res: Response) {
       });
   }
 
-  console.log("TWEET HECHO", tweet);
+  console.log("Tweet creado ", tweet);
 
   const me = await client.v2.me();
 
@@ -152,10 +106,10 @@ routerTwitterPublish.post("/", async function (req: Request, res: Response) {
 
   console.log("URL", URL);
 
-  await updateSocialMediaPost(idPublicacion, idRedSocial, tweet?.data?.id as string, URL); 
+  await updateSocialMediaPost(idPublicacion, idRedSocial, tweet?.data?.id as string, URL);
 
 
-  return res.json(createResponse(true, "TWEET PUBLICADO", null));
+  return res.json(createResponse(true, "Tweet publicado", null));
 });
 
 

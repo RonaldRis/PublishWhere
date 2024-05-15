@@ -19,7 +19,7 @@ import { MisMarcasContext } from "@/contexts/MisMarcasContext";
 import { toast } from "sonner";
 import { FileBrowser } from "@/app/(home)/biblioteca/_components/file-browser";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { FileCard } from "@/app/(home)/biblioteca/_components/file-card";
 import RedSocialCardChip from "./RedSocialCardChip";
 import { ISocialMediaAccount } from "shared-lib/models/socialMediaAccount.model";
@@ -47,6 +47,7 @@ export default function EventModal() {
 
   const { data: session } = useSession();
 
+  const [isUploading, setIsUploading] = useState(false);
   const [isLibraryOpen, setIsLibraryOpen] = useState(false);
   const [noErrors, setNoErrors] = useState(false);
   const [message, setMessage] = useState("");
@@ -65,9 +66,11 @@ export default function EventModal() {
 
   async function handleSubmit(e: any) {
     e.preventDefault();
+    setIsUploading(true);
 
     if (!noErrors) {
       toast.error("Revisa los campos de la publicación");
+      setIsUploading(false);
       return;
     }
 
@@ -94,12 +97,13 @@ export default function EventModal() {
     const result = await postPublicationAction(publication);
     if (!result.isOk) {
       toast.error(result.message);
+      setIsUploading(false);
+
       return;
     }
     toast.success(result.message);
 
 
-    return; //TODO: QUITAR ESTO 
 
     //////CODIGO UI
     const calendarEvent = {
@@ -119,6 +123,8 @@ export default function EventModal() {
     setSelectedFileList([]);
     setSelectedRedesSocialesList([]);
     setTitle("");
+    setIsUploading(false);
+
 
   }
 
@@ -130,8 +136,7 @@ export default function EventModal() {
 
 
 
-    if(selectedRedesSocialesList.length === 0)
-    {
+    if (selectedRedesSocialesList.length === 0) {
       newMessage = "Selecciona al menos un red social";
       noErrors = false;
     }
@@ -166,7 +171,7 @@ export default function EventModal() {
     }
 
 
-    
+
     if (selectedRedesSocialesList.some(red => red.provider === "youtube" && selectedFileList.length == 0)) {
       newMessage = newMessage + "\nYouTube: Tienes que seleccionar un video";
       noErrors = false;
@@ -332,12 +337,26 @@ export default function EventModal() {
         </Dialog>
 
 
+        {/* LOADING ICON DIALOG */}
+
+        {isUploading && (
+
+
+          <Dialog onOpenChange={setIsUploading} open={isUploading}>
+            <DialogContent className="over-over-nav flex flex-col justify-center items-center">
+              <DialogTitle>Publicando ...</DialogTitle>
+              <Loader2 className="animate-spin" size={64} />
+            </DialogContent>
+          </Dialog>
+
+        )}
+
         {/* FOOTER */}
         <AlertDialogFooter className="bottom-0 h-[80vh] flex justify-end border-t p-3 mt-5">
 
           <AlertDialogCancel>Cancel</AlertDialogCancel>
 
-          <Button onClick={handleSubmit} >
+          <Button onClick={handleSubmit} disabled={isUploading} >
             Publicar
           </Button>
         </AlertDialogFooter>

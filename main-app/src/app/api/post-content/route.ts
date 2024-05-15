@@ -1,4 +1,4 @@
-import { createResponse } from 'shared-lib';
+import { createResponse, IServerResponse } from 'shared-lib';
 import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
 import { Publication } from '@/lib/models/models';
@@ -53,10 +53,13 @@ export async function GET(req: NextRequest) {
 
     try {
         const values = await Promise.all(promises);
+        const responses: any[] = []
         values.map((value) => {
             console.log('Response Request', value?.data);
+            responses.push(value?.data);
+
         });
-        return NextResponse.json(createResponse(true, 'Publicación realizada', null));
+        return NextResponse.json(createResponse(true, 'Publicación realizada', responses));
     } catch (error) {
         console.log('Error', error);
         return NextResponse.json(createResponse(false, 'Error al publicar', null), { status: 500 });
