@@ -74,6 +74,10 @@ export default function EventModal() {
       return;
     }
 
+     //TODO: Manejar segun es programada o no
+    const isPostingNow = daySelected?.isSame(new Date(), "day") || daySelected?.isBefore(new Date(), "day") || false; 
+    console.log("isPostingNow", isPostingNow);
+
     const publication: IPublicationPost = {
       title: title,
       creatorId: session?.user?.id as string,
@@ -82,7 +86,7 @@ export default function EventModal() {
       isSchedule: false,
       programmedDate: daySelected?.toDate() as Date,
       programmedTime: daySelected?.toDate() as Date,
-      isPostingInProgress: false,
+      isPostingInProgress: isPostingNow,
       socialMedia: selectedRedesSocialesList.map(red => ({
         provider: red.provider,
         idPublicacionOnProvider: "",

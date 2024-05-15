@@ -82,12 +82,12 @@ routerYoutubePublish.post("/", async (req: Request, res: Response) => {
       requestBody: {
         snippet: {
           title: publicationSelected.title,
-          description: 'Descripción del video',
-          tags: ['tag1', 'tag2'],
-          categoryId: '22' // Por ejemplo, 22 es la categoría de 'People & Blogs'
+          description: '', //TODO: Descripction??
+          tags: [], //TODO: Tags??
+          categoryId: '22' // TODO: Categoria ID??? Por ejemplo, 22 es la categoría de 'People & Blogs'
         },
         status: {
-          privacyStatus: 'private' // 'public', 'unlisted', 'private'
+          privacyStatus: 'public' // 'public', 'unlisted', 'private'
         }
       },
       media: {

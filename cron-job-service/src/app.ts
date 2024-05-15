@@ -12,7 +12,7 @@ import {connectToDatabase} from "shared-lib";
 connectToDatabase(process.env.MONGODB_URL!);
 //Espera a que se conecte a la base de datos
 setTimeout(() => {
-  console.log("Conectado a la base de datos...");
+  console.log("Conectando a la base de datos...");
 }, 3000);
 const app = express();
 const port = process.env.PORT || 3002; // Use environment variables

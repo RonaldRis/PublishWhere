@@ -25,6 +25,7 @@ export async function postPublicationAction(oPublication: IPublicationPost): Pro
                 console.log("Publicar en el momento");
                 const URL = process.env.NEXTAUTH_URL + "/api/post-content?id=" + result._id;
                 const resultGet = await axios.get(URL);
+                await Publication.findByIdAndUpdate(result._id, { isPostingInProgress: false, alreadyPosted: true });
 
                 return {
                     data: JSON.parse(JSON.stringify(result)) as IPublication,

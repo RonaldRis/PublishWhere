@@ -9,14 +9,14 @@ module.exports = {
     combine_logs: true,
     time: true,
 
-    // MULTIPLE INSTANCES
-    instances: 3, // Número de instancias
-    exec_mode: "cluster", // Modo cluster para load balancing
-    env: {
-      NODE_ENV: "development",
-    },
-    env_production: {
-      NODE_ENV: "production",
-    },
+    // // MULTIPLE INSTANCES
+    // instances: 3, // Número de instancias
+    // exec_mode: "cluster", // Modo cluster para load balancing
+    // env: {
+    //   NODE_ENV: "development",
+    // },
+    // env_production: {
+    //   NODE_ENV: "production",
+    // },
   }]
 }
