@@ -10,6 +10,10 @@ export async function postPublicationAction(oPublication: IPublicationPost): Pro
     try {
 
         const result = await Publication.create(oPublication);
+
+        ///VALIDAR SI HAY QUE PUBLICARLA EN EL MOMENTO O SOLO GUARDARLA (PROGRAMADA)
+
+
         return {
             data: JSON.parse(JSON.stringify(result)) as IPublication,
             isOk: true,

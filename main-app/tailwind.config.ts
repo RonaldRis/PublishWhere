@@ -1,4 +1,5 @@
-import type { Config } from "tailwindcss";
+import type { Config } from "tailwindcss"
+import { fontFamily } from "tailwindcss/defaultTheme";
 
 //MODIFICAR EN TAILWIND.CONFIG.JS
 const labelsClasses = ["indigo", "gray", "green", "blue", "red", "purple"];
@@ -6,12 +7,12 @@ const labelsClasses = ["indigo", "gray", "green", "blue", "red", "purple"];
 const config = {
   darkMode: ["class"],
   content: [
-    "./pages/**/*.{ts,tsx}",
-    "./components/**/*.{ts,tsx}",
-    "./app/**/*.{ts,tsx}",
-    "./src/**/*.{ts,tsx}",
-    './src/**/*.{js,ts,jsx,tsx}',
-  ],
+    './pages/**/*.{ts,tsx}',
+    './components/**/*.{ts,tsx}',
+    './app/**/*.{ts,tsx}',
+    './src/**/*.{ts,tsx}',
+	],
+  //PROPIO>>>
   variants: {
     extend: {
       textColor: ["checked"],
@@ -30,6 +31,8 @@ const config = {
       ...labelsClasses.map((lbl) => `accent-${lbl}-400`),
     ],
   },
+  //<<<PROPIO
+
   prefix: "",
   theme: {
     container: {
@@ -41,11 +44,14 @@ const config = {
     },
     extend: {
       ///PROPIAS:
+      fontFamily: {
+        sans: ["var(--font-sans)", ...fontFamily.sans],
+      },
       gridTemplateColumns: {
         "1/5": "1fr 5fr",
       },
 
-      ///OTRAS;
+
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -103,6 +109,6 @@ const config = {
     },
   },
   plugins: [require("tailwindcss-animate")],
-} satisfies Config;
+} satisfies Config
 
-export default config;
+export default config

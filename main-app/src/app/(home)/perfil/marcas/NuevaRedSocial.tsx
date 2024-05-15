@@ -1,15 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import {
   Facebook,
   FacebookIcon,
@@ -20,11 +12,8 @@ import {
   YoutubeIcon,
 } from "lucide-react";
 
-import Image from "next/image";
 import Link from "next/link";
-import { use } from "passport";
 import { fetch_URL_SOCIAL_MEDIA_CONNECTION_SERVICE } from "@/lib/actions/env.actions";
-import { set } from "mongoose";
 
 interface IsocialMediaData {
   name: string;
@@ -68,7 +57,7 @@ function NuevaRedSocial() {
       url: backendUrl + "twitter",
     },
     {
-      name: "Tiktok",
+      name: "Tiktok (development)",
       imageUrl: "https://icons8.com/icon/118640/tiktok",
       url: backendUrl + "tiktok",
     },

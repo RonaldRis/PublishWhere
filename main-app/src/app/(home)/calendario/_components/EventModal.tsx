@@ -26,6 +26,7 @@ import { ISocialMediaAccount } from "shared-lib/models/socialMediaAccount.model"
 import { IPublicationPost } from "shared-lib/models/publicaction.model";
 import { postPublicationAction } from "@/lib/actions/publications.actions";
 import { set } from "mongoose";
+import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 
 
 
@@ -303,17 +304,23 @@ export default function EventModal() {
 
           </div>
         </div>
-        <Dialog onOpenChange={setIsLibraryOpen} open={isLibraryOpen}>
-          <DialogContent className="over-over-nav  flex flex-col justify-between over-nav 
+        <Drawer onOpenChange={setIsLibraryOpen} open={isLibraryOpen}>
+          <DrawerContent>
+
+            {/* <DrawerContent className="over-over-nav  flex flex-col justify-between over-nav 
             h-[75vh] bg-gray-400 w-full
             bottom-[0%] top-[25%]  translate-y-0
             
 
           sm:max-w-screen-md md:max-w-screen-lg lg:max-w-screen-xl 
-           overflow-y-scroll">
+           overflow-y-scroll"> */}
+            <DrawerHeader>
+              <DrawerTitle>Selecciona tus archivos de la biblioteca</DrawerTitle>
+              <DrawerDescription>This action cannot be undone.</DrawerDescription>
+            </DrawerHeader>
             <FileBrowser title="Selecciona los archivos de la publicación" />
-          </DialogContent>
-        </Dialog>
+          </DrawerContent>
+        </Drawer>
 
 
         {/* FOOTER */}
