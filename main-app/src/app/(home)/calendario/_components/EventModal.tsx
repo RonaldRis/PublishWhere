@@ -99,6 +99,7 @@ export default function EventModal() {
     toast.success(result.message);
 
 
+    return; //TODO: QUITAR ESTO 
 
     //////CODIGO UI
     const calendarEvent = {
@@ -129,9 +130,11 @@ export default function EventModal() {
 
 
 
-    ///Validar que el titulo no este vacio
-    newMessage = selectedRedesSocialesList.length === 0 ? "Selecciona al menos un red social" : "";
-    // noErrors = newMessage.length === 0 ? false : true; //TODO: Revisar luego si el texto puede ser vacio
+    if(selectedRedesSocialesList.length === 0)
+    {
+      newMessage = "Selecciona al menos un red social";
+      noErrors = false;
+    }
 
 
     ///Si ha seleccionado twitter no puede pasarse de 280
@@ -162,10 +165,20 @@ export default function EventModal() {
       noErrors = false;
     }
 
+
+    
+    if (selectedRedesSocialesList.some(red => red.provider === "youtube" && selectedFileList.length == 0)) {
+      newMessage = newMessage + "\nYouTube: Tienes que seleccionar un video";
+      noErrors = false;
+    }
+
     setMessage(newMessage);
     setNoErrors(noErrors);
 
+
+
   }
+
 
 
 
@@ -304,23 +317,19 @@ export default function EventModal() {
 
           </div>
         </div>
-        <Drawer onOpenChange={setIsLibraryOpen} open={isLibraryOpen}>
-          <DrawerContent>
+        <Dialog onOpenChange={setIsLibraryOpen} open={isLibraryOpen}>
 
-            {/* <DrawerContent className="over-over-nav  flex flex-col justify-between over-nav 
-            h-[75vh] bg-gray-400 w-full
+          <DialogContent className="over-over-nav  flex flex-col justify-between over-nav 
+            h-[75vh] w-full
             bottom-[0%] top-[25%]  translate-y-0
+            border-8 border-gray-900
             
 
           sm:max-w-screen-md md:max-w-screen-lg lg:max-w-screen-xl 
-           overflow-y-scroll"> */}
-            <DrawerHeader>
-              <DrawerTitle>Selecciona tus archivos de la biblioteca</DrawerTitle>
-              <DrawerDescription>This action cannot be undone.</DrawerDescription>
-            </DrawerHeader>
+           overflow-y-scroll">
             <FileBrowser title="Selecciona los archivos de la publicación" />
-          </DrawerContent>
-        </Drawer>
+          </DialogContent>
+        </Dialog>
 
 
         {/* FOOTER */}

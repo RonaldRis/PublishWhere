@@ -16,6 +16,9 @@ console.log("YOUTUBE_API_CALLBACK", YOUTUBE_API_CALLBACK);
 
 routerYoutubePublish.post("/", (req:Request, res:Response)  => {
 
+  console.log("UPLOAD BACKEND youtube: ",req.url);
+
+
   return res.json(createResponse(true, "FALTA POR HACERLO", null));
 });
 

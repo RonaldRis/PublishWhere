@@ -24,12 +24,8 @@ const cronCheckPublishContent = async () => {
                     await Publication.updateOne({ _id: publicaciones[i]._id }, { $set: { isPostingInProgress: true } });
                     console.log("\n//Start Posting proccess: " + publicaciones[i]._id + " " + publicaciones[i].title)
                     //Start Posting proccess
-                    const result = await fetch(process.env.CLIENT_URL + "/api/post-content", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify(publicaciones[i]),
+                    const result = await fetch(process.env.CLIENT_URL + "/api/post-content?id="+publicaciones[i]._id, {
+                        method: "GET",
                     });
                     const data = await result.json();
                     console.log("data", data);
