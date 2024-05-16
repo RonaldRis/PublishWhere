@@ -2,11 +2,13 @@ import mongoose, { Schema } from "mongoose";
 import { IFile } from "./file.model";
 import { IUser } from "./user.model";
 import { ISocialMediaAccount } from "./socialMediaAccount.model";
+import { IMarca } from "./marca.model";
 
 export interface IPublicationPost {
     title: string,
     creatorId: string,
     files: string[],
+    marcaId: string,
     alreadyPosted: boolean,
     isSchedule: boolean,
     programmedDate: Date,
@@ -31,6 +33,7 @@ export interface IPublication {
     title: string,
     creatorId: IUser,
     files: IFile[],
+    marcaId: IMarca,
     alreadyPosted: boolean,
     isSchedule: boolean,
     programmedDate: Date,
@@ -51,6 +54,7 @@ const publicationDataSchema: Schema = new Schema(
 
         creatorId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
         files: [{ type: Schema.Types.ObjectId, ref: 'File' }],
+        marcaId: { type: Schema.Types.ObjectId, ref: 'Marca' },
         alreadyPosted: { type: Boolean, default: false },
         isSchedule: { type: Boolean, default: false },
         programmedDate: { type: Date, default: new Date() },

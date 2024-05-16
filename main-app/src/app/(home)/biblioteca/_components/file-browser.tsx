@@ -24,6 +24,7 @@ import { Label } from "@/components/ui/label";
 import { BibliotecaContext } from "@/contexts/BibliotecaContext";
 import { Button } from "@/components/ui/button";
 import { CalendarioContext } from "@/contexts/CalendarioContext";
+import UploadNewFileButton from "./UploadNewFileButton";
 
 function Placeholder({ text }: { text: string }) {
   return (
@@ -46,12 +47,16 @@ export function FileBrowser({
   deletedOnly = false,
   notUsedOnly = false,
   usedOnly = false,
+  publicadosOnly = false,
+  programadosOnly = false
 }: {
   title: string;
   favoritesOnly?: boolean;
   deletedOnly?: boolean;
   notUsedOnly?: boolean;
   usedOnly?: boolean;
+  publicadosOnly?: boolean;
+  programadosOnly?: boolean;
 }) {
   const { data: session } = useSession();
   const { marcaGlobalSeleccionada } = useContext(MisMarcasContext);
@@ -62,14 +67,9 @@ export function FileBrowser({
     isLoading,
     modifiedFiles,
     fetchFilesContext,
-    setDeletedOnly,
-    setFavoritesOnly,
-    setNotUsedOnly,
-    setUsedOnly,
-    setIsOpenModalNewFile,
+    setFilesFilterStatus,
   } = useContext(BibliotecaContext);
 
-  const { isCalendarPage } = useContext(CalendarioContext);
 
 
   //TODO: BARRA DE BUSQUEDA! PENDIENTE DE IMPLEMENTAR
@@ -77,10 +77,14 @@ export function FileBrowser({
   useEffect(() => {
     console.log("USE EFFECT: SET FILTERS CONTEXT");
 
-    setDeletedOnly(deletedOnly);
-    setFavoritesOnly(favoritesOnly);
-    setNotUsedOnly(notUsedOnly);
-    setUsedOnly(usedOnly);
+    setFilesFilterStatus({
+      deletedOnly: deletedOnly,
+      favoritesOnly: favoritesOnly,
+      notUsedOnly: notUsedOnly,
+      usedOnly: usedOnly,
+      programadosOnly: programadosOnly,
+      publicadosOnly: publicadosOnly
+    })
 
     fetchFilesContext();
   }, []);
@@ -88,10 +92,15 @@ export function FileBrowser({
   useEffect(() => {
     //Para que no se ejecute al inicio
     if (marcaGlobalSeleccionada && session) {
-      setDeletedOnly(deletedOnly);
-      setFavoritesOnly(favoritesOnly);
-      setNotUsedOnly(notUsedOnly);
-      setUsedOnly(usedOnly);
+      setFilesFilterStatus({
+        deletedOnly: deletedOnly,
+        favoritesOnly: favoritesOnly,
+        notUsedOnly: notUsedOnly,
+        usedOnly: usedOnly,
+        programadosOnly: programadosOnly,
+        publicadosOnly: publicadosOnly
+      });
+
 
       console.log("USE EFFECT: FETCH FILES CONTEXT");
       fetchFilesContext();
@@ -103,7 +112,8 @@ export function FileBrowser({
     favoritesOnly,
     notUsedOnly,
     usedOnly,
-
+    publicadosOnly,
+    programadosOnly
   ]);
 
   return (
@@ -117,11 +127,7 @@ export function FileBrowser({
 
         {/* //TODO: QUITAR BOTON CUANDO SE ABRE DESDE CALENDARIO */}
 
-        {!isCalendarPage && (
-          <Button onClick={() => setIsOpenModalNewFile(true)}>
-            Sube un archivo
-          </Button>
-        )}
+        <UploadNewFileButton/>
       </div>
 
       {marcaGlobalSeleccionada && session ? (
@@ -165,7 +171,7 @@ export function FileBrowser({
           )}
 
           <TabsContent value="grid">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {modifiedFiles?.map((file) => {
                 return <FileCard key={file._id} file={file} />;
               })}

@@ -66,18 +66,18 @@ export function SideNav() {
             <Button
               variant={"link"}
               className={clsx("flex gap-2", {
-                "text-blue-500": pathname.includes("/biblioteca/favorites"),
+                "text-blue-500": pathname.includes("/biblioteca/favoritos"),
               })}
             >
               <StarIcon /> Favoritos
             </Button>
           </Link>
 
-          <Link href="/biblioteca/usados">
+          <Link href="/biblioteca/publicados">
             <Button
               variant={"link"}
               className={clsx("flex gap-2", {
-                "text-blue-500": pathname.includes("/biblioteca/favorites"),
+                "text-blue-500": pathname.includes("/biblioteca/publicados"),
               })}
             >
               <FileInput />
@@ -85,11 +85,11 @@ export function SideNav() {
             </Button>
           </Link>
 
-          <Link href="/biblioteca/usados">
+          <Link href="/biblioteca/programados">
             <Button
               variant={"link"}
               className={clsx("flex gap-2", {
-                "text-blue-500": pathname.includes("/biblioteca/favorites"),
+                "text-blue-500": pathname.includes("/biblioteca/programados"),
               })}
             >
               <FileInput />

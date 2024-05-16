@@ -2,13 +2,13 @@
 import React from "react";
 import CreateEventButton from "./CreateEventButton";
 import SmallCalendar from "./SmallCalendar";
-import Labels from "./Labels";
+import MarcasLabels from "./MarcasLabels";
 export default function SidebarCalendario() {
   return (
     <aside className="border p-5 w-64">
       <CreateEventButton />
       <SmallCalendar />
-      <Labels />
+      <MarcasLabels />
     </aside>
   );
 }

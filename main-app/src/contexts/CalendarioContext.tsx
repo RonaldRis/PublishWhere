@@ -1,6 +1,6 @@
 "use client";
 import { getMonthDaysjs } from "@/lib/utils";
-import { IFileFavorite } from "shared-lib/models/file.model";
+import { IFile, IFileFavorite } from "shared-lib/models/file.model";
 import { ISocialMediaAccount } from "shared-lib/models/socialMediaAccount.model";
 import { da } from "date-fns/locale";
 import dayjs from "dayjs";
@@ -11,23 +11,25 @@ import React, {
   useMemo,
   Dispatch,
   ReactNode,
+  useContext,
 } from "react";
 import { useLocalStorage } from "usehooks-ts";
+import { getPublicationByMarcaAction } from "@/lib/actions/publications.actions";
+import { MisMarcasContext } from "./MisMarcasContext";
+import { labelsProviderToColor } from "@/lib/constantes";
+import { IPublication } from "shared-lib/models/publicaction.model";
 
-export interface IEventCalendar {
+export interface IEventCalendar extends IPublication {
   // Define the shape of your event objects here
-  id: number; //TODO: NUMNBER OR STRING??
-  title: string;
-  description: string;
+  id: string; //TODO: NUMNBER OR STRING??
   label: string;
-  day: number;
 }
 
 export interface ILabelCalendar {
   // Define the shape of your label objects here
   label: string;
   checked: boolean;
-  socialMedia?: string;
+  socialMedia?: ISocialMediaAccount;
 }
 
 ///CONTEXT INTERFACE:
@@ -93,7 +95,7 @@ const CalendarioContext = React.createContext<ICalendarioContext>({
 // TODO: IEvent[] no estoy seguro si es el tipo correcto
 function savedEventsReducer(
   state: IEventCalendar[],
-  { type, payload }: { type: string; payload: any }
+  { type, payload }: { type: string; payload: IEventCalendar }
 ) {
   switch (type) {
     case "push":
@@ -102,22 +104,20 @@ function savedEventsReducer(
       return state.map((evt) => (evt.id === payload.id ? payload : evt));
     case "delete":
       return state.filter((evt) => evt.id !== payload.id);
+
     default:
       throw new Error();
   }
 }
 
-function initEvents() {
-  let storageEvents = null;
-  if (typeof window !== 'undefined') {
-    storageEvents = window.localStorage.getItem("savedEvents");
-  }
-  const parsedEvents = storageEvents ? JSON.parse(storageEvents) : [];
-  return parsedEvents;
-}
 
 ///PROVIDER:
 const CalendarioProvider = ({ children }: { children: ReactNode }) => {
+
+  const { marcaGlobalSeleccionada } = useContext(MisMarcasContext);
+
+
+
   const [monthIndex, setMonthIndex] = useState<number>(dayjs().month());
   const [smallCalendarMonth, setSmallCalendarMonth] = useState<number | null>(
     null
@@ -136,63 +136,103 @@ const CalendarioProvider = ({ children }: { children: ReactNode }) => {
 
   const [isOpenModalNewPost, setIsOpenModalNewPost] = useState(false);
   const [daySelected, setDaySelected] = useState<dayjs.Dayjs>(dayjs());
-  const [selectedEvent, setSelectedEvent] = useState<IEventCalendar | null>(
-    null
-  );
+  // const [selectedEvent, setSelectedEvent] = useLocalStorage<IEventCalendar | null>("selectedEvent", null);
+  const [selectedEvent, setSelectedEvent] = useState<IEventCalendar | null>(null);
+
   const [labels, setLabels] = useState<ILabelCalendar[]>([]);
   const [savedEvents, dispatchCalEvent] = useReducer(
     savedEventsReducer,
     [],
-    initEvents
   );
 
   const filteredEvents = useMemo(() => {
-    return savedEvents.filter((evt: IEventCalendar) =>
-      labels
-        .filter((lbl: ILabelCalendar) => lbl.checked)
-        .map((lbl: ILabelCalendar) => lbl.label)
-        .includes(evt.label)
-    );
+    console.log("labels", labels);
+    // return savedEvents.filter((evt: IEventCalendar) => {
+    //   console.log("evt", evt);
+    //   return evt.socialMedia?.some((sm) =>
+    //     labels.some((lbl) => lbl.socialMedia?._id === sm.socialMedia._id)
+    //   );
+    // });
+
+    const filter = savedEvents.filter((evt) => {
+      return labels.some((lbl) =>  evt.label.includes(lbl.label) && lbl.checked) ?? false;
+    });
+    console.log("filter", filter.length);
+
+    //Elimino los repetidos de _id
+    var dataUnique: IEventCalendar[] = [];
+    const unique = filter.map((event) =>{
+      if(!dataUnique.some((e) => e._id === event._id))
+        dataUnique.push(event);
+    } );
+    console.log("dataUnique", dataUnique.length);
+
+    return dataUnique;
+
   }, [savedEvents, labels]);
 
+
+
+  //TODO: HACER LOS LABELS EN FUNCION DE CADA RED SOCIAL DE LA MARCA
   useEffect(() => {
-    localStorage.setItem("savedEvents", JSON.stringify(savedEvents));
-  }, [savedEvents]);
-
-  // TODO: REPASAR ESTO PARA QUE FUNCIONA O VER DONDE SE USA Y COMO (Posiblmente no se use para editar)
-  // useEffect(() => {
-  //   setLabels((prevLabels) => {
-  //     return [...new Set(savedEvents.map((evt) => evt.label))].map((label) => {
-  //       const currentLabel = prevLabels.find((lbl) => lbl.label === label);
-  //       return {
-  //         label,
-  //         checked: currentLabel ? currentLabel.checked : true,
-  //       };
-  //     });
-  //   });
-  // }, [savedEvents]);
-
- 
-
-  useEffect(() => {
-    // Extraer los labels de los eventos guardados
-    const labelsFromEvents = savedEvents.map((evt) => evt.label);
-  
-    // Eliminar duplicados
-    const uniqueLabels = Array.from(new Set(labelsFromEvents));
-  
     // Actualizar el estado de los labels
-    setLabels((prevLabels) => {
-      return uniqueLabels.map((label) => {
-        const currentLabel = prevLabels.find((lbl) => lbl.label === label);
-        return {
-          label,
-          checked: currentLabel ? currentLabel.checked : true,
-        };
-      });
-    });
-  }, [savedEvents]);
-  
+
+    console.log("marcaGlobalSeleccionada", marcaGlobalSeleccionada);
+    if (!marcaGlobalSeleccionada) {
+      return;
+    }
+    console.log("marcaGlobalSeleccionada", marcaGlobalSeleccionada);
+
+    const redesSociales = marcaGlobalSeleccionada?.socialMedia ?? [];
+    const labelsNuevos: ILabelCalendar[] = redesSociales.map((redSocial) => {
+      return {
+        label: labelsProviderToColor[redSocial.provider] ?? "gray",
+        checked: true,
+        socialMedia: redSocial
+      }
+    }) ?? [];
+    setLabels(labelsNuevos);
+
+    console.log("labelsNuevos", labelsNuevos);
+
+    const updatePublicacionesFromDatabase = async () => {
+
+      const publicaciones = await getPublicationByMarcaAction(marcaGlobalSeleccionada?._id);
+      console.log("publicaciones", publicaciones);
+
+      if (publicaciones.isOk) {
+
+        const calendarEvents: IEventCalendar[] = publicaciones?.data?.map((p) => {
+          return {
+            id: p._id,
+            // label: p.socialMedia.map(s=>labelsProviderToColor[s.provider]).join(",")  ?? "", //TODOS LOS LABELS
+            label: labelsProviderToColor[p.socialMedia[0].provider] ?? "gray", //SOLO EL PRIMERO
+            ...p
+          }
+        }) ?? [];
+
+        console.log("calendarEvents", calendarEvents);
+        console.log("calendarEvents", calendarEvents.length);
+
+        calendarEvents.forEach((evt) => {
+          // if (savedEvents.find((e) => e.id !== evt.id)) 
+          dispatchCalEvent({ type: "push", payload: evt });
+        });
+
+      }
+
+
+    };
+
+    //Actualizar los eventos del calendario 
+    updatePublicacionesFromDatabase();
+
+
+
+
+  }, [marcaGlobalSeleccionada]);
+
+
 
   useEffect(() => {
     if (smallCalendarMonth !== null) {

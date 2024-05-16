@@ -20,6 +20,8 @@ import { MisMarcasContext } from "./MisMarcasContext";
 import {
   deleteFileAction,
   fetchAllFilesByMarcaAction,
+  fetchAllFilesPostedByMarcaAction,
+  fetchAllFilesScheduleByMarcaAction,
   restoreTrashFileAction,
   sendToTrashFileAction,
 } from "@/lib/actions/files.actions";
@@ -29,6 +31,17 @@ import { toast } from "sonner";
 interface IModifiedFile extends IFile {
   isFavorited: boolean;
 }
+
+interface IFileStatusFilter {
+  favoritesOnly: boolean;
+  deletedOnly: boolean;
+  notUsedOnly: boolean;
+  usedOnly: boolean;
+  programadosOnly: boolean;
+  publicadosOnly: boolean;
+}
+
+
 export type FileType = "video" | "image" | "all";
 
 interface IGlobalContextProps {
@@ -39,7 +52,7 @@ interface IGlobalContextProps {
   isFilesLoading: boolean;
   setFileLoading: React.Dispatch<React.SetStateAction<boolean>>;
 
-  fetchFilesContext: (deletedOnly?: boolean) => Promise<void>;
+  fetchFilesContext: () => Promise<void>;
   handlerRestoreFile: (fileId: string) => Promise<void>;
   handlerTrashFile: (fileId: string) => Promise<void>;
   handlerDeleteFile: (fileId: string) => Promise<void>;
@@ -50,43 +63,40 @@ interface IGlobalContextProps {
   isLoading: boolean;
 
   //ESTADOS PARA HACER EL FETCH ALL FILES INICIAL
-  favoritesOnly: boolean;
-  deletedOnly: boolean;
-  notUsedOnly: boolean;
-  usedOnly: boolean;
-  setFavoritesOnly: React.Dispatch<React.SetStateAction<boolean>>;
-  setDeletedOnly: React.Dispatch<React.SetStateAction<boolean>>;
-  setNotUsedOnly: React.Dispatch<React.SetStateAction<boolean>>;
-  setUsedOnly: React.Dispatch<React.SetStateAction<boolean>>;
+  filesFilterStatus: IFileStatusFilter;
+  setFilesFilterStatus: React.Dispatch<React.SetStateAction<IFileStatusFilter>>;
+
 }
 
 // Contexto
 const BibliotecaContext = React.createContext<IGlobalContextProps>({
   isOpenModalNewFile: false,
-  setIsOpenModalNewFile: () => {},
+  setIsOpenModalNewFile: () => { },
   files: undefined,
-  setFiles: () => {},
+  setFiles: () => { },
   isFilesLoading: false,
-  setFileLoading: () => {},
-  fetchFilesContext: async () => {},
-  handlerRestoreFile: async () => {},
-  handlerTrashFile: async () => {},
-  handlerDeleteFile: async () => {},
+  setFileLoading: () => { },
+  fetchFilesContext: async () => { },
+  handlerRestoreFile: async () => { },
+  handlerTrashFile: async () => { },
+  handlerDeleteFile: async () => { },
 
   modifiedFiles: [],
   type: "all",
-  setType: () => {},
+  setType: () => { },
   isLoading: false,
 
   //ESTADOS PARA HACER EL FETCH ALL FILES INICIAL
-  favoritesOnly: false,
-  deletedOnly: false,
-  notUsedOnly: false,
-  usedOnly: false,
-  setFavoritesOnly: () => {},
-  setDeletedOnly: () => {},
-  setNotUsedOnly: () => {},
-  setUsedOnly: () => {},
+  filesFilterStatus: {
+    favoritesOnly: false,
+    deletedOnly: false,
+    notUsedOnly: false,
+    usedOnly: false,
+    programadosOnly: false,
+    publicadosOnly: false,
+  },
+
+  setFilesFilterStatus: () => { }
 });
 
 // Proveedor
@@ -102,14 +112,17 @@ const BibliotecaProvider = ({ children }: { children: ReactNode }) => {
   const [type, setType] = useState<FileType>("all");
   const [query, setQuery] = useState("");
 
-  var [favoritesOnly, setFavoritesOnly] = useLocalStorage(
-    "favoritesOnly",
-    false
+  var [filesFilterStatus, setFilesFilterStatus] = useLocalStorage(
+    "filesFilterStatus",
+    {
+      favoritesOnly: false,
+      deletedOnly: false,
+      notUsedOnly: false,
+      usedOnly: false,
+      programadosOnly: false,
+      publicadosOnly: false,
+    }
   );
-  var [deletedOnly, setDeletedOnly] = useLocalStorage("deletedOnly", false);
-  var [notUsedOnly, setNotUsedOnly] = useLocalStorage("notUsedOnly", false);
-  var [usedOnly, setUsedOnly] = useLocalStorage("usedOnly", false);
-
   const recalcutateModifiedFiles = () => {
     if (files === undefined) return [];
 
@@ -136,35 +149,61 @@ const BibliotecaProvider = ({ children }: { children: ReactNode }) => {
     recalcutateModifiedFiles();
   }, [files, type]);
 
+
+  //TODO: HACER ESTO MAÑANA
   const fetchFilesContext = async () => {
     if (marcaGlobalSeleccionada) {
       const result = await fetchAllFilesByMarcaAction(
         marcaGlobalSeleccionada._id as string,
-        deletedOnly
+        filesFilterStatus.deletedOnly
       );
-      setFiles([]);
+
+      if (!result.isOk)
+        setFiles([]);
+
       if (result.isOk && result.data) {
         //APLICO LOS FILTROS INICIALES
-        var files = result.data;
+        var filesNew = result.data;
 
-        if (notUsedOnly) {
-          files = result.data?.filter(
+        if (filesFilterStatus.notUsedOnly) {
+          filesNew = result.data?.filter(
             (file: IFile) => file.alreadyUsed === false
           );
         }
 
-        if (usedOnly) {
-          files = result.data?.filter(
+        if (filesFilterStatus.usedOnly) {
+          filesNew = result.data?.filter(
             (file: IFile) => file.alreadyUsed === true
           );
         }
 
-        if (deletedOnly)
-          files = result.data?.filter((file: IFile) => file.shouldDelete) ?? [];
+        if (filesFilterStatus.deletedOnly)
+          filesNew = result.data?.filter((file: IFile) => file.shouldDelete) ?? [];
 
-        console.log("fetchFilesContext","filesFILTER", files.length,  files);
+        // if(filesFilterStatus.favoritesOnly)
+        //TODO: HACER LO DE LOS FAVORITOS
 
-        setFiles(files ?? []);
+        if (filesFilterStatus.programadosOnly) {
+          //Tengo que comprobarlo con el servidor
+          const filesProgramados = await fetchAllFilesPostedByMarcaAction(marcaGlobalSeleccionada._id as string);
+          if (filesProgramados.isOk) {
+            filesNew = filesProgramados.data!;
+          }
+
+        }
+
+        if (filesFilterStatus.publicadosOnly) {
+          //Tengo que comprobarlo con el servidor
+          const filesPublicados = await fetchAllFilesScheduleByMarcaAction(marcaGlobalSeleccionada._id as string);
+          if (filesPublicados.isOk) {
+            filesNew = filesPublicados.data!;
+          }
+        }
+
+
+        console.log("fetchFilesContext", "filesFILTER", filesNew.length, filesNew);
+
+        setFiles(filesNew ?? []);
       }
     }
   };
@@ -200,7 +239,7 @@ const BibliotecaProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const handlerPostNewFile = async (file: IFile) => {};
+  const handlerPostNewFile = async (file: IFile) => { };
 
   const isLoading = files === undefined;
 
@@ -224,14 +263,8 @@ const BibliotecaProvider = ({ children }: { children: ReactNode }) => {
         handlerDeleteFile: handlerDeleteFile,
 
         //Query inicial
-        favoritesOnly: favoritesOnly,
-        deletedOnly: deletedOnly,
-        notUsedOnly: notUsedOnly,
-        usedOnly: usedOnly,
-        setFavoritesOnly: setFavoritesOnly,
-        setDeletedOnly: setDeletedOnly,
-        setNotUsedOnly: setNotUsedOnly,
-        setUsedOnly: setUsedOnly,
+        filesFilterStatus: filesFilterStatus,
+        setFilesFilterStatus: setFilesFilterStatus,
       }}
     >
       {children}

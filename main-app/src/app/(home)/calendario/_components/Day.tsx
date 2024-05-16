@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 import React, { useContext, useState, useEffect } from "react";
 import { CalendarioContext, IEventCalendar } from "@/contexts/CalendarioContext";
 import "dayjs/locale/es"; // importa el locale español
+import { LucideAArrowDown } from "lucide-react";
 
 export default function Day({ day, rowIdx }: { day: dayjs.Dayjs; rowIdx: number }) {
 
@@ -14,12 +15,15 @@ export default function Day({ day, rowIdx }: { day: dayjs.Dayjs; rowIdx: number 
     setIsOpenModalNewPost,
     filteredEvents,
     setSelectedEvent,
+    setSelectedFileList,
+    setSelectedRedesSocialesList
   } = useContext(CalendarioContext);
 
   useEffect(() => {
     const events = filteredEvents.filter(
-      (evt) =>
-        dayjs(evt.day).format("DD-MM-YY") === day.format("DD-MM-YY")
+      (evt) => {
+        return dayjs(evt.programmedDate).format("DD-MM-YY") === day.format("DD-MM-YY");
+      }
     );
     setDayEvents(events);
   }, [filteredEvents, day]);
@@ -38,7 +42,11 @@ export default function Day({ day, rowIdx }: { day: dayjs.Dayjs; rowIdx: number 
           </p>
         )}
         <p
-          className={`text-sm p-1 my-1 text-center  ${getCurrentDayClass()}`}
+          className={`text-sm p-1 my-1 text-center cursor-pointer ${getCurrentDayClass()}`}
+          onClick={() => {
+            setDaySelected(day);
+            setIsOpenModalNewPost(true);
+          }}
         >
           {day.format("DD")}
         </p>
@@ -53,10 +61,27 @@ export default function Day({ day, rowIdx }: { day: dayjs.Dayjs; rowIdx: number 
         {dayEvents.map((evt, idx) => (
           <div
             key={evt.id}
-            onClick={() => setSelectedEvent(evt)}
+            onClick={() => {
+              
+
+              setSelectedFileList(evt.files.map((f) => ({ ...f, isFavorited: false })));
+              setSelectedRedesSocialesList(evt.socialMedia.map((sm) => sm.socialMedia));
+
+              setSelectedEvent(evt)}
+            } 
             className={`bg-${evt.label}-200 p-1 mr-3 text-gray-600 text-sm rounded mb-1 truncate`}
           >
-            {evt.title}
+            <p>
+              {evt.title}
+            </p>
+            {/* ICONS */}
+            <div className="flex">
+
+            <LucideAArrowDown />
+            <LucideAArrowDown />
+            <LucideAArrowDown />
+            <LucideAArrowDown />
+            </div>
           </div>
         ))}
       </div>

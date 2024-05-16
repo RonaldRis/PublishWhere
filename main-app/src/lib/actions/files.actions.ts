@@ -3,6 +3,7 @@
 import { IFile, IFilePost } from "shared-lib/models/file.model";
 import { File, Marca } from "@/lib/models/models";
 import { IServerResponse } from "./ServerResponse";
+import { error } from "console";
 
 
 
@@ -29,6 +30,44 @@ export async function fetchAllFilesByMarcaAction(marcaId: string, trashOnly: boo
 
         //TODO: CAMBIAR REQUEST PARA OBTENER SOLO LOS FAVORITOS
 
+        const filesQuery = await File.find<IFile>({
+            marcaId: marcaId,
+            shouldDelete: trashOnly
+        }).populate('creatorId');
+        const files = JSON.parse(JSON.stringify(filesQuery)) as IFile[];
+        return { data: files, isOk: true, message: null };
+
+    } catch (error: any) {
+        return { data: [], isOk: false, message: "No hay archivos" };
+    }
+}
+
+
+export async function fetchAllFilesPostedByMarcaAction(marcaId: string): Promise<IServerResponse<IFile[]>> {
+    try {
+
+        //TODO: CAMBIAR REQUEST PARA OBTENER SOLO LOS FAVORITOS
+        throw error("Not implemented yet");
+
+        const filesQuery = await File.find<IFile>({
+            marcaId: marcaId,
+            shouldDelete: trashOnly
+        }).populate('creatorId');
+        const files = JSON.parse(JSON.stringify(filesQuery)) as IFile[];
+        return { data: files, isOk: true, message: null };
+
+    } catch (error: any) {
+        return { data: [], isOk: false, message: "No hay archivos" };
+    }
+}
+
+
+export async function fetchAllFilesScheduleByMarcaAction(marcaId: string): Promise<IServerResponse<IFile[]>> {
+    try {
+
+        //TODO: CAMBIAR REQUEST PARA OBTENER SOLO LOS FAVORITOS
+
+        throw error("Not implemented yet");
         const filesQuery = await File.find<IFile>({
             marcaId: marcaId,
             shouldDelete: trashOnly

@@ -1,7 +1,7 @@
 "use client";
-import { CalendarioContext } from "@/contexts/CalendarioContext";
+import { CalendarioContext, IEventCalendar } from "@/contexts/CalendarioContext";
 import { CheckIcon } from "lucide-react";
-import { labelsClasses } from "@/lib/constantes";
+import { labelsClasses, labelsProviderToColor } from "@/lib/constantes";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import {
   AlertDialog,
@@ -23,7 +23,7 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { FileCard } from "@/app/(home)/biblioteca/_components/file-card";
 import RedSocialCardChip from "./RedSocialCardChip";
 import { ISocialMediaAccount } from "shared-lib/models/socialMediaAccount.model";
-import { IPublicationPost } from "shared-lib/models/publicaction.model";
+import { IPublication, IPublicationPost } from "shared-lib/models/publicaction.model";
 import { postPublicationAction } from "@/lib/actions/publications.actions";
 import { set } from "mongoose";
 import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
@@ -41,6 +41,20 @@ export default function EventModal() {
     selectedRedesSocialesList, setSelectedRedesSocialesList
   } = useContext(CalendarioContext);
 
+
+  // ///Si hay seleccionado
+  // if (selectedEvent) {
+  //   const favFileFormat = selectedEvent?.files.map(f => ({
+  //     ...f,
+  //     isFavorited:true
+  //   }));
+  //   setSelectedFileList(favFileFormat);
+  //   setSelectedRedesSocialesList(selectedEvent?.socialMedia.map(sm => sm.socialMedia));
+  // }
+
+  
+
+
   const {
     marcaGlobalSeleccionada
   } = useContext(MisMarcasContext);
@@ -54,9 +68,6 @@ export default function EventModal() {
 
   const [title, setTitle] = useState(
     selectedEvent ? selectedEvent.title : ""
-  );
-  const [description, setDescription] = useState(
-    selectedEvent ? selectedEvent.description : ""
   );
   const [selectedLabel, setSelectedLabel] = useState(
     selectedEvent
@@ -82,6 +93,7 @@ export default function EventModal() {
       title: title,
       creatorId: session?.user?.id as string,
       files: selectedFileList.map(f => f._id),
+      marcaId: marcaGlobalSeleccionada?._id as string,
       alreadyPosted: false,
       isSchedule: false,
       programmedDate: daySelected?.toDate() as Date,
@@ -110,13 +122,13 @@ export default function EventModal() {
 
 
     //////CODIGO UI
-    const calendarEvent = {
-      title,
-      description,
-      label: selectedLabel, //TODO: Change??? Esto le a el color
-      day: daySelected?.valueOf(),
-      id: result.data?._id,
-    };
+    
+    const calendarEvent : IEventCalendar = {
+      id: (result.data?._id as string) || "default_id",
+      label: labelsProviderToColor[publication.socialMedia[0].provider] ?? "gray",
+      ...result.data as IPublication,
+    }
+    
     if (selectedEvent) {
       dispatchCalEvent({ type: "update", payload: calendarEvent });
     } else {
@@ -193,7 +205,7 @@ export default function EventModal() {
 
   useEffect(() => {
     validacionesOk();
-  }, [selectedRedesSocialesList, selectedFileList, title, description]); //TODO: FECHA PROGRAMDOS
+  }, [selectedRedesSocialesList, selectedFileList, title]); //TODO: FECHA PROGRAMDOS
 
 
 
@@ -360,7 +372,7 @@ export default function EventModal() {
 
           <AlertDialogCancel>Cancel</AlertDialogCancel>
 
-          <Button onClick={handleSubmit} disabled={isUploading} >
+          <Button onClick={handleSubmit} disabled={isUploading || selectedEvent?.alreadyPosted} >
             Publicar
           </Button>
         </AlertDialogFooter>

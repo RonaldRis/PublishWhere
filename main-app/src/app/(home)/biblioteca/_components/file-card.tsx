@@ -28,7 +28,7 @@ export function FileCard({ file }: { file: IFileFavorite }) {
 
   const [isOpenModalBigFile, setIsOpenModalBigFile] = useState(false);
 
-  const { selectedFileList, setSelectedFileList, isCalendarPage } = useContext(CalendarioContext);
+  const { selectedFileList, setSelectedFileList, isCalendarPage,selectedEvent } = useContext(CalendarioContext);
 
 
 
@@ -39,6 +39,10 @@ export function FileCard({ file }: { file: IFileFavorite }) {
 
 
   const handlerOneClick = () => {
+
+    if(selectedEvent){
+      return; ///SI HAY UN EVENTO SELECCIONADO NO SE PUEDE SELECCIONAR UN ARCHIVO, solo es de lectura
+    }
     
     const contains = selectedFileList.some((f) => f._id === file._id);
     if (contains) {
@@ -63,13 +67,13 @@ export function FileCard({ file }: { file: IFileFavorite }) {
       onDoubleClick={handlerDoubleClick}>
       <CardHeader className=" relative mb-4">
 
-        <CardTitle className="flex justify-start gap-2 text-base font-normal w-[200px]" >
+        <CardTitle className="flex justify-start gap-2 text-base font-normal" >
           <div className="flex justify-center " >
             {typeIcons[file.type]}
           </div>
           {" "}
           {/* TODO: QUE SE VEA BIEN EL TEXTO SI ES MUY LARGO */}
-          <span className="w-full text-ellipsis overflow-hidden">{file.name}</span>
+          <span className="w-fulltext-wrap break-words truncate mx-2">{file.name}</span>
 
         </CardTitle>
         <div className="absolute top-2 right-2">
