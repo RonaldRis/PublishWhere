@@ -12,25 +12,29 @@ const cronCheckPublishContent = async () => {
         // const result = await Publication.find({ programmedDate: { $lte: new Date() }, published: false });
         const result = await Publication.find({ programmedDate: { $lte: new Date() }, alreadyPosted:false });
         const publicaciones = JSON.parse(JSON.stringify(result)) as IPublication[];
+        //Valido las fechas
         console.log("# publicaciones: ", publicaciones.length);
+        const publicacionesValidas: IPublication[] = publicaciones.filter((pub) => { return pub.programmedTime.getUTCDate() <= new Date().getUTCDate() });
+        
+        console.log("# publicaciones VALIDAS: ", publicacionesValidas.length);
 
-        for (let i = 0; i < publicaciones.length; i++) {
-            console.log("\n\npublicaciones["+i+"]", publicaciones[i]);
-            if (publicaciones[i].alreadyPosted == false && publicaciones[i].isPostingInProgress === false) {
+        for (let i = 0; i < publicacionesValidas.length; i++) {
+            console.log("\n\npublicaciones["+i+"]", publicacionesValidas[i]);
+            if (publicacionesValidas[i].alreadyPosted == false && publicacionesValidas[i].isPostingInProgress === false) {
 
                 try {
 
                     //Prevent multiple posts
-                    await Publication.updateOne({ _id: publicaciones[i]._id }, { $set: { isPostingInProgress: true } });
-                    console.log("\n//Start Posting proccess: " + publicaciones[i]._id + " " + publicaciones[i].title)
+                    await Publication.updateOne({ _id: publicacionesValidas[i]._id }, { $set: { isPostingInProgress: true } });
+                    console.log("\n//Start Posting proccess: " + publicacionesValidas[i]._id + " " + publicacionesValidas[i].title)
                     //Start Posting proccess - Dont wait - just start the process
-                    fetch(process.env.CLIENT_URL + "/api/post-content?id="+publicaciones[i]._id, {
+                    fetch(process.env.CLIENT_URL + "/api/post-content?id="+publicacionesValidas[i]._id, {
                         method: "GET",
                     });
                     
                 } catch (err) {
                     console.error(err);
-                    await Publication.updateOne({ _id: publicaciones[i]._id }, { $set: { isPostingInProgress: false } });
+                    await Publication.updateOne({ _id: publicacionesValidas[i]._id }, { $set: { isPostingInProgress: false } });
                 }
             }
         }

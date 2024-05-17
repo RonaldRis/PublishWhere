@@ -29,6 +29,7 @@ import { set } from "mongoose";
 import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import dayjs, { Dayjs } from "dayjs";
 import "dayjs/locale/es"; // importa el locale español
+import { daysToWeeks } from "date-fns";
 
 
 
@@ -55,10 +56,10 @@ export default function EventModal() {
   //   setSelectedRedesSocialesList(selectedEvent?.socialMedia.map(sm => sm.socialMedia));
   // }
 
-  
-    //TODO: BORRAR
-    console.log("HORA DATE", new Date());
-    console.log("HORA DAYSJ", dayjs().toDate());
+
+  //TODO: BORRAR
+  console.log("HORA DATE", new Date());
+  console.log("HORA DAYSJ", dayjs().toDate());
 
 
 
@@ -70,7 +71,7 @@ export default function EventModal() {
   const { data: session } = useSession();
 
   const [isPostingNow, setIsPostingNow] = useState(false);
-  const [time, setTime] = useState(new Date().toISOString().substr(11, 5));
+  const [time, setTime] = useState(new Date());
   const [isUploading, setIsUploading] = useState(false);
   const [isLibraryOpen, setIsLibraryOpen] = useState(false);
   const [noErrors, setNoErrors] = useState(false);
@@ -107,7 +108,7 @@ export default function EventModal() {
       alreadyPosted: false,
       isSchedule: isPostingNow ? false : true,
       programmedDate: daySelected?.toDate() as Date,
-      programmedTime: daySelected?.toDate() as Date,
+      programmedTime: time as Date,
       isPostingInProgress: isPostingNow,
       socialMedia: selectedRedesSocialesList.map(red => ({
         provider: red.provider,
@@ -238,7 +239,7 @@ export default function EventModal() {
 
   useEffect(() => {
     validacionesOk();
-  }, [selectedRedesSocialesList, selectedFileList, title]); //TODO: FECHA PROGRAMDOS
+  }, [selectedRedesSocialesList, selectedFileList, title, time, daySelected]); //TODO: FECHA PROGRAMDOS
 
 
 
@@ -337,16 +338,17 @@ export default function EventModal() {
             </span>
             <p className="flex items-center">
               <input type="checkbox" className="form-checkbox h-5 w-5 text-blue-600 p-8"
+                value={isPostingNow.toString()}
                 onChange={e => {
                   setIsPostingNow(e.target.checked);
                   if (e.target.checked) {
                     setDaySelected(dayjs());
-                    setTime(new Date().toISOString().substr(11, 5));
+                    setTime(new Date());
                   }
                 }}
               />
 
-              {isPostingNow && <label className="px-4" >La publicación se realizará de inmediato</label>}
+              {isPostingNow && <label className="px-4">La publicación se realizará de inmediato</label>}
 
             </p>
             <span className="material-icons-outlined">
@@ -362,12 +364,18 @@ export default function EventModal() {
                 }} />
 
               <span className="px-8">Hora</span>
-              <input type="time" value={time}
+              <input type="time" value={time.getHours() + ":" + time.getMinutes()}
                 disabled={isPostingNow}
                 min={new Date().toISOString().substr(11, 5)}
-                onChange={e =>
-                  setTime(e.target.value)
+                onChange={e => {
 
+                  console.log("e.target.value", e.target.value);
+                  var data = e.target.value.split(":");
+                  const newHour = new Date();
+                  newHour.setHours(Number(data[0]), Number(data[1]))
+                  console.log("newHour", newHour);
+                  setTime(newHour)
+                }
                 } />
 
             </p>
