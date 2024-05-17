@@ -16,7 +16,7 @@ import {
   Mail,
 } from "lucide-react";
 import Image from "next/image";
-import  perfilProfile  from "@/assets/perfil_user.png";
+import perfilProfile from "@/assets/perfil_user.png";
 import {
   Select,
   SelectContent,
@@ -92,12 +92,11 @@ export default function AppHeader() {
 
   const setIsOpenModalNewPostHandler = () => {
 
-    if (marcaGlobalSeleccionada?._id)
-      {
-        setIsOpenModalNewPost(true);
-        router.push("/calendario");
-      } 
-        
+    if (marcaGlobalSeleccionada?._id) {
+      setIsOpenModalNewPost(true);
+      router.push("/calendario");
+    }
+
     else toast.info("Selecciona una marca primero");
   };
 
@@ -107,15 +106,24 @@ export default function AppHeader() {
       <div className="flex  flex-wrap items-center justify-between w-full px-4">
         <div className="flex gap-4 justify-start">
           {/* Nombre de la app */}
-          <Link
-            href="/calendario"
+          <div
             className="flex items-center space-x-3 rtl:space-x-reverse"
           >
-            {/* <img src={Logo.src} className="h-8" alt="Kibo Logo" /> */}
-            <h1 className="self-center text-2xl font-semibold whitespace-nowrap text-slate-100">
-              Contenido
-            </h1>
-          </Link>
+            <Link href="/">
+
+              <Image
+                src="/logotfg.png"
+                alt="Kibo Logo"
+                width={32}
+                height={32}
+              />
+            </Link>
+            <Link href="/calendario">
+              <h1 className="self-center text-2xl font-semibold whitespace-nowrap text-slate-100">
+                Contenido
+              </h1>
+            </Link>
+          </div>
           {session && (
             <Link
               href="/biblioteca"
@@ -181,7 +189,7 @@ export default function AppHeader() {
           {/* BOTON DE AGREAR UN NUEVO POST, MARCA, RED SOCIAL */}
           {session && (
             <HoverCard openDelay={1} closeDelay={5}>
-              <HoverCardTrigger  onClick={setIsOpenModalNewPostHandler}>
+              <HoverCardTrigger onClick={setIsOpenModalNewPostHandler}>
                 <CircleFadingPlus
                   className="m-4 p-0 cursor-pointer"
                   size={24}
@@ -236,7 +244,7 @@ export default function AppHeader() {
               <HoverCardTrigger href="/perfil/marcas">
                 <Avatar>
                   <AvatarImage
-                    src={session?.user?.image}
+                    src={session?.user.image}
                     alt="Foto de perfil"
                     className="rounded-full w-10 h-10 object-cover"
                   />

@@ -12,7 +12,7 @@ function UploadNewFileButton() {
 
 
     return (
-        <div>
+        <div suppressHydrationWarning >
             <Button onClick={() => setIsOpenModalNewFile(true)} className={isCalendarPage ? "hidden" : ""}>
                 Sube un archivo
             </Button>

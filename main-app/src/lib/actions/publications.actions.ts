@@ -25,7 +25,7 @@ export async function postPublicationAction(oPublication: IPublicationPost): Pro
 
 
         //TODO: HACER PRUEBAS USANDO EL SERVIDOR REAL PARA VERIFICAR LA HORA 
-        if (oPublication.programmedDate) {
+        if (!oPublication.isSchedule) {
             console.log("programmedDate", oPublication.programmedDate);
             console.log("new Date()", new Date());
             if (oPublication.programmedDate <= new Date()) {

@@ -228,6 +228,9 @@ const CalendarioProvider = ({ children }: { children: ReactNode }) => {
     updatePublicacionesFromDatabase();
 
 
+    //Limpiar los estados 
+    setSelectedRedesSocialesList([]);
+    setSelectedFileList([]);
 
 
   }, [marcaGlobalSeleccionada]);

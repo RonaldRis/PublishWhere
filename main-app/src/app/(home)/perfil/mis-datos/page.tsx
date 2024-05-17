@@ -8,10 +8,10 @@ export default async function MisDatosPage() {
 
 
   return (
-    <div className="" >
+    <div className="container" >
 
 
-      <Card className='w-full h-full flex flex-col'>
+      <Card className='w-full h-full flex flex-col '>
         <CardHeader>
           <CardTitle className='text-center'>
             Mis datos
@@ -21,7 +21,7 @@ export default async function MisDatosPage() {
         </CardHeader>
 
 
-        <CardContent className='flex-grow'>
+        <CardContent className='flex-grow container'>
 
 
           <Suspense fallback="Cargando datos... ">

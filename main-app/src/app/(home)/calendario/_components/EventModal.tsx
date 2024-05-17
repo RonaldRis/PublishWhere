@@ -27,6 +27,8 @@ import { IPublication, IPublicationPost } from "shared-lib/models/publicaction.m
 import { postPublicationAction } from "@/lib/actions/publications.actions";
 import { set } from "mongoose";
 import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
+import dayjs, { Dayjs } from "dayjs";
+import "dayjs/locale/es"; // importa el locale español
 
 
 
@@ -34,6 +36,7 @@ export default function EventModal() {
   const {
     setIsOpenModalNewPost,
     isOpenModalNewPost,
+    setDaySelected,
     daySelected,
     dispatchCalEvent,
     selectedEvent,
@@ -53,6 +56,11 @@ export default function EventModal() {
   // }
 
   
+    //TODO: BORRAR
+    console.log("HORA DATE", new Date());
+    console.log("HORA DAYSJ", dayjs().toDate());
+
+
 
 
   const {
@@ -61,6 +69,8 @@ export default function EventModal() {
 
   const { data: session } = useSession();
 
+  const [isPostingNow, setIsPostingNow] = useState(false);
+  const [time, setTime] = useState(new Date().toISOString().substr(11, 5));
   const [isUploading, setIsUploading] = useState(false);
   const [isLibraryOpen, setIsLibraryOpen] = useState(false);
   const [noErrors, setNoErrors] = useState(false);
@@ -85,8 +95,8 @@ export default function EventModal() {
       return;
     }
 
-     //TODO: Manejar segun es programada o no
-    const isPostingNow = daySelected?.isSame(new Date(), "day") || daySelected?.isBefore(new Date(), "day") || false; 
+    //TODO: Manejar segun es programada o no
+    const isPostingNow = daySelected?.isSame(new Date(), "day") || daySelected?.isBefore(new Date(), "day") || false;
     console.log("isPostingNow", isPostingNow);
 
     const publication: IPublicationPost = {
@@ -95,7 +105,7 @@ export default function EventModal() {
       files: selectedFileList.map(f => f._id),
       marcaId: marcaGlobalSeleccionada?._id as string,
       alreadyPosted: false,
-      isSchedule: false,
+      isSchedule: isPostingNow ? false : true,
       programmedDate: daySelected?.toDate() as Date,
       programmedTime: daySelected?.toDate() as Date,
       isPostingInProgress: isPostingNow,
@@ -110,6 +120,7 @@ export default function EventModal() {
     console.log("publication", publication);
 
 
+
     const result = await postPublicationAction(publication);
     if (!result.isOk) {
       toast.error(result.message);
@@ -122,13 +133,13 @@ export default function EventModal() {
 
 
     //////CODIGO UI
-    
-    const calendarEvent : IEventCalendar = {
+
+    const calendarEvent: IEventCalendar = {
       id: (result.data?._id as string) || "default_id",
       label: labelsProviderToColor[publication.socialMedia[0].provider] ?? "gray",
       ...result.data as IPublication,
     }
-    
+
     if (selectedEvent) {
       dispatchCalEvent({ type: "update", payload: calendarEvent });
     } else {
@@ -150,6 +161,28 @@ export default function EventModal() {
     var noErrors = true;
 
 
+    if (!isPostingNow) {
+      //Validar fecha y hora
+      if (!daySelected) {
+        newMessage = "Selecciona una fecha";
+        noErrors = false;
+      }
+      if (!time) {
+        newMessage = "Selecciona una hora";
+        noErrors = false;
+      }
+
+      if (daySelected && daySelected.isBefore(new Date(), "day")) {
+        newMessage = "La fecha no puede ser anterior a hoy";
+        noErrors = false;
+      }
+
+      if (daySelected && daySelected.isSame(new Date(), "day") && dayjs(time, "HH:mm").isBefore(dayjs(), "minute")) {
+        newMessage = "La hora no puede ser anterior a la actual";
+        noErrors = false;
+      }
+
+    }
 
 
     if (selectedRedesSocialesList.length === 0) {
@@ -300,9 +333,44 @@ export default function EventModal() {
 
 
             <span className="material-icons-outlined">
-              schedule
+              Publicar ya
             </span>
-            <p>{daySelected?.format("dddd, MMMM DD")}</p>
+            <p className="flex items-center">
+              <input type="checkbox" className="form-checkbox h-5 w-5 text-blue-600 p-8"
+                onChange={e => {
+                  setIsPostingNow(e.target.checked);
+                  if (e.target.checked) {
+                    setDaySelected(dayjs());
+                    setTime(new Date().toISOString().substr(11, 5));
+                  }
+                }}
+              />
+
+              {isPostingNow && <label className="px-4" >La publicación se realizará de inmediato</label>}
+
+            </p>
+            <span className="material-icons-outlined">
+              Fecha
+            </span>
+            <p >
+              {daySelected?.locale("es").format("dddd") + " - "}
+              <input type="date" value={daySelected?.format("YYYY-MM-DD")}
+                min={dayjs().format("YYYY-MM-DD")}
+                disabled={isPostingNow}
+                onChange={e => {
+                  setDaySelected(dayjs(e.target.value));
+                }} />
+
+              <span className="px-8">Hora</span>
+              <input type="time" value={time}
+                disabled={isPostingNow}
+                min={new Date().toISOString().substr(11, 5)}
+                onChange={e =>
+                  setTime(e.target.value)
+
+                } />
+
+            </p>
           </div>
 
           <br />
@@ -373,7 +441,7 @@ export default function EventModal() {
           <AlertDialogCancel>Cancel</AlertDialogCancel>
 
           <Button onClick={handleSubmit} disabled={isUploading || selectedEvent?.alreadyPosted} >
-            Publicar
+            {isPostingNow ? "Publicar ya" : "Programar"}
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>

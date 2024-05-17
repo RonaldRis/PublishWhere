@@ -12,9 +12,9 @@ function CalendarioPage() {
 
 
   useEffect(() => {
-    setSelectedRedesSocialesList([]);
+    // setSelectedRedesSocialesList([]);
     setIscalendarPage(true);
-    setSelectedFileList([]);
+    // setSelectedFileList([]);
   }, []);
 
 
