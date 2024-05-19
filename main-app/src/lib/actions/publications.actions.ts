@@ -56,11 +56,9 @@ export async function postPublicationAction(oPublication: IPublicationPost): Pro
 export async function getPublicationByMarcaAction(idMarca: string): Promise<IServerResponse<IPublication[]>> {
     try {
 
-        console.log("idMarca", idMarca);
-        
+        console.log("getPublicationByMarcaAction");
         const result = await Publication.find({ marcaId: idMarca }).populate('socialMedia.socialMedia').populate('files').populate('creatorId') ;
 
-        console.log("result", result);
         if (!result) {
             return { data: [], isOk: true, message: "No hay publicaciones" };
         }

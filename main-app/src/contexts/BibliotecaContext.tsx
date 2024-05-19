@@ -20,13 +20,15 @@ import { MisMarcasContext } from "./MisMarcasContext";
 import {
   deleteFileAction,
   fetchAllFilesByMarcaAction,
-  fetchAllFilesPostedByMarcaAction,
+  fetchAllFilesNOTUsedByMarcaAction,
   fetchAllFilesScheduleByMarcaAction,
+  fetchAllFilesUsedByMarcaAction,
   restoreTrashFileAction,
   sendToTrashFileAction,
 } from "@/lib/actions/files.actions";
 import { IFile } from "shared-lib/models/file.model";
 import { toast } from "sonner";
+import { set } from "mongoose";
 
 interface IModifiedFile extends IFile {
   isFavorited: boolean;
@@ -60,8 +62,6 @@ interface IGlobalContextProps {
   modifiedFiles: IModifiedFile[];
   type: FileType;
   setType: React.Dispatch<React.SetStateAction<FileType>>;
-  isLoading: boolean;
-
   //ESTADOS PARA HACER EL FETCH ALL FILES INICIAL
   filesFilterStatus: IFileStatusFilter;
   setFilesFilterStatus: React.Dispatch<React.SetStateAction<IFileStatusFilter>>;
@@ -84,8 +84,6 @@ const BibliotecaContext = React.createContext<IGlobalContextProps>({
   modifiedFiles: [],
   type: "all",
   setType: () => { },
-  isLoading: false,
-
   //ESTADOS PARA HACER EL FETCH ALL FILES INICIAL
   filesFilterStatus: {
     favoritesOnly: false,
@@ -126,23 +124,20 @@ const BibliotecaProvider = ({ children }: { children: ReactNode }) => {
   const recalcutateModifiedFiles = () => {
     if (files === undefined) return [];
 
-    //TODO: CAMBIAR AL MOMENTO DE HACER LOS ARCHIVOS FAVORITOS, LEER DE LA BASE DE DATOS
     var modifiedFilesNew =
       files?.map((file) => ({
         ...file,
         isFavorited: false,
       })) ?? [];
 
-    if (type === "video")
+    if (type == "video" || type == "image") {
       modifiedFilesNew = modifiedFilesNew.filter(
-        (file) => file.type === "video"
+        (file) => file.type === type
       );
-    else if (type === "image")
-      modifiedFilesNew = modifiedFilesNew.filter(
-        (file) => file.type === "image"
-      );
+    }
+
+
     setModifiedFiles(modifiedFilesNew);
-    //TODO: HACER LO DE SI SON ARCHIVOS FAVORITOS O NO?? NI IDEA XD
   };
 
   useEffect(() => {
@@ -152,61 +147,81 @@ const BibliotecaProvider = ({ children }: { children: ReactNode }) => {
 
   //TODO: HACER ESTO MAÑANA
   const fetchFilesContext = async () => {
-    if (marcaGlobalSeleccionada) {
-      const result = await fetchAllFilesByMarcaAction(
-        marcaGlobalSeleccionada._id as string,
-        filesFilterStatus.deletedOnly
-      );
 
-      if (!result.isOk)
-        setFiles([]);
-
-      if (result.isOk && result.data) {
-        //APLICO LOS FILTROS INICIALES
-        var filesNew = result.data;
-
-        if (filesFilterStatus.notUsedOnly) {
-          filesNew = result.data?.filter(
-            (file: IFile) => file.alreadyUsed === false
-          );
-        }
-
-        if (filesFilterStatus.usedOnly) {
-          filesNew = result.data?.filter(
-            (file: IFile) => file.alreadyUsed === true
-          );
-        }
-
-        if (filesFilterStatus.deletedOnly)
-          filesNew = result.data?.filter((file: IFile) => file.shouldDelete) ?? [];
-
-        // if(filesFilterStatus.favoritesOnly)
-        //TODO: HACER LO DE LOS FAVORITOS
-
-        if (filesFilterStatus.programadosOnly) {
-          //Tengo que comprobarlo con el servidor
-          const filesProgramados = await fetchAllFilesPostedByMarcaAction(marcaGlobalSeleccionada._id as string);
-          if (filesProgramados.isOk) {
-            filesNew = filesProgramados.data!;
-          }
-
-        }
-
-        if (filesFilterStatus.publicadosOnly) {
-          //Tengo que comprobarlo con el servidor
-          const filesPublicados = await fetchAllFilesScheduleByMarcaAction(marcaGlobalSeleccionada._id as string);
-          if (filesPublicados.isOk) {
-            filesNew = filesPublicados.data!;
-          }
-        }
+    setFileLoading(true);
+    setFiles(undefined);
 
 
-        console.log("fetchFilesContext", "filesFILTER", filesNew.length, filesNew);
-
-        setFiles(filesNew ?? []);
-      }
+    if (!marcaGlobalSeleccionada) {
+      setFileLoading(false);
+      return;
     }
+
+    if (filesFilterStatus.deletedOnly) {
+      console.log("deletedOnly")
+      const result = await fetchAllFilesByMarcaAction(marcaGlobalSeleccionada._id, true);
+      if (result.isOk) {
+        setFiles(result.data ?? []);
+      }
+      setFileLoading(false);
+      return;
+    }
+
+    if (filesFilterStatus.programadosOnly) {
+      console.log("programadosOnly")
+      const result = await fetchAllFilesScheduleByMarcaAction(marcaGlobalSeleccionada._id);
+      if (result.isOk) {
+        setFiles(result.data ?? []);
+      }
+      setFileLoading(false);
+
+      return;
+    }
+
+    if (filesFilterStatus.usedOnly) {
+      console.log("usedOnly")
+
+      const result = await fetchAllFilesUsedByMarcaAction(marcaGlobalSeleccionada._id);
+      if (result.isOk) {
+        setFiles(result.data ?? []);
+      }
+      setFileLoading(false);
+
+      return;
+    }
+
+    if (filesFilterStatus.notUsedOnly) {
+      console.log("notUsedOnly")
+
+      const result = await fetchAllFilesNOTUsedByMarcaAction(marcaGlobalSeleccionada._id);
+      if (result.isOk) {
+        setFiles(result.data ?? []);
+      }
+      setFileLoading(false);
+
+      return;
+    }
+
+    console.log("ALL FILES - no filter ")
+
+    const result = await fetchAllFilesByMarcaAction(marcaGlobalSeleccionada._id);
+    if (result.isOk) {
+      setFiles(result.data ?? []);
+      setFileLoading(false);
+
+      return;
+    }
+
+    setFiles([]);
+    setFileLoading(false);
+
+
   };
+
+
+  useEffect(() => {
+    fetchFilesContext();
+  }, [marcaGlobalSeleccionada, filesFilterStatus]);
 
   const handlerRestoreFile = async (fileId: string) => {
     if (marcaGlobalSeleccionada) {
@@ -239,9 +254,7 @@ const BibliotecaProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const handlerPostNewFile = async (file: IFile) => { };
 
-  const isLoading = files === undefined;
 
 
   return (
@@ -259,7 +272,6 @@ const BibliotecaProvider = ({ children }: { children: ReactNode }) => {
         modifiedFiles: modifiedFiles,
         type: type,
         setType: setType,
-        isLoading: isLoading,
         handlerDeleteFile: handlerDeleteFile,
 
         //Query inicial

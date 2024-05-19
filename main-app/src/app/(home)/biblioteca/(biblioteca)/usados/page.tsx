@@ -1,10 +1,9 @@
 "use client";
-import { useEffect, useState } from 'react';
-import { FileBrowser } from "./_components/file-browser";
-import { useLocalStorage } from 'usehooks-ts';
 
-function BibliotecaPage() {
+import { useEffect, useState } from "react";
+import { FileBrowser } from "../../_components/file-browser";
 
+export default function PostedFilesPage() {
   /// EVITA ERRORES DE HIDRATACIÓN
   const [isClient, setIsClient] = useState(false);
   useEffect(() => {
@@ -16,8 +15,5 @@ function BibliotecaPage() {
     </p></div>;
   }
 
-  // This will render on client-side
-  return <FileBrowser title="Tus archivos" />;
+  return <FileBrowser title="Usados" usedOnly />;
 }
-
-export default BibliotecaPage;

@@ -70,6 +70,7 @@ export default function AppHeader() {
     setMarcaGlobalSeleccionada(null);
 
     signOut({ callbackUrl: "/" });
+    
   };
 
   const handlerLogin = (e: any) => {

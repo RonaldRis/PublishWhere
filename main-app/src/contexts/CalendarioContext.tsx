@@ -158,14 +158,11 @@ const CalendarioProvider = ({ children }: { children: ReactNode }) => {
   );
 
   const filteredEvents = useMemo(() => {
-    console.log("labels", labels);
-    
 
     //Filtro los eventos que tengan al menos una red social seleccionada
     const filter = savedEvents.filter((evt: IEventCalendar) => {
       return labels.some((lbl) =>  evt.socialMedia.some(sm=>sm.socialMedia._id ==lbl._id) && lbl.checked) ?? false;
     });
-    console.log("filter", filter.length);
 
     //Elimino los repetidos de _id
     var dataUnique: IEventCalendar[] = [];
@@ -173,8 +170,6 @@ const CalendarioProvider = ({ children }: { children: ReactNode }) => {
       if(!dataUnique.some((e) => e._id === event._id))
         dataUnique.push(event);
     } );
-    console.log("dataUnique", dataUnique.length);
-
     return dataUnique;
 
   }, [savedEvents, labels]);
@@ -183,17 +178,12 @@ const CalendarioProvider = ({ children }: { children: ReactNode }) => {
 
   // LA MARCA global seleccionada cambia
   useEffect(() => {
-    // Actualizar el estado de los labels
 
     dispatchCalEvent({ type: "reset", payload: [] });
 
-    
-
-    console.log("marcaGlobalSeleccionada", marcaGlobalSeleccionada);
     if (!marcaGlobalSeleccionada) {
       return;
     }
-    console.log("marcaGlobalSeleccionada", marcaGlobalSeleccionada);
 
     const labelsNuevos: ILabelCalendar[] = marcaGlobalSeleccionada?.socialMedia.map((redSocial) => {
       return {
@@ -206,12 +196,10 @@ const CalendarioProvider = ({ children }: { children: ReactNode }) => {
     //label 
     setLabels(labelsNuevos);
 
-    console.log("labelsNuevos", labelsNuevos);
 
     const updatePublicacionesFromDatabase = async () => {
 
       const publicaciones = await getPublicationByMarcaAction(marcaGlobalSeleccionada?._id);
-      console.log("publicaciones", publicaciones);
 
       if (publicaciones.isOk) {
 
@@ -223,10 +211,6 @@ const CalendarioProvider = ({ children }: { children: ReactNode }) => {
             ...p
           }
         }) ?? [];
-
-        console.log("calendarEvents", calendarEvents);
-        console.log("calendarEvents", calendarEvents.length);
-
 
         dispatchCalEvent({ type: "reset", payload: calendarEvents });
 
@@ -261,7 +245,6 @@ const CalendarioProvider = ({ children }: { children: ReactNode }) => {
   }, [isOpenModalNewPost]);
 
   useEffect(() => {
-    console.log("monthIndex", monthIndex);
     setCurrentMonthMatrix(getMonthDaysjs(monthIndex));
   }, [monthIndex]);
 
