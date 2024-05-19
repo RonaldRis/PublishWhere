@@ -16,6 +16,10 @@ export const config = {
 export async function middleware(request: NextRequest) {
 
 
+  request.cookies.getAll().forEach((cookie) => {
+    console.log("cookie", cookie)
+  } )
+  
   console.log("middleware", request.url)
   //Not the best, but workst
   if (request.url.includes("publishwhere")) {
