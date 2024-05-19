@@ -74,6 +74,7 @@ const MisMarcasProvider = ({ children }: { children: ReactNode }) => {
 
     useEffect(() => {
         fetchRefreshMarcas();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [session?.user.id]);
 
 

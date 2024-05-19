@@ -6,6 +6,29 @@ import { IServerResponse } from "./ServerResponse";
 import { error } from "console";
 
 
+export async function putFileRenameAction(fileId: string, name:string): Promise<IServerResponse<IFile>> {
+    try {
+
+        var result = await File.findById(fileId);
+        
+        if (!result) {
+            return { data: null, isOk: false, message: "No existe el archivo" };
+        }
+
+        result.name = name;
+        await result.save();
+        
+        return {
+            data: JSON.parse(JSON.stringify(result)) as IFile,
+            isOk: true,
+            message: null
+        };
+
+    } catch (error: any) {
+        return { data: null, isOk: false, message: "No existe el archivo" };
+    }
+}
+
 
 export async function fetchFileAction(fileId: string): Promise<IServerResponse<IFile>> {
     try {
@@ -46,15 +69,17 @@ export async function fetchAllFilesByMarcaAction(marcaId: string, trashOnly: boo
 export async function fetchAllFilesPostedByMarcaAction(marcaId: string): Promise<IServerResponse<IFile[]>> {
     try {
 
+        return { data: [], isOk: false, message: "No hay archivos" };
+
         //TODO: CAMBIAR REQUEST PARA OBTENER SOLO LOS FAVORITOS
         throw error("Not implemented yet");
 
-        const filesQuery = await File.find<IFile>({
-            marcaId: marcaId,
-            shouldDelete: trashOnly
-        }).populate('creatorId');
-        const files = JSON.parse(JSON.stringify(filesQuery)) as IFile[];
-        return { data: files, isOk: true, message: null };
+        // const filesQuery = await File.find<IFile>({
+        //     marcaId: marcaId,
+        //     shouldDelete: trashOnly
+        // }).populate('creatorId');
+        // const files = JSON.parse(JSON.stringify(filesQuery)) as IFile[];
+        // return { data: files, isOk: true, message: null };
 
     } catch (error: any) {
         return { data: [], isOk: false, message: "No hay archivos" };
@@ -65,15 +90,17 @@ export async function fetchAllFilesPostedByMarcaAction(marcaId: string): Promise
 export async function fetchAllFilesScheduleByMarcaAction(marcaId: string): Promise<IServerResponse<IFile[]>> {
     try {
 
+        return { data: [], isOk: false, message: "TODAVIA NO LO HE IMPLEMENTADO" };
+
+
         //TODO: CAMBIAR REQUEST PARA OBTENER SOLO LOS FAVORITOS
 
-        throw error("Not implemented yet");
-        const filesQuery = await File.find<IFile>({
-            marcaId: marcaId,
-            shouldDelete: trashOnly
-        }).populate('creatorId');
-        const files = JSON.parse(JSON.stringify(filesQuery)) as IFile[];
-        return { data: files, isOk: true, message: null };
+        // const filesQuery = await File.find<IFile>({
+        //     marcaId: marcaId,
+        //     shouldDelete: trashOnly
+        // }).populate('creatorId');
+        // const files = JSON.parse(JSON.stringify(filesQuery)) as IFile[];
+        // return { data: files, isOk: true, message: null };
 
     } catch (error: any) {
         return { data: [], isOk: false, message: "No hay archivos" };

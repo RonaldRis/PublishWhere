@@ -2,9 +2,8 @@
 
 import { IPublication, IPublicationPost } from "shared-lib/models/publicaction.model";
 import { IServerResponse } from "./ServerResponse";
-import { Publication } from "@/lib/models/models";
+import { File, Publication } from "@/lib/models/models";
 import axios from "axios";
-import { File, Marca } from "shared-lib";
 
 
 

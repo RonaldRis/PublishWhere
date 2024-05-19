@@ -1,7 +1,7 @@
 "use server";
 
 import { IMarca } from "shared-lib/models/marca.model";
-import { Marca, User } from "@/lib/models/models";
+import { Marca, Publication, User } from "@/lib/models/models";
 import { IServerResponse } from "./ServerResponse";
 
 
@@ -84,13 +84,17 @@ export async function deleteMarcaAction(marcaId: string): Promise<IServerRespons
         const result = await Marca.deleteOne({ _id: marcaId });
         console.log("Delete count: ", result.deletedCount)
 
+        
         if (result.deletedCount == 0) {
             return { data: false, isOk: false, message: "No es posible eliminar la marca" };
         }
+
+        await Publication.deleteMany({ marcaId: marcaId });
+
         return {
             data: true,
             isOk: true,
-            message: "Eliminado con exito"
+            message: "Marca eliminada con éxito"
         };
 
     } catch (error: any) {

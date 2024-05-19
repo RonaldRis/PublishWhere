@@ -56,21 +56,21 @@ function EquipoCrud() {
       toast.info("No hay usuario seleccionado");
       return false;
     }
-    if (user._id === (marcaGlobalSeleccionada?.admin as IUser)._id) {
-      toast.info("No puedes eliminar al administrador");
-      return false;
-    }
+
+    
     if (!marcaGlobalSeleccionada) {
       toast.info("No hay marca seleccionada");
       return false;
     }
-    const adminId = (marcaGlobalSeleccionada.admin as IUser)._id;
-    const isUserAdmin = adminId === session?.user.id;
-    const eliminarmeAMiMismo = user._id === session?.user.id;
 
- 
-    if (!(!isUserAdmin && eliminarmeAMiMismo)) {
-      toast.info("Unicamente el administrador puede eliminar miembros");
+    if (user._id === (marcaGlobalSeleccionada?.admin as IUser)._id) {
+      toast.info("No puedes eliminar al administrador");
+      return false;
+    }
+
+    if((marcaGlobalSeleccionada?.admin as IUser)._id !== session?.user.id)
+    {
+      toast.info("Solo el administrador puede eliminar miembros");
       return false;
     }
 
@@ -147,13 +147,17 @@ function EquipoCrud() {
                     </span>
                     <span>{userMap.name} {userMap._id === session?.user._id && " (Tú) "}</span>
                   </div>
-                  <Button
+                  {(marcaGlobalSeleccionada?.admin as IUser)._id == session?.user.id && session?.user.id !== userMap._id  && (
+                    <Button
                     className="justify-end"
                     variant="ghost"
                     onClick={() => handlerClickOnDeleteUserBadge(user)}
                   >
                     <CircleX color="#e00000" />
                   </Button>
+                  )}
+
+                  
                 </li>
               );
             })}

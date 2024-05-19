@@ -8,10 +8,10 @@ export default async function MisDatosPage() {
 
 
   return (
-    <div className="container" >
+    <div className="container flex flex-col items-center justify-center h-4/5" >
 
 
-      <Card className='w-full h-full flex flex-col '>
+      <Card className='w-full  '>
         <CardHeader>
           <CardTitle className='text-center'>
             Mis datos

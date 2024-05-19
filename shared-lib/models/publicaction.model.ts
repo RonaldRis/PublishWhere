@@ -24,7 +24,7 @@ export interface IPublicationPost {
 };
 
 export interface IPublication {
-    _id: string;
+    _id: any;
     createdAt: Date;
     updatedAt: Date;
 

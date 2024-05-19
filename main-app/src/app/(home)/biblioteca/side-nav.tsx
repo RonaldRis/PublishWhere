@@ -62,7 +62,7 @@ export function SideNav() {
             </Button>
           </Link>
 
-          <Link href="/biblioteca/favoritos">
+          {/* <Link href="/biblioteca/favoritos">
             <Button
               variant={"link"}
               className={clsx("flex gap-2", {
@@ -71,7 +71,7 @@ export function SideNav() {
             >
               <StarIcon /> Favoritos
             </Button>
-          </Link>
+          </Link> */}
 
           <Link href="/biblioteca/publicados">
             <Button

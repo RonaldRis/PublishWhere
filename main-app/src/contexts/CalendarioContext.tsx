@@ -27,6 +27,7 @@ export interface IEventCalendar extends IPublication {
 
 export interface ILabelCalendar {
   // Define the shape of your label objects here
+  _id: string;
   label: string;
   checked: boolean;
   socialMedia?: ISocialMediaAccount;
@@ -44,7 +45,7 @@ export interface ICalendarioContext {
   setSmallCalendarMonth: React.Dispatch<React.SetStateAction<number | null>>;
   daySelected: dayjs.Dayjs | null;
   setDaySelected: React.Dispatch<React.SetStateAction<dayjs.Dayjs>>;
-  dispatchCalEvent: Dispatch<{ type: string; payload: any }>;
+  dispatchCalEvent: Dispatch<ActionCustomReducer>;
   savedEvents: IEventCalendar[];
   selectedEvent: IEventCalendar | null;
   setSelectedEvent: React.Dispatch<React.SetStateAction<IEventCalendar | null>>;
@@ -92,23 +93,34 @@ const CalendarioContext = React.createContext<ICalendarioContext>({
   setSelectedRedesSocialesList: () => { },
 });
 
-// TODO: IEvent[] no estoy seguro si es el tipo correcto
+
+// Define el tipo de acción
+type ActionCustomReducer = 
+  | { type: 'push'; payload: IEventCalendar | IEventCalendar[] }
+  | { type: 'update'; payload: IEventCalendar }
+  | { type: 'delete'; payload: IEventCalendar }
+  | { type: 'reset'; payload: IEventCalendar[] };
+
+// Reducer para manejar los eventos guardados
 function savedEventsReducer(
   state: IEventCalendar[],
-  { type, payload }: { type: string; payload: IEventCalendar }
-) {
-  switch (type) {
-    case "push":
-      return [...state, payload];
-    case "update":
-      return state.map((evt) => (evt.id === payload.id ? payload : evt));
-    case "delete":
-      return state.filter((evt) => evt.id !== payload.id);
-
+  action: ActionCustomReducer
+): IEventCalendar[] {
+  switch (action.type) {
+    case 'push':
+      return Array.isArray(action.payload) ? [...state, ...action.payload] : [...state, action.payload];
+    case 'update':
+      return state.map((evt) => (evt.id === action.payload.id ? action.payload : evt));
+    case 'delete':
+      return state.filter((evt) => evt.id !== action.payload.id);
+    case 'reset':
+      return action.payload; // Aquí se resetea el estado con el nuevo conjunto de eventos
     default:
-      throw new Error();
+      throw new Error('Unknown action type');
   }
 }
+
+
 
 
 ///PROVIDER:
@@ -142,26 +154,22 @@ const CalendarioProvider = ({ children }: { children: ReactNode }) => {
   const [labels, setLabels] = useState<ILabelCalendar[]>([]);
   const [savedEvents, dispatchCalEvent] = useReducer(
     savedEventsReducer,
-    [],
+    [] as IEventCalendar[],
   );
 
   const filteredEvents = useMemo(() => {
     console.log("labels", labels);
-    // return savedEvents.filter((evt: IEventCalendar) => {
-    //   console.log("evt", evt);
-    //   return evt.socialMedia?.some((sm) =>
-    //     labels.some((lbl) => lbl.socialMedia?._id === sm.socialMedia._id)
-    //   );
-    // });
+    
 
-    const filter = savedEvents.filter((evt) => {
-      return labels.some((lbl) =>  evt.label.includes(lbl.label) && lbl.checked) ?? false;
+    //Filtro los eventos que tengan al menos una red social seleccionada
+    const filter = savedEvents.filter((evt: IEventCalendar) => {
+      return labels.some((lbl) =>  evt.socialMedia.some(sm=>sm.socialMedia._id ==lbl._id) && lbl.checked) ?? false;
     });
     console.log("filter", filter.length);
 
     //Elimino los repetidos de _id
     var dataUnique: IEventCalendar[] = [];
-    const unique = filter.map((event) =>{
+    const unique = filter.map((event:IEventCalendar) =>{
       if(!dataUnique.some((e) => e._id === event._id))
         dataUnique.push(event);
     } );
@@ -173,9 +181,13 @@ const CalendarioProvider = ({ children }: { children: ReactNode }) => {
 
 
 
-  //TODO: HACER LOS LABELS EN FUNCION DE CADA RED SOCIAL DE LA MARCA
+  // LA MARCA global seleccionada cambia
   useEffect(() => {
     // Actualizar el estado de los labels
+
+    dispatchCalEvent({ type: "reset", payload: [] });
+
+    
 
     console.log("marcaGlobalSeleccionada", marcaGlobalSeleccionada);
     if (!marcaGlobalSeleccionada) {
@@ -183,14 +195,15 @@ const CalendarioProvider = ({ children }: { children: ReactNode }) => {
     }
     console.log("marcaGlobalSeleccionada", marcaGlobalSeleccionada);
 
-    const redesSociales = marcaGlobalSeleccionada?.socialMedia ?? [];
-    const labelsNuevos: ILabelCalendar[] = redesSociales.map((redSocial) => {
+    const labelsNuevos: ILabelCalendar[] = marcaGlobalSeleccionada?.socialMedia.map((redSocial) => {
       return {
+        _id: redSocial._id,
         label: labelsProviderToColor[redSocial.provider] ?? "gray",
         checked: true,
         socialMedia: redSocial
       }
     }) ?? [];
+    //label 
     setLabels(labelsNuevos);
 
     console.log("labelsNuevos", labelsNuevos);
@@ -214,10 +227,8 @@ const CalendarioProvider = ({ children }: { children: ReactNode }) => {
         console.log("calendarEvents", calendarEvents);
         console.log("calendarEvents", calendarEvents.length);
 
-        calendarEvents.forEach((evt) => {
-          // if (savedEvents.find((e) => e.id !== evt.id)) 
-          dispatchCalEvent({ type: "push", payload: evt });
-        });
+
+        dispatchCalEvent({ type: "reset", payload: calendarEvents });
 
       }
 
@@ -228,7 +239,7 @@ const CalendarioProvider = ({ children }: { children: ReactNode }) => {
     updatePublicacionesFromDatabase();
 
 
-    //Limpiar los estados 
+    //Limpiar los estados de los archivos y redes sociales seleccionados
     setSelectedRedesSocialesList([]);
     setSelectedFileList([]);
 
@@ -255,7 +266,7 @@ const CalendarioProvider = ({ children }: { children: ReactNode }) => {
   }, [monthIndex]);
 
   function updateLabel(label: ILabelCalendar) {
-    setLabels(labels.map((lbl) => (lbl.label === label.label ? label : lbl)));
+    setLabels(labels.map((lbl) => (lbl._id === label._id ? label : lbl)));
   }
 
   return (

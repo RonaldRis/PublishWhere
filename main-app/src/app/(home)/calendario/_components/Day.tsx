@@ -4,6 +4,13 @@ import React, { useContext, useState, useEffect } from "react";
 import { CalendarioContext, IEventCalendar } from "@/contexts/CalendarioContext";
 import "dayjs/locale/es"; // importa el locale español
 import { LucideAArrowDown } from "lucide-react";
+import Image from "next/image";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card"
+
 
 export default function Day({ day, rowIdx }: { day: dayjs.Dayjs; rowIdx: number }) {
 
@@ -60,27 +67,57 @@ export default function Day({ day, rowIdx }: { day: dayjs.Dayjs; rowIdx: number 
       >
         {dayEvents.map((evt, idx) => (
           <div
-            key={evt.id}
+            key={evt._id}
+            //TODO: CAMBIE ESTO DE id a _id
             onClick={() => {
-              
+
 
               setSelectedFileList(evt.files.map((f) => ({ ...f, isFavorited: false })));
               setSelectedRedesSocialesList(evt.socialMedia.map((sm) => sm.socialMedia));
 
-              setSelectedEvent(evt)}
-            } 
+              setSelectedEvent(evt)
+            }
+            }
             className={`bg-${evt.label}-200 p-1 mr-3 text-gray-600 text-sm rounded mb-1 truncate`}
           >
             <p>
               {evt.title}
             </p>
             {/* ICONS */}
-            <div className="flex">
+            <div className="flex gap-2 flex-wrap">
+              {evt.socialMedia.map((sm) => (
 
-            <LucideAArrowDown />
-            <LucideAArrowDown />
-            <LucideAArrowDown />
-            <LucideAArrowDown />
+                <HoverCard
+                  key={sm.socialMedia._id}
+                >
+                  <HoverCardTrigger>
+                    <Image
+                      src={sm.socialMedia.thumbnail}
+                      width={24}
+                      height={24}
+                      className="rounded-full"
+                      alt="Description of the image"
+                      style={{ objectFit: "contain" }}
+                    />
+                  </HoverCardTrigger>
+                  <HoverCardContent>
+                    <Image
+                      key={sm.socialMedia._id}
+                      src={sm.socialMedia.thumbnail}
+                      width={24}
+                      height={24}
+                      className="rounded-full object-contain"
+                      alt="Description of the image"
+                    />
+                    {sm.socialMedia.name}
+                    <br />
+                    {sm.socialMedia.provider}
+                  </HoverCardContent>
+                </HoverCard>
+
+              ))
+              }
+
             </div>
           </div>
         ))}

@@ -32,6 +32,8 @@ import { BibliotecaContext } from "@/contexts/BibliotecaContext";
 import { bytesToSize } from "@/lib/utils";
 
 
+
+
 export const computeSHA256 = async (file: File) => {
   const buffer = await file.arrayBuffer();
   const hash = crypto.createHash("sha256");
@@ -171,13 +173,13 @@ const IndividualUploadFile = ({
   return (
     <Card>
       <CardContent>
-        <div className="flex items-center flex-col lg:flex-row">
+        <div className="flex items-center flex-col lg:flex-row bg-slate-200">
           {/* IMAGE CARD */}
           <Card className=" p-4">
             <div
               style={{ position: "relative", width: "400px", height: "400px" }}
             >
-              {file.type.startsWith("video")  && (
+              {file.type.startsWith("video") && (
                 // <VideoIcon className="w-20 h-20" />
                 //TODO: URGENTE: HACER QUE LOS VIDEOS SE VEAN EN EL CARD
                 <video
@@ -204,7 +206,7 @@ const IndividualUploadFile = ({
 
           {/* FILE DATA */}
 
-          <div className="container w-full h-full bg-slate-200 ">
+          <div className="container w-full h-full  ">
             <br />
             <p>Nombre archivo:</p>
             <Input
@@ -214,14 +216,15 @@ const IndividualUploadFile = ({
               onChange={(e) => setNombre(e.target.value)}
             />
             <p>{bytesToSize(file.size)}</p>
-            <p>ETIQUETAS?? </p>
-            <p>Type: {" " + file.type} </p>
+            <p>Tipo: {" " + file.type} </p>
             {/* TODO: ETIQUETAS ?? */}
             {wasUploadingSuccessful && (
               <p className="font-bold w-full m-auto p-auto">
                 Archivo subido correctamente
               </p>
             )}
+           
+
             {!wasUploadingSuccessful && (
               <Button
                 className="w-full"
@@ -237,10 +240,10 @@ const IndividualUploadFile = ({
               >
                 {isUpdate ? "Actualizar" : "Subir"}
               </Button>
+
             )}
             {isUploading && (
               <div className="flex flex-col gap-8 w-full items-center mt-24">
-                <Loader2 className="animate-spin text-gray-500" size={24} />
                 <Progress value={uploadProgress} />
                 <div className="text-2xl">Subiendo archivo...</div>
               </div>
@@ -289,7 +292,7 @@ function UploadFiles({
     event.preventDefault();
   }, []);
 
-  const handlerUploadAll = async () => {};
+  const handlerUploadAll = async () => { };
 
   return (
     <AlertDialog onOpenChange={setIsOpenModalNewFile} open={isOpenModalNewFile}>
@@ -376,9 +379,9 @@ function UploadFiles({
         {/* FOOTER */}
         <AlertDialogFooter className="bottom-0">
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={handlerUploadAll}>
+          {/* <AlertDialogAction onClick={handlerUploadAll}>
             Subir todos
-          </AlertDialogAction>
+          </AlertDialogAction> */}
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

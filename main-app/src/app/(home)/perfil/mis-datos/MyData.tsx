@@ -31,15 +31,10 @@ const MyData = () => {
                 {session?.user?.image && (
                     <Image src={session.user.image} alt="Foto de perfil" className="mx-auto mt-5 rounded-full w-32 h-32 object-cover" width={128} height={128} />
                 )}
-                <div className="mt-5 text-left">
+                <div className="mt-5 text-left flex flex-col items-center justify-center">
                     <p><strong>Nombre:</strong> {session?.user?.name ?? 'Invitado'}</p>
                     <p><strong>Correo:</strong> {session?.user?.email ?? 'No disponible'}</p>
-                    {session && (
-                        <>
-                            <p><strong>Fecha de registro:</strong> {new Date().getFullYear()}</p>
-                            {/* TODO: No afecta la app: CAMBIAR FECHA DE REGISTRO, POSTERIORMENTE */}
-                        </>
-                    )}
+                   
                 </div>
                 <div className="flex justify-center mt-5">
 

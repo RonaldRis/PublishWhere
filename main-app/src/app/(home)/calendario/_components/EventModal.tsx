@@ -107,9 +107,9 @@ export default function EventModal() {
       marcaId: marcaGlobalSeleccionada?._id as string,
       alreadyPosted: false,
       isSchedule: isPostingNow ? false : true,
+      isPostingInProgress: isPostingNow,
       programmedDate: daySelected?.toDate() as Date,
       programmedTime: time as Date,
-      isPostingInProgress: isPostingNow,
       socialMedia: selectedRedesSocialesList.map(red => ({
         provider: red.provider,
         idPublicacionOnProvider: "",
@@ -146,7 +146,7 @@ export default function EventModal() {
     } else {
       dispatchCalEvent({ type: "push", payload: calendarEvent });
     }
-
+    
     setIsOpenModalNewPost(false);
     setSelectedFileList([]);
     setSelectedRedesSocialesList([]);
@@ -274,33 +274,30 @@ export default function EventModal() {
         {/* CONTENT */}
 
         {/* //TODO: Unicamente se pueden eliminar los posts que son programador */}
-        {/* 
-        <header className="bg-gray-100 px-4 py-2 flex justify-between items-center">
-          <span className="material-icons-outlined text-gray-400">
-            drag_handle
-          </span>
-          <div>
-            {selectedEvent && (
-              <span
-                onClick={() => {
-                  dispatchCalEvent({
-                    type: "delete",
-                    payload: selectedEvent,
-                  });
-                  setIsOpenModalNewPost(false);
-                }}
-                className="material-icons-outlined text-gray-400 cursor-pointer"
-              >
-                delete
-              </span>
-            )}
-            <button onClick={() => setIsOpenModalNewPost(false)}>
-              <span className="material-icons-outlined text-gray-400">
-                close
-              </span>
-            </button>
-          </div>
-        </header> */}
+        {selectedEvent && !selectedEvent.alreadyPosted && (
+          <header className="bg-gray-100 px-4 py-2 flex justify-between items-center">
+            <span className="material-icons-outlined text-gray-400">
+              drag_handle
+            </span>
+            <div>
+              {selectedEvent && (
+                <span
+                  onClick={() => {
+                    dispatchCalEvent({
+                      type: "delete",
+                      payload: selectedEvent,
+                    });
+                    setIsOpenModalNewPost(false);
+                  }}
+                  className="material-icons-outlined text-gray-400 cursor-pointer"
+                >
+                  Cancelar programado
+                </span>
+              )}
+            </div>
+          </header>
+
+        )}
         <div className="p-3">
           <div className="grid grid-cols-1/5 items-end gap-y-7">
             <div></div>
@@ -372,7 +369,7 @@ export default function EventModal() {
                   console.log("e.target.value", e.target.value);
                   var data = e.target.value.split(":");
                   const newHour = new Date();
-                  newHour.setHours(Number(data[0]), Number(data[1]))
+                  newHour.setHours(Number(data[0]), Number(data[1]), 0, 0)
                   console.log("newHour", newHour);
                   setTime(newHour)
                 }

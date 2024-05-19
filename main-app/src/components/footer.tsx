@@ -10,7 +10,7 @@ export function Footer() {
 
           <Image
             src="/logotfg.png"
-            alt="Kibo Logo"
+            alt="PublishWhere Logo"
             width={32}
             height={32}
           />

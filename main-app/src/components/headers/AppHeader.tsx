@@ -103,24 +103,24 @@ export default function AppHeader() {
   return (
     // TODO: 1/3 ver como modificar el Header para que se vea bien en mobile, modificar h-20 tanto en el layout como aca
     <nav className="w-full top-0 start-0 bg-slate-900">
-      <div className="flex  flex-wrap items-center justify-between w-full px-4">
+      <div className="relative flex  flex-wrap items-center justify-between w-full px-4">
         <div className="flex gap-4 justify-start">
           {/* Nombre de la app */}
           <div
-            className="flex items-center space-x-3 rtl:space-x-reverse"
+            className="flex items-center gap-2"
           >
             <Link href="/">
 
               <Image
                 src="/logotfg.png"
-                alt="Kibo Logo"
+                alt="PublishWhere Logo"
                 width={32}
                 height={32}
               />
             </Link>
             <Link href="/calendario">
               <h1 className="self-center text-2xl font-semibold whitespace-nowrap text-slate-100">
-                Contenido
+                Calendario
               </h1>
             </Link>
           </div>
@@ -137,13 +137,13 @@ export default function AppHeader() {
 
         {/* SELECTOR DE MARCAS */}
         {session && (
-          <div>
+          <div className="relative lg:absolute lg:flex lg:items-center lg:justify-center lg:w-auto lg:right-96 lg:left-96  ">
             {isMarcaLoading ? (
-              <p className="text-slate-100">Cargando...</p>
+              <p className="text-slate-100 w-auto">Cargando...</p>
             ) : // <p className="text-slate-100">Hay datos</p>
               marcas?.length <= 0 ? (
                 <Button
-                  className="flex gap-2"
+                  className="flex gap-2 w-auto"
                   onClick={() => setIsOpenModalNuevaMarca(true)}
                 >
                   <CirclePlus size={16} absoluteStrokeWidth />
@@ -158,13 +158,13 @@ export default function AppHeader() {
                       : undefined
                   }
                 >
-                  <SelectTrigger className=" px-8">
+                  <SelectTrigger className=" px-8 w-auto">
                     <SelectValue placeholder="Selecciona una marca" />
                   </SelectTrigger>
-                  <SelectContent className="over-nav">
+                  <SelectContent className="over-nav w-auto ">
                     {marcas?.map((marca) => (
                       <SelectItem
-                        className="gap-5"
+                        className="gap-5 w-auto"
                         value={marca._id}
                         key={marca._id}
                       >

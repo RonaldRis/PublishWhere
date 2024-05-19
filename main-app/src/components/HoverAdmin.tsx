@@ -14,7 +14,7 @@ function HoverAdmin() {
         <ShieldCheck className="w-4 h-4" />
       </HoverCardTrigger>
       <HoverCardContent>
-        Eres administrador de esta marca
+        Usuario administrador de esta marca
       </HoverCardContent>
     </HoverCard>
   );

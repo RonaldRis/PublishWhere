@@ -10,8 +10,11 @@ nav{
  nav *{
   z-index: 1002 !important;
  }
- .over-nav{
+ .over-nav-link{
   z-index: 1003 !important;
+ }
+ .over-nav{
+  z-index: 1004 !important;
  }
 
  .over-over-nav{
@@ -118,4 +121,9 @@ h4 {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+
+.gradient-hero {
+  background: linear-gradient(90deg, rgb(15 23 42) , rgb(29 78 216 / 66%));
 }

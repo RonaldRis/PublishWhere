@@ -14,20 +14,20 @@ export const authOptions: NextAuthOptions = {
     updateAge: 24 * 60 * 60, // 24 hours
   },
   pages: {
-    
+
     // signIn: '/sign-in',
   }, providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-      
+
     })
   ],
 
   callbacks: {
-    async session({ session, user, token, newSession}) {
+    async session({ session, user, token, newSession }) {
 
-     
+
       if (user) {
         session.user._id = user.id;
         session.user.id = user.id;
@@ -39,11 +39,15 @@ export const authOptions: NextAuthOptions = {
 
       return session;
     },
-    async signIn({user, account, profile}) {
+    async signIn({ user, account, profile }) {
 
       return true
     },
-    
+    async redirect({ url, baseUrl }) {
+      // Redirigir al calendario después de iniciar sesión
+      return `${baseUrl}/calendario`;
+    }
+
   },
 };
 
