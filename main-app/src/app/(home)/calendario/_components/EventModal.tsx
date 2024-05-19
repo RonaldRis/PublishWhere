@@ -285,7 +285,6 @@ export default function EventModal() {
         {selectedEvent && !selectedEvent.alreadyPosted && (
           <header className="bg-gray-100 px-4 py-2 flex justify-between items-center">
             <span className="material-icons-outlined text-gray-400">
-              drag_handle
             </span>
             <div>
               {selectedEvent && (
@@ -298,7 +297,7 @@ export default function EventModal() {
                     handlerCancelarPublicacion(selectedEvent._id);
                     setIsOpenModalNewPost(false);
                   }}
-                  className="material-icons-outlined text-gray-400 cursor-pointer"
+                  className="material-icons-outlined text-gray-900 cursor-pointer"
                 >
                   Cancelar programado
                 </span>
