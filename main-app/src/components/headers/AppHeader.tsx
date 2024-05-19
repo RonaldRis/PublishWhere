@@ -45,6 +45,7 @@ import { CalendarioContext } from "@/contexts/CalendarioContext";
 import HoverAdmin from "../HoverAdmin";
 import { IUser } from "shared-lib/models/user.model";
 import { useRouter } from "next/navigation";
+import { cookies } from "next/headers";
 
 export default function AppHeader() {
   const {
@@ -70,7 +71,7 @@ export default function AppHeader() {
     setMarcaGlobalSeleccionada(null);
 
     signOut({ callbackUrl: "/" });
-    
+
   };
 
   const handlerLogin = (e: any) => {

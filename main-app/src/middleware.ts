@@ -24,7 +24,7 @@ export async function middleware(request: NextRequest) {
   if (request.cookies.get("__Secure-next-auth.session-token") || request.cookies.get("next-auth.session-token")) {
     return NextResponse.next()
   }
-  return NextResponse.redirect(new URL('/api/auth/signin', request.url))
+  return NextResponse.redirect(new URL('/auth', request.url))
 
 }
 

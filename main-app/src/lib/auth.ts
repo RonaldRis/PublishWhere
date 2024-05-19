@@ -15,7 +15,7 @@ export const authOptions: NextAuthOptions = {
   },
   pages: {
 
-    // signIn: '/sign-in',
+    signIn: '/auth',
   }, providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
