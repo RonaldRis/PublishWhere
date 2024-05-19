@@ -20,48 +20,49 @@ export async function GET(req: NextRequest) {
     if (!idPublicacion) {
         return NextResponse.json(createResponse(false, 'ID de publicación no proporcionado', null));
     }
-
-
-    const result = await Publication.findById(idPublicacion).populate('socialMedia.socialMedia');
-    const publicationSelected = JSON.parse(JSON.stringify(result)) as IPublication;
-
-
-    if (!result) {
-        return NextResponse.json(createResponse(false, 'Publicación no encontrada', null));
-    }
-
-
-
-    //Inicio proceso de publicación - Evito multiples publicaciones
-    await Publication.findByIdAndUpdate(idPublicacion, { isPostingInProgress: true });
-
-
-    console.log("result", publicationSelected);
-
-
-    //Publico en todas las redes sociales seleccionadas
-    const promises = publicationSelected.socialMedia.map((socialMedia: any) => {
-        switch (socialMedia.provider) {
-            case 'twitter':
-                return axios.post(`${CONTENT_UPLOAD_URL}/publish/twitter`, {
-                    idPublicacion: idPublicacion,
-                    idRedSocial: socialMedia.socialMedia
-                });
-
-            case 'youtube':
-                return axios.post(`${CONTENT_UPLOAD_URL}/publish/youtube`, {
-                    idPublicacion: idPublicacion,
-                    idRedSocial: socialMedia.socialMedia
-                });
-
-            default:
-                return Promise.resolve();
-        }
-    });
-
-
-
     try {
+
+
+
+        const result = await Publication.findById(idPublicacion).populate('socialMedia.socialMedia');
+        const publicationSelected = JSON.parse(JSON.stringify(result)) as IPublication;
+
+
+        if (!result) {
+            return NextResponse.json(createResponse(false, 'Publicación no encontrada', null));
+        }
+
+
+
+        //Inicio proceso de publicación - Evito multiples publicaciones
+        await Publication.findByIdAndUpdate(idPublicacion, { isPostingInProgress: true });
+
+
+        console.log("result", publicationSelected);
+
+
+        //Publico en todas las redes sociales seleccionadas
+        const promises = publicationSelected.socialMedia.map((socialMedia: any) => {
+            switch (socialMedia.provider) {
+                case 'twitter':
+                    return axios.post(`${CONTENT_UPLOAD_URL}/publish/twitter`, {
+                        idPublicacion: idPublicacion,
+                        idRedSocial: socialMedia.socialMedia
+                    });
+
+                case 'youtube':
+                    return axios.post(`${CONTENT_UPLOAD_URL}/publish/youtube`, {
+                        idPublicacion: idPublicacion,
+                        idRedSocial: socialMedia.socialMedia
+                    });
+
+                default:
+                    return Promise.resolve();
+            }
+        });
+
+
+
         const values = await Promise.all(promises);
 
         //Finalizo proceso de publicación

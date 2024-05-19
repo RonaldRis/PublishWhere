@@ -74,3 +74,28 @@ export async function getPublicationByMarcaAction(idMarca: string): Promise<ISer
         return { data: null, isOk: false, message: "Error - No es posible leer las publicaciones en este momento" };
     }
 }
+
+
+export async function deleteSchedulePublicationAction(idPublicacion: string): Promise<IServerResponse<null>> {
+    try {
+
+        console.log("deleteSchedulePublicationAction");
+        const result = await Publication.deleteOne({ _id: idPublicacion });
+        
+        if (!result) {
+            return { data: null, isOk: false, message: "No se encontró la publicación" };
+        }
+
+        return {
+            data: null,
+            isOk: true,
+            message: "Publicación eliminada, no se publicará"
+        };
+
+    } catch (error: any) {
+        console.log("error", error);
+        return { data: null, isOk: false, message: "Error - No es posible eliminar las publicaciones en este momento" };
+    }
+}
+
+

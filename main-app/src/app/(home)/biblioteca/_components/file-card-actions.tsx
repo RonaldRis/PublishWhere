@@ -85,7 +85,7 @@ export function FileCardActions({
             <FileIcon className="w-4 h-4" /> Descargar
           </DropdownMenuItem>
 
-          <DropdownMenuItem
+          {/* <DropdownMenuItem
             onClick={() => {
               toast.error("Todavia no se ha implementado");
               // toggleFavorite({
@@ -103,7 +103,7 @@ export function FileCardActions({
                 <StarHalf className="w-4 h-4" /> Añadir favorito
               </div>
             )}
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
 
           <DropdownMenuSeparator />
           <DropdownMenuItem

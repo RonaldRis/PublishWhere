@@ -24,7 +24,7 @@ import { FileCard } from "@/app/(home)/biblioteca/_components/file-card";
 import RedSocialCardChip from "./RedSocialCardChip";
 import { ISocialMediaAccount } from "shared-lib/models/socialMediaAccount.model";
 import { IPublication, IPublicationPost } from "shared-lib/models/publicaction.model";
-import { postPublicationAction } from "@/lib/actions/publications.actions";
+import { deleteSchedulePublicationAction, postPublicationAction } from "@/lib/actions/publications.actions";
 import { set } from "mongoose";
 import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import dayjs, { Dayjs } from "dayjs";
@@ -242,6 +242,14 @@ export default function EventModal() {
   }, [selectedRedesSocialesList, selectedFileList, title, time, daySelected]); //TODO: FECHA PROGRAMDOS
 
 
+  const handlerCancelarPublicacion = async (idPublicacion: string) => {
+    const result = await deleteSchedulePublicationAction(idPublicacion);
+    if (!result.isOk) {
+      toast.error(result.message);
+      return;
+    }
+    toast.success(result.message);
+  }
 
 
 
@@ -287,6 +295,7 @@ export default function EventModal() {
                       type: "delete",
                       payload: selectedEvent,
                     });
+                    handlerCancelarPublicacion(selectedEvent._id);
                     setIsOpenModalNewPost(false);
                   }}
                   className="material-icons-outlined text-gray-400 cursor-pointer"

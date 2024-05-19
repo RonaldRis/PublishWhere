@@ -1,23 +1,23 @@
 "use server";
 
 import { IFile, IFilePost } from "shared-lib/models/file.model";
-import { File, Marca } from "@/lib/models/models";
+import { File, Marca, Publication } from "@/lib/models/models";
 import { IServerResponse } from "./ServerResponse";
-import { error } from "console";
+import { IPublication } from "shared-lib/models/publicaction.model";
 
 
-export async function putFileRenameAction(fileId: string, name:string): Promise<IServerResponse<IFile>> {
+export async function putFileRenameAction(fileId: string, name: string): Promise<IServerResponse<IFile>> {
     try {
 
-        var result = await File.findById(fileId);
-        
+        var result = await File.findById(fileId).populate('creatorId');;
+
         if (!result) {
             return { data: null, isOk: false, message: "No existe el archivo" };
         }
 
         result.name = name;
         await result.save();
-        
+
         return {
             data: JSON.parse(JSON.stringify(result)) as IFile,
             isOk: true,
@@ -33,7 +33,7 @@ export async function putFileRenameAction(fileId: string, name:string): Promise<
 export async function fetchFileAction(fileId: string): Promise<IServerResponse<IFile>> {
     try {
 
-        var result = await File.findById(fileId);
+        var result = await File.findById(fileId).populate('creatorId');
         if (!result) {
             return { data: null, isOk: false, message: "No existe el archivo" };
         }
@@ -48,7 +48,7 @@ export async function fetchFileAction(fileId: string): Promise<IServerResponse<I
         return { data: null, isOk: false, message: "No existe el archivo" };
     }
 }
-export async function fetchAllFilesByMarcaAction(marcaId: string, trashOnly: boolean = false, favoriteOnly: boolean = false): Promise<IServerResponse<IFile[]>> {
+export async function fetchAllFilesByMarcaAction(marcaId: string, trashOnly: boolean = false): Promise<IServerResponse<IFile[]>> {
     try {
 
         //TODO: CAMBIAR REQUEST PARA OBTENER SOLO LOS FAVORITOS
@@ -66,20 +66,17 @@ export async function fetchAllFilesByMarcaAction(marcaId: string, trashOnly: boo
 }
 
 
-export async function fetchAllFilesPostedByMarcaAction(marcaId: string): Promise<IServerResponse<IFile[]>> {
+
+export async function fetchAllFilesNOTUsedByMarcaAction(marcaId: string): Promise<IServerResponse<IFile[]>> {
     try {
 
-        return { data: [], isOk: false, message: "No hay archivos" };
+        //TODO: CHECK
 
-        //TODO: CAMBIAR REQUEST PARA OBTENER SOLO LOS FAVORITOS
-        throw error("Not implemented yet");
+        const filesQuery = await File.find({ marcaId: marcaId, alreadyUsed: false }).populate('creatorId');
+        const files = JSON.parse(JSON.stringify(filesQuery)) as IFile[];
 
-        // const filesQuery = await File.find<IFile>({
-        //     marcaId: marcaId,
-        //     shouldDelete: trashOnly
-        // }).populate('creatorId');
-        // const files = JSON.parse(JSON.stringify(filesQuery)) as IFile[];
-        // return { data: files, isOk: true, message: null };
+
+        return { data: files, isOk: true, message: null };
 
     } catch (error: any) {
         return { data: [], isOk: false, message: "No hay archivos" };
@@ -87,20 +84,71 @@ export async function fetchAllFilesPostedByMarcaAction(marcaId: string): Promise
 }
 
 
+export async function fetchAllFilesUsedByMarcaAction(marcaId: string): Promise<IServerResponse<IFile[]>> {
+    try {
+
+        //TODO: CHECK
+
+        const filesQuery = await File.find({ marcaId: marcaId, alreadyUsed: true }).populate('creatorId');
+        const files = JSON.parse(JSON.stringify(filesQuery)) as IFile[];
+
+
+        return { data: files, isOk: true, message: null };
+
+    } catch (error: any) {
+        return { data: [], isOk: false, message: "No hay archivos" };
+    }
+}
+
+
+// export async function fetchAllFilesPostedByMarcaAction(marcaId: string): Promise<IServerResponse<IFile[]>> {
+//     try {
+
+//         //TODO: CHECK
+
+//         const publicacionesQuery = await Publication.find({ marcaId: marcaId, alreadyPosted: true }).populate('files');
+//         const publicaciones = JSON.parse(JSON.stringify(publicacionesQuery)) as IPublication[];
+
+//         const uniqueFiles: { [key: string]: IFile } = {};
+
+//         //Los archivos tienen que se unicos
+//         publicaciones.forEach((publicacion) => {
+//             publicacion.files.forEach((file) => {
+//                 uniqueFiles[file._id] = file;
+//             });
+//         });
+
+//         const files = Object.values(uniqueFiles);
+
+
+//         return { data: files, isOk: true, message: null };
+
+//     } catch (error: any) {
+//         return { data: [], isOk: false, message: "No hay archivos" };
+//     }
+// }
+
+
 export async function fetchAllFilesScheduleByMarcaAction(marcaId: string): Promise<IServerResponse<IFile[]>> {
     try {
 
-        return { data: [], isOk: false, message: "TODAVIA NO LO HE IMPLEMENTADO" };
+        const data = await Publication.find({alreadyPosted:false, marcaId:marcaId}).sort({createdAt:-1}).populate("files");
 
+        var idsFiles:string[] = [];
+        data.map((pub:IPublication)=>{
+            pub.files.map((file)=>{
+                idsFiles.push(file._id);
+            });
+        });
+        //Ahora por cada idsFiles quiero buscar en File collection ese objeto
+        const filesQuery = await File.find({_id:{$in:idsFiles}}).populate("creatorId"); 
+    
+        const files = JSON.parse(JSON.stringify(filesQuery)) as IFile[];
+        
+    
 
-        //TODO: CAMBIAR REQUEST PARA OBTENER SOLO LOS FAVORITOS
+        return { data: files, isOk: true, message: null };
 
-        // const filesQuery = await File.find<IFile>({
-        //     marcaId: marcaId,
-        //     shouldDelete: trashOnly
-        // }).populate('creatorId');
-        // const files = JSON.parse(JSON.stringify(filesQuery)) as IFile[];
-        // return { data: files, isOk: true, message: null };
 
     } catch (error: any) {
         return { data: [], isOk: false, message: "No hay archivos" };
@@ -111,7 +159,7 @@ export async function fetchMyFilesAction(userId: string): Promise<IServerRespons
     try {
         // connectToDB();
 
-        const filesQuery = await File.find({ creatorId: userId });
+        const filesQuery = await File.find({ creatorId: userId }).populate('creatorId');
         const result = JSON.parse(JSON.stringify(filesQuery)) as IFile[];
 
         return { data: result, isOk: true, message: null };

@@ -56,11 +56,11 @@ function NuevaRedSocial() {
       imageUrl: "https://icons8.com/icon/phOKFKYpe00C/twitterx",
       url: backendUrl + "twitter",
     },
-    {
-      name: "Tiktok (development)",
-      imageUrl: "https://icons8.com/icon/118640/tiktok",
-      url: backendUrl + "tiktok",
-    },
+    // {
+    //   name: "Tiktok (development)",
+    //   imageUrl: "https://icons8.com/icon/118640/tiktok",
+    //   url: backendUrl + "tiktok",
+    // },
   ];
 
   return (

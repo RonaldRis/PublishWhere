@@ -29,6 +29,7 @@ import {
 import { IFile } from "shared-lib/models/file.model";
 import { toast } from "sonner";
 import { set } from "mongoose";
+import { IUser } from "shared-lib/models/user.model";
 
 interface IModifiedFile extends IFile {
   isFavorited: boolean;
@@ -66,6 +67,8 @@ interface IGlobalContextProps {
   filesFilterStatus: IFileStatusFilter;
   setFilesFilterStatus: React.Dispatch<React.SetStateAction<IFileStatusFilter>>;
 
+  query: string;
+  setQuery?: React.Dispatch<React.SetStateAction<string>>;
 }
 
 // Contexto
@@ -94,7 +97,10 @@ const BibliotecaContext = React.createContext<IGlobalContextProps>({
     publicadosOnly: false,
   },
 
-  setFilesFilterStatus: () => { }
+  setFilesFilterStatus: () => { },
+
+  query: "",
+  setQuery: () => { },
 });
 
 // Proveedor
@@ -136,13 +142,21 @@ const BibliotecaProvider = ({ children }: { children: ReactNode }) => {
       );
     }
 
+    console.log(modifiedFilesNew)
+
+    if (query && query.length > 0)
+      modifiedFilesNew = modifiedFilesNew.filter((file) => {
+        return file.name.toLowerCase().includes(query.toLowerCase())
+        || (file.creatorId as IUser).name.toLowerCase().includes(query.toLowerCase())
+      });
+
 
     setModifiedFiles(modifiedFilesNew);
   };
 
   useEffect(() => {
     recalcutateModifiedFiles();
-  }, [files, type]);
+  }, [files, type, query]);
 
 
   //TODO: HACER ESTO MAÑANA
@@ -277,6 +291,8 @@ const BibliotecaProvider = ({ children }: { children: ReactNode }) => {
         //Query inicial
         filesFilterStatus: filesFilterStatus,
         setFilesFilterStatus: setFilesFilterStatus,
+        query: query,
+        setQuery: setQuery,
       }}
     >
       {children}

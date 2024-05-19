@@ -25,6 +25,7 @@ import { BibliotecaContext } from "@/contexts/BibliotecaContext";
 import { Button } from "@/components/ui/button";
 import { CalendarioContext } from "@/contexts/CalendarioContext";
 import UploadNewFileButton from "./UploadNewFileButton";
+import { Input } from "@/components/ui/input";
 
 function Placeholder({ text }: { text: string }) {
   return (
@@ -64,70 +65,66 @@ export function FileBrowser({
     files,
     type,
     setType,
-    isLoading,
+    isFilesLoading,
+    setFileLoading,
     modifiedFiles,
-    fetchFilesContext,
     setFilesFilterStatus,
+    query, setQuery
   } = useContext(BibliotecaContext);
+
 
 
 
   //TODO: BARRA DE BUSQUEDA! PENDIENTE DE IMPLEMENTAR
 
   useEffect(() => {
-    console.log("USE EFFECT: SET FILTERS CONTEXT");
 
-    setFilesFilterStatus({
+    setFileLoading(true); //Que empiece cargando al recien abrir la pagina
+
+
+    var FileBrowserStatus = {
       deletedOnly: deletedOnly,
       favoritesOnly: favoritesOnly,
       notUsedOnly: notUsedOnly,
       usedOnly: usedOnly,
       programadosOnly: programadosOnly,
       publicadosOnly: publicadosOnly
-    })
+    }
 
-    fetchFilesContext();
+    if (typeof window !== 'undefined') { // Comprueba si estamos en el cliente
+      setFilesFilterStatus(FileBrowserStatus)
+    }
+
+    console.log("USE EFFECT: SET FILTERS CONTEXT");
+    console.log("FileBrowserStatus", FileBrowserStatus)
   }, []);
 
+
+
   useEffect(() => {
-    //Para que no se ejecute al inicio
-    if (marcaGlobalSeleccionada && session) {
-      setFilesFilterStatus({
-        deletedOnly: deletedOnly,
-        favoritesOnly: favoritesOnly,
-        notUsedOnly: notUsedOnly,
-        usedOnly: usedOnly,
-        programadosOnly: programadosOnly,
-        publicadosOnly: publicadosOnly
-      });
-
-
-      console.log("USE EFFECT: FETCH FILES CONTEXT");
-      fetchFilesContext();
-    }
-  }, [
-    marcaGlobalSeleccionada,
-    session,
-    deletedOnly,
-    favoritesOnly,
-    notUsedOnly,
-    usedOnly,
-    publicadosOnly,
-    programadosOnly
-  ]);
+    console.log("FILES MODIFIED: ", isFilesLoading, modifiedFiles);
+  }, [modifiedFiles]);
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex justify-between flex-wrap items-center mb-8">
         <h1 className="text-4xl font-bold w-1/3">{title}</h1>
 
-        <div className="w-1/3">
-          {/* <SearchBar query={query} setQuery={setQuery} />  TODO: HACER SEARCHBAR*/}
+        <div className="py-4 w-1/2">
+          {
+            setQuery &&
+            <Input placeholder="Buscar por nombre" value={query}
+              onChange={(e) => {
+                setQuery(e.target.value);
+              }}
+
+            />
+          }
         </div>
 
         {/* //TODO: QUITAR BOTON CUANDO SE ABRE DESDE CALENDARIO */}
 
-        <UploadNewFileButton/>
+        {/* <UploadNewFileButton /> */}
       </div>
 
       {marcaGlobalSeleccionada && session ? (
@@ -163,10 +160,10 @@ export function FileBrowser({
             </div>
           </div>
 
-          {isLoading && (
+          {isFilesLoading && (
             <div className="flex flex-col gap-8 w-full items-center mt-24">
               <Loader2 className="h-32 w-32 animate-spin text-gray-500" />
-              <div className="text-2xl">Cargando tus ...</div>
+              <div className="text-2xl">Cargando tus archivos...</div>
             </div>
           )}
 
@@ -187,8 +184,8 @@ export function FileBrowser({
         <Placeholder text="Selecciona una marca primero" />
       )}
 
-      {files?.length === 0 && (
-        <Placeholder text="No hay archivos, sube alguno" />
+      {modifiedFiles?.length === 0 && (
+        <Placeholder text="No hay archivos" />
       )}
     </div>
   );
