@@ -22,16 +22,21 @@ const cronCheckPublishContent = async () => {
         console.log("# publicaciones VALIDAS: ", publicacionesValidas.length);
 
         for (let i = 0; i < publicacionesValidas.length; i++) {
-            console.log("\n\npublicaciones[" + i + "]", publicacionesValidas[i]);
+            console.log("\n\npublicaciones[" + i + "]");
+            // console.log("\n\npublicaciones[" + i + "]", publicacionesValidas[i]);
             if (publicacionesValidas[i].alreadyPosted == false && publicacionesValidas[i].isPostingInProgress === false) {
 
                 try {
 
+                    const url = process.env.CLIENT_URL + "/api/post-content?id=" + publicacionesValidas[i]._id;
+                    console.log("url", url);
+                    
                     //Prevent multiple posts
                     await Publication.updateOne({ _id: publicacionesValidas[i]._id }, { $set: { isPostingInProgress: true } });
                     console.log("\n//Start Posting proccess: " + publicacionesValidas[i]._id + " " + publicacionesValidas[i].title)
                     //Start Posting proccess - Dont wait - just start the process
-                    fetch(process.env.CLIENT_URL + "/api/post-content?id=" + publicacionesValidas[i]._id, {
+                    
+                    await fetch(url, {
                         method: "GET",
                     });
 

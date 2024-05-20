@@ -14,7 +14,8 @@ const port = process.env.PORT || 3003; // Use environment variables
 
 // Define a simple route for the root path ('/')
 app.get('/', (req: Request, res: Response) => {
-  res.send('Content Upload Service!');
+  console.log("UPLOAD BACKEND: ", req.url);
+  res.send('Content Upload Service! PORT: '+process.env.PORT);
 });
 
 app.use("/publish", routerPublish);

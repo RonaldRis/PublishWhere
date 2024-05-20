@@ -21,13 +21,8 @@ const routerYoutubePublish = Router();
 
 routerYoutubePublish.post("/", async (req: Request, res: Response) => {
 
-  console.log("UPLOAD BACKEND youtube: ", req.url);
+  console.log("\n\n\n UPLOAD BACKEND youtube: ", req.url);
 
-
-
-  console.log("UPLOAD BACKEND twitter: ", req.url);
-
-  console.log("BODY", req.body);
   const { idPublicacion, idRedSocial } = req.body;
 
   console.log("idPublicacion", idPublicacion);
@@ -36,7 +31,6 @@ routerYoutubePublish.post("/", async (req: Request, res: Response) => {
   const result = await Publication.findById(idPublicacion).populate('socialMedia.socialMedia').populate('files');
   const publicationSelected = JSON.parse(JSON.stringify(result)) as IPublication;
 
-  console.log("ALLLLL DATA NEEDED: ", publicationSelected);
 
   if (!result) {
     return res.json(createResponse(false, 'Publicación no encontrada', null));
@@ -105,13 +99,8 @@ routerYoutubePublish.post("/", async (req: Request, res: Response) => {
     );
 
     idVideo = resYoutube.data.id;
-    console.log('\n\n');
 
-    console.log('Video:', resYoutube);
-    console.log('\n\n');
-    console.log('\n\n');
-    console.log('Video subido:', resYoutube.data);
-    console.log('\n\n');
+    // console.log('Video subido:', resYoutube.data);
 
 
   } catch (error) {

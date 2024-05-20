@@ -25,9 +25,8 @@ interface Tweet {
 
 routerTwitterPublish.post("/", async function (req: Request, res: Response) {
 
-  console.log("UPLOAD BACKEND twitter: ", req.url);
+  console.log("\n\n\n UPLOAD BACKEND twitter: ", req.url);
 
-  console.log("BODY", req.body);
   const { idPublicacion, idRedSocial } = req.body;
 
   console.log("idPublicacion", idPublicacion);
@@ -36,7 +35,6 @@ routerTwitterPublish.post("/", async function (req: Request, res: Response) {
   const result = await Publication.findById(idPublicacion).populate('socialMedia.socialMedia').populate('files');
   const publicationSelected = JSON.parse(JSON.stringify(result)) as IPublication;
 
-  console.log("ALLLLL DATA NEEDED: ", publicationSelected);
 
   if (!result) {
     return res.json(createResponse(false, 'Publicación no encontrada', null));
@@ -61,7 +59,6 @@ routerTwitterPublish.post("/", async function (req: Request, res: Response) {
 
   ///Verifico si hay archivos por subir
   var filesId: string[] = [];
-  console.log("archivos:", filesId);
 
   for (let i = 0; i < publicationSelected.files.length; i++) {
 
@@ -78,7 +75,6 @@ routerTwitterPublish.post("/", async function (req: Request, res: Response) {
     }
   }
 
-  console.log("archivos Subidos:", filesId);
 
   var tweet: Tweet = {};
 

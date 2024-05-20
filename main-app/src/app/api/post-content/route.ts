@@ -14,14 +14,14 @@ export async function GET(req: NextRequest) {
     const idPublicacion = searchParams.get('id')
     console.log(req.url)
 
-    console.log("\n\nPOST /api/post-content");
-    console.log("idPublicacion", idPublicacion);
-
     if (!idPublicacion) {
         return NextResponse.json(createResponse(false, 'ID de publicación no proporcionado', null));
     }
     try {
 
+
+        console.log("\n\nPOST /api/post-content?id=" + idPublicacion);
+        // console.log("idPublicacion", idPublicacion);
 
 
         const result = await Publication.findById(idPublicacion).populate('socialMedia.socialMedia');
@@ -45,13 +45,13 @@ export async function GET(req: NextRequest) {
         const promises = publicationSelected.socialMedia.map((socialMedia: any) => {
             switch (socialMedia.provider) {
                 case 'twitter':
-                    return axios.post(`${CONTENT_UPLOAD_URL}/publish/twitter`, {
+                    return axios.post(`${CONTENT_UPLOAD_URL}/publish/twitter/`, {
                         idPublicacion: idPublicacion,
                         idRedSocial: socialMedia.socialMedia
                     });
 
                 case 'youtube':
-                    return axios.post(`${CONTENT_UPLOAD_URL}/publish/youtube`, {
+                    return axios.post(`${CONTENT_UPLOAD_URL}/publish/youtube/`, {
                         idPublicacion: idPublicacion,
                         idRedSocial: socialMedia.socialMedia
                     });
