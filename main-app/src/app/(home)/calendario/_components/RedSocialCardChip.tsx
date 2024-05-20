@@ -6,7 +6,7 @@ import { DeleteIcon } from "lucide-react";
 import { set } from "mongoose";
 import Image from "next/image";
 import Link from "next/link";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useLocalStorage } from "usehooks-ts";
 
@@ -44,21 +44,24 @@ export default function RedSocialCardChip({ social }: { social: ISocialMediaAcco
         selectedEvent,
         setSelectedRedesSocialesList } = useContext(CalendarioContext);
 
-    var url = "/";
-    if (selectedEvent) {
+    const [url, setUrl] = useState<null | string>(null);
 
-        selectedEvent.socialMedia.map((socialMedia) => {
-            if (socialMedia.socialMedia._id === social._id) {
-                url = socialMedia.urlPost;
-            }
-        });
-    }
+    useEffect(() => {
+        if (selectedEvent) {
+
+            selectedEvent.socialMedia.map((socialMedia) => {
+                if (socialMedia.socialMedia._id === social._id) {
+                    setUrl(socialMedia.urlPost);
+                }
+            });
+        }
+    }, [selectedEvent]);
 
     const isSelected = selectedRedesSocialesList.some((red) => red._id === social._id);
 
     const handlerClick = async () => {
 
-        if(selectedEvent)
+        if (selectedEvent)
             return; //No editable
 
 
@@ -74,9 +77,9 @@ export default function RedSocialCardChip({ social }: { social: ISocialMediaAcco
         <Card className={`h-full border-4 border-${color}-500 ${isSelected ? "bg-" + color + "-500" : ""}`} key={social._id} onClick={handlerClick}>
             <CardContent className="flex justify-between items-center p-3 h-full">
 
-                {selectedEvent ?
+                {url ?
 
-                    <Link href={url}>
+                    <Link href={url} target="_blank" className="flex justify-between items-center h-full">
                         <ContentRedSociaChip social={social} />
                     </Link>
                     :
