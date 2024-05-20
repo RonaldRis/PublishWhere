@@ -16,9 +16,9 @@ export const config = {
 export async function middleware(request: NextRequest) {
 
 
-  request.cookies.getAll().forEach((cookie) => {
-    console.log("cookie", cookie)
-  })
+  // request.cookies.getAll().forEach((cookie) => {
+  //   console.log("cookie", cookie)
+  // })
 
   //Si tiene la primera es en el hosting, si es la segunda es en localhost
   if (request.cookies.get("__Secure-next-auth.session-token") || request.cookies.get("next-auth.session-token")) {
