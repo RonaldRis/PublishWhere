@@ -86,6 +86,14 @@ function EquipoCrud() {
     setIsOpenModalDelete(true);
   };
 
+  const handlerAgregarMiembro = () => {
+    if((marcaGlobalSeleccionada?.admin as IUser)._id !== session?.user.id)
+    {
+      toast.info("Solo el administrador puede agregar miembros");
+      return;
+    }
+    setIsOpenModalNewTeamMember(true);
+  };
   const handlerDeleteUseronMarca = async () => {
     //Validaciones
     if (!validacionesEliminarMiembro(userBorrar!)) return;
@@ -164,10 +172,11 @@ function EquipoCrud() {
           </ul>
         )}
 
+
       <Button
         className="w-full"
         variant="ghost"
-        onClick={() => setIsOpenModalNewTeamMember(true)}
+        onClick={handlerAgregarMiembro}
       >
         Agregar miembro
       </Button>
