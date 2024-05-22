@@ -19,7 +19,7 @@ const marcaSchema: Schema = new Schema({
     admin: { type: Schema.Types.ObjectId, ref: 'User' },
     equipo: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     files: [{ type: Schema.Types.ObjectId, ref: 'File' }],
-    filesFavorite: [{ type: Schema.Types.ObjectId, ref: 'File' }], //TODO: MARCA ACA ID DE ARCHIVOS FAVORITOS
+    filesFavorite: [{ type: Schema.Types.ObjectId, ref: 'File' }], 
     socialMedia: [{ type: Schema.Types.ObjectId, ref: 'SocialMediaAccount' }],
 },
     { timestamps: true }

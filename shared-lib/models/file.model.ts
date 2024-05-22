@@ -20,6 +20,7 @@ export interface IFile {
     alreadyUsed: boolean;
 
 
+    size: number;
     //timestamps
     createdAt: Date;
 }
@@ -30,6 +31,7 @@ export interface IFileUpdateAfterUpload{
     bucketFileName: string;
     marcaId: string;
     creatorId: string;
+    size: number;
 }
 export interface IFileFavorite extends IFile{
     isFavorited: boolean;
@@ -42,6 +44,7 @@ export interface IFilePost{
     marcaId: string;
     creatorId: string;
     alreadyUsed: boolean;
+    size: number;
 }
 
 
@@ -49,9 +52,10 @@ const fileSchema: Schema = new Schema({
     name: { type: String, required: true },
     type: { type: String, enum: ['image', 'video'], required: true },
     bucketFileName: { type: String, required: true }, 
-    marcaId: String,    //userful when we want to delete all files of a marca
+    marcaId: String,  
     creatorId: { type: Schema.Types.ObjectId, ref: 'User' },
     shouldDelete: { type: Boolean, default: false },
+    size: { type: Number, required: true },
     alreadyUsed: { type: Boolean, default: false }
 },
     { timestamps: true }

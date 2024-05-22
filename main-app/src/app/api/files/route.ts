@@ -14,5 +14,5 @@ export async function GET(req: NextRequest) {
 
     const data = await File.find({}).sort({createdAt:-1});
     const dataParse = JSON.parse(JSON.stringify(data)) as IFile[];
-    return NextResponse.json({data:dataParse});
+    return NextResponse.json({files:dataParse});
 }
