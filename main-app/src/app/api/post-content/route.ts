@@ -14,6 +14,7 @@ export async function GET(req: NextRequest) {
     const idPublicacion = searchParams.get('id')
     console.log(req.url)
 
+    var id = null;
     if (!idPublicacion) {
         return NextResponse.json(createResponse(false, 'ID de publicación no proporcionado', null));
     }
@@ -27,6 +28,7 @@ export async function GET(req: NextRequest) {
         const result = await Publication.findById(idPublicacion).populate('socialMedia.socialMedia');
         const publicationSelected = JSON.parse(JSON.stringify(result)) as IPublication;
 
+        id = publicationSelected._id;
 
         if (!result) {
             return NextResponse.json(createResponse(false, 'Publicación no encontrada', null));
@@ -77,6 +79,7 @@ export async function GET(req: NextRequest) {
         return NextResponse.json(createResponse(true, 'Publicación realizada', responses));
     } catch (error) {
         console.log('Error', error);
+        await Publication.updateOne({ _id: id }, { $set: { isPostingInProgress: false } });
         return NextResponse.json(createResponse(false, 'Error al publicar', null), { status: 500 });
     }
 }

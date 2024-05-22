@@ -8,19 +8,12 @@ import Month from "./_components/Month";
 import dayjs from "dayjs";
 
 function CalendarioPage() {
-  const { selectedFileList, setSelectedFileList, isCalendarPage, setIscalendarPage, setSelectedRedesSocialesList } = useContext(CalendarioContext);
-
-
-  useEffect(() => {
-    // setSelectedRedesSocialesList([]);
-    setIscalendarPage(true);
-    // setSelectedFileList([]);
-  }, []);
-
-
+  const { isCalendarPage, setIscalendarPage, setSelectedEvent } = useContext(CalendarioContext);
   const { setMonthIndex, setSmallCalendarMonth, currenMonthMatrix, isOpenModalNewPost } = useContext(CalendarioContext);
-
+  
   useEffect(() => {
+    setIscalendarPage(true);
+
     const mes = dayjs().month();
     setMonthIndex(mes);
     setSmallCalendarMonth(mes);

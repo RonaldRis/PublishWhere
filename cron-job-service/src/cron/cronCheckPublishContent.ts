@@ -15,8 +15,8 @@ const cronCheckPublishContent = async () => {
         //Valido las fechas
         console.log("# publicaciones: ", publicaciones.length);
         const publicacionesValidas: IPublication[] = publicaciones.filter((pub) => {
-            const programmedTime = new Date(pub.programmedTime);
-            return programmedTime.getUTCDate() <= new Date().getUTCDate();
+            const programmedDate = new Date(pub.programmedDate);
+            return programmedDate.getUTCDate() <= new Date().getUTCDate();
         });
 
         console.log("# publicaciones VALIDAS: ", publicacionesValidas.length);

@@ -29,7 +29,8 @@ import { set } from "mongoose";
 import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import dayjs, { Dayjs } from "dayjs";
 import "dayjs/locale/es"; // importa el locale español
-import { daysToWeeks } from "date-fns";
+import { daysToWeeks, formatRelative } from "date-fns";
+import { es } from "date-fns/locale";
 
 
 
@@ -40,28 +41,10 @@ export default function EventModal() {
     setDaySelected,
     daySelected,
     dispatchCalEvent,
-    selectedEvent,
+    selectedEvent, setSelectedEvent,
     selectedFileList, setSelectedFileList,
     selectedRedesSocialesList, setSelectedRedesSocialesList
   } = useContext(CalendarioContext);
-
-
-  // ///Si hay seleccionado
-  // if (selectedEvent) {
-  //   const favFileFormat = selectedEvent?.files.map(f => ({
-  //     ...f,
-  //     isFavorited:true
-  //   }));
-  //   setSelectedFileList(favFileFormat);
-  //   setSelectedRedesSocialesList(selectedEvent?.socialMedia.map(sm => sm.socialMedia));
-  // }
-
-
-  //TODO: BORRAR
-  console.log("HORA DATE", new Date());
-  console.log("HORA DAYSJ", dayjs().toDate());
-
-
 
 
   const {
@@ -71,7 +54,7 @@ export default function EventModal() {
   const { data: session } = useSession();
 
   const [isPostingNow, setIsPostingNow] = useState(false);
-  const [time, setTime] = useState(new Date());
+  const [scheduleDateTime, setScheduleDateTime] = useState(new Date());
   const [isUploading, setIsUploading] = useState(false);
   const [isLibraryOpen, setIsLibraryOpen] = useState(false);
   const [noErrors, setNoErrors] = useState(false);
@@ -89,6 +72,7 @@ export default function EventModal() {
   async function handleSubmit(e: any) {
     e.preventDefault();
     setIsUploading(true);
+    validacionesOk();
 
     if (!noErrors) {
       toast.error("Revisa los campos de la publicación");
@@ -96,20 +80,14 @@ export default function EventModal() {
       return;
     }
 
-    //TODO: Manejar segun es programada o no
-    const isPostingNow = daySelected?.isSame(new Date(), "day") || daySelected?.isBefore(new Date(), "day") || false;
-    console.log("isPostingNow", isPostingNow);
-
     const publication: IPublicationPost = {
       title: title,
       creatorId: session?.user?.id as string,
       files: selectedFileList.map(f => f._id),
       marcaId: marcaGlobalSeleccionada?._id as string,
       alreadyPosted: false,
-      isSchedule: isPostingNow ? false : true,
       isPostingInProgress: isPostingNow,
-      programmedDate: daySelected?.toDate() as Date,
-      programmedTime: time as Date,
+      programmedDate: scheduleDateTime as Date,
       socialMedia: selectedRedesSocialesList.map(red => ({
         provider: red.provider,
         idPublicacionOnProvider: "",
@@ -141,19 +119,20 @@ export default function EventModal() {
       ...result.data as IPublication,
     }
 
+    console.log("calendarEvent", calendarEvent);
+    console.log("selectedEvent", selectedEvent);
+
     if (selectedEvent) {
       dispatchCalEvent({ type: "update", payload: calendarEvent });
     } else {
       dispatchCalEvent({ type: "push", payload: calendarEvent });
     }
-    
+
     setIsOpenModalNewPost(false);
     setSelectedFileList([]);
     setSelectedRedesSocialesList([]);
     setTitle("");
     setIsUploading(false);
-
-
   }
 
   const validacionesOk = () => {
@@ -165,21 +144,21 @@ export default function EventModal() {
     if (!isPostingNow) {
       //Validar fecha y hora
       if (!daySelected) {
-        newMessage = "Selecciona una fecha";
+        newMessage += "\nSelecciona una fecha";
         noErrors = false;
       }
-      if (!time) {
-        newMessage = "Selecciona una hora";
+      if (!scheduleDateTime) {
+        newMessage += "\nSelecciona una hora";
         noErrors = false;
       }
 
       if (daySelected && daySelected.isBefore(new Date(), "day")) {
-        newMessage = "La fecha no puede ser anterior a hoy";
+        newMessage += "La fecha no puede ser anterior a hoy";
         noErrors = false;
       }
 
-      if (daySelected && daySelected.isSame(new Date(), "day") && dayjs(time, "HH:mm").isBefore(dayjs(), "minute")) {
-        newMessage = "La hora no puede ser anterior a la actual";
+      if (daySelected && daySelected.isSame(new Date(), "day") && dayjs(scheduleDateTime, "HH:mm").isBefore(dayjs(), "minute")) {
+        newMessage += "La hora no puede ser anterior a la actual";
         noErrors = false;
       }
 
@@ -187,8 +166,25 @@ export default function EventModal() {
 
 
     if (selectedRedesSocialesList.length === 0) {
-      newMessage = "Selecciona al menos un red social";
+      newMessage += "Selecciona al menos un red social";
       noErrors = false;
+    }
+
+    //Validar tamaños de archivos
+    if (selectedRedesSocialesList.some(red => red.provider === "twitter")) {
+      //15MB video, 5MB imagen
+      const resultVideo = selectedFileList.some(f => f.size > 15 * 1024 * 1024 && f.type === "video");
+      const resultImage = selectedFileList.some(f => f.size > 5 * 1024 * 1024 && f.type === "image");
+      if (resultVideo) {
+        newMessage = newMessage + "\nTwitter: Los videos no puede superar los 15MB";
+        noErrors = false;
+      }
+      if (resultImage) {
+        newMessage = newMessage + "\nTwitter: Las imágenes no puede superar los 5MB";
+        noErrors = false;
+      }
+
+
     }
 
 
@@ -227,6 +223,9 @@ export default function EventModal() {
       noErrors = false;
     }
 
+    newMessage = newMessage.trim();
+    newMessage.startsWith("\n") && newMessage.slice(1);
+
     setMessage(newMessage);
     setNoErrors(noErrors);
 
@@ -239,7 +238,7 @@ export default function EventModal() {
 
   useEffect(() => {
     validacionesOk();
-  }, [selectedRedesSocialesList, selectedFileList, title, time, daySelected]); //TODO: FECHA PROGRAMDOS
+  }, [selectedRedesSocialesList, selectedFileList, title, scheduleDateTime, daySelected]); //TODO: FECHA PROGRAMDOS
 
 
   const handlerCancelarPublicacion = async (idPublicacion: string) => {
@@ -252,6 +251,11 @@ export default function EventModal() {
   }
 
 
+
+  const updateScheduleDateTime = (date: Dayjs, hours: number, minutes: number) => {
+    const newDate = date.hour(hours).minute(minutes);
+    setScheduleDateTime(newDate.toDate());
+  }
 
 
   return (
@@ -318,21 +322,25 @@ export default function EventModal() {
               className="pt-3 border-0  text-base font-semibold pb-2 w-full border-b-2 border-gray-200 focus:outline-none focus:ring-0 focus:border-blue-500"
               onChange={(e) => setTitle(e.target.value)}
             />
-            <span> Carácteres: {" "}
-            </span>
-            <span>
-              {title.length + " "}
-
-            </span>
-
-            {message &&
+            {!selectedEvent && (
               <>
-                <span> Validaciones: {" "}
+                <span> Carácteres: {" "}
                 </span>
                 <span>
-                  {message.split("\n").map((m, index) => (
-                    <p key={index} className="text-blue-600">{m}</p>
-                  ))}
+                  {title.length + " "}
+                </span>
+              </>
+            )}
+            {message && !selectedEvent &&
+              <>
+                <span className="self-center"> Validaciones: {" "}
+                </span>
+                <span  className="text-blue-600">
+                  <ol className="list-disc px-8">
+                    {message.split("\n").map((m, index) => (
+                      <li key={index}>{m}</li>
+                    ))}
+                  </ol>
                 </span>
               </>
             }
@@ -341,49 +349,71 @@ export default function EventModal() {
             <span className="material-icons-outlined">
               Publicar ya
             </span>
-            <p className="flex items-center">
-              <input type="checkbox" className="form-checkbox h-5 w-5 text-blue-600 p-8"
-                value={isPostingNow.toString()}
-                onChange={e => {
-                  setIsPostingNow(e.target.checked);
-                  if (e.target.checked) {
-                    setDaySelected(dayjs());
-                    setTime(new Date());
-                  }
-                }}
-              />
 
-              {isPostingNow && <label className="px-4">La publicación se realizará de inmediato</label>}
+            {!selectedEvent ? (
 
-            </p>
-            <span className="material-icons-outlined">
-              Fecha
-            </span>
-            <p >
-              {daySelected?.locale("es").format("dddd") + " - "}
-              <input type="date" value={daySelected?.format("YYYY-MM-DD")}
-                min={dayjs().format("YYYY-MM-DD")}
-                disabled={isPostingNow}
-                onChange={e => {
-                  setDaySelected(dayjs(e.target.value));
-                }} />
+              <p className="flex items-center">
+                <input type="checkbox" className="form-checkbox h-5 w-5 text-blue-600 p-8"
+                  value={isPostingNow.toString()}
+                  onChange={e => {
+                    setIsPostingNow(e.target.checked);
+                    if (e.target.checked) {
+                      setDaySelected(dayjs());
+                      setScheduleDateTime(new Date());
+                    }
+                  }}
+                />
 
-              <span className="px-8">Hora</span>
-              <input type="time" value={time.getHours() + ":" + time.getMinutes()}
-                disabled={isPostingNow}
-                min={new Date().toISOString().substr(11, 5)}
-                onChange={e => {
+                {isPostingNow && <label className="px-4">La publicación se realizará de inmediato</label>}
 
-                  console.log("e.target.value", e.target.value);
-                  var data = e.target.value.split(":");
-                  const newHour = new Date();
-                  newHour.setHours(Number(data[0]), Number(data[1]), 0, 0)
-                  console.log("newHour", newHour);
-                  setTime(newHour)
-                }
-                } />
+              </p>
+            )
+              :
+              (
+                <p >{selectedEvent.alreadyPosted ? "Publicado: " : "Programado: "}
+                  {formatRelative(selectedEvent.programmedDate, new Date(), {
+                    locale: es,
+                  })}</p>
+              )
+            }
 
-            </p>
+            {!!!selectedEvent && (
+              <>
+                <span className="material-icons-outlined">
+                  Fecha
+                </span>
+                <p >
+                  {daySelected?.locale("es").format("dddd") + " - "}
+                  <input type="date" value={daySelected?.format("YYYY-MM-DD")}
+                    min={dayjs().format("YYYY-MM-DD")}
+                    disabled={isPostingNow}
+                    onChange={e => {
+                      setDaySelected(dayjs(e.target.value));
+
+                      updateScheduleDateTime(dayjs(e.target.value), scheduleDateTime.getHours(), scheduleDateTime.getMinutes());
+
+
+
+                    }} />
+
+                  <span className="px-8">Hora</span>
+                  <input type="time"
+                    disabled={isPostingNow}
+                    value={dayjs(scheduleDateTime).format("HH:mm")}
+                    onChange={e => {
+
+                      var data = e.target.value.split(":");
+                      updateScheduleDateTime(daySelected!, parseInt(data[0]), parseInt(data[1]));
+                    }
+                    } />
+
+                </p>
+              </>
+            )}
+
+
+
+
           </div>
 
           <br />
@@ -441,7 +471,7 @@ export default function EventModal() {
 
           <Dialog onOpenChange={setIsUploading} open={isUploading}>
             <DialogContent className="over-over-nav flex flex-col justify-center items-center">
-              <DialogTitle>Publicando ...</DialogTitle>
+              <DialogTitle>{isPostingNow ? "Publicando " : "Programando "} tu publicación ...</DialogTitle>
               <Loader2 className="animate-spin" size={64} />
             </DialogContent>
           </Dialog>
@@ -453,7 +483,7 @@ export default function EventModal() {
 
           <AlertDialogCancel>Cancel</AlertDialogCancel>
 
-          <Button onClick={handleSubmit} disabled={isUploading || selectedEvent?.alreadyPosted} >
+          <Button onClick={handleSubmit} disabled={isUploading || selectedEvent?.alreadyPosted || !noErrors || !!selectedEvent} >
             {isPostingNow ? "Publicar ya" : "Programar"}
           </Button>
         </AlertDialogFooter>

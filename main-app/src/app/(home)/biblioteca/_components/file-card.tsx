@@ -22,6 +22,7 @@ import { es, se } from "date-fns/locale";
 import { getMediaUrl } from "@/lib/constantes";
 import FullScreenMultimediaFileDialog from "../../calendario/_components/FullScreenMultimediaFileDialog";
 import { CalendarioContext } from "@/contexts/CalendarioContext";
+import { bytesToSize } from "@/lib/utils";
 
 export function FileCard({ file }: { file: IFileFavorite }) {
   const userProfile = file.creatorId as IUser;
@@ -124,6 +125,10 @@ export function FileCard({ file }: { file: IFileFavorite }) {
               locale: es,
             })}
           </div>
+         
+            <div className="border-l border-slate-900 h-auto mx-2 px-4 ">
+                {bytesToSize(file.size)}
+              </div>
         </div>
       </CardFooter>
       <FullScreenMultimediaFileDialog file={file} isOpenModalBigFile={isOpenModalBigFile} setIsOpenModalBigFile={setIsOpenModalBigFile} />

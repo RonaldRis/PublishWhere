@@ -11,7 +11,8 @@ export async function postPublicationAction(oPublication: IPublicationPost): Pro
     try {
 
         const result = await Publication.create(oPublication);
-
+        const publicationDB = JSON.parse(JSON.stringify(result)) as IPublication;
+        console.log("publication before sent to publish", publicationDB);
 
 
         if (!result) {
@@ -19,25 +20,20 @@ export async function postPublicationAction(oPublication: IPublicationPost): Pro
         }
 
         await Promise.all(oPublication.files.map((fileId) => {
-            return File.findByIdAndUpdate(fileId, {alreadyUsed: true}).exec();
+            return File.findByIdAndUpdate(fileId, { alreadyUsed: true }).exec();
         }));
 
 
-        //TODO: HACER PRUEBAS USANDO EL SERVIDOR REAL PARA VERIFICAR LA HORA 
-        if (!oPublication.isSchedule) {
-            console.log("programmedDate", oPublication.programmedDate);
-            console.log("new Date()", new Date());
-            if (oPublication.programmedDate <= new Date()) {
-                console.log("Publicar en el momento");
-                const URL = process.env.NEXTAUTH_URL + "/api/post-content?id=" + result._id;
-                const resultGet = await axios.get(URL);
+        if (publicationDB.programmedDate <= new Date() || publicationDB.isPostingInProgress) {
+            console.log("Publicar en el momento");
+            const URL = process.env.NEXTAUTH_URL + "/api/post-content?id=" + publicationDB._id;
+            const resultGet = await axios.get(URL);
 
-                return {
-                    data: JSON.parse(JSON.stringify(result)) as IPublication,
-                    isOk: true,
-                    message: resultGet.data.message
-                };
-            }
+            return {
+                data: JSON.parse(JSON.stringify(result)) as IPublication,
+                isOk: true,
+                message: resultGet.data.message
+            };
         }
         console.log("Fecha del futuro");
 
@@ -57,7 +53,7 @@ export async function getPublicationByMarcaAction(idMarca: string): Promise<ISer
     try {
 
         console.log("getPublicationByMarcaAction");
-        const result = await Publication.find({ marcaId: idMarca }).populate('socialMedia.socialMedia').populate('files').populate('creatorId') ;
+        const result = await Publication.find({ marcaId: idMarca }).populate('socialMedia.socialMedia').populate('files').populate('creatorId');
 
         if (!result) {
             return { data: [], isOk: true, message: "No hay publicaciones" };
@@ -81,7 +77,7 @@ export async function deleteSchedulePublicationAction(idPublicacion: string): Pr
 
         console.log("deleteSchedulePublicationAction");
         const result = await Publication.deleteOne({ _id: idPublicacion });
-        
+
         if (!result) {
             return { data: null, isOk: false, message: "No se encontró la publicación" };
         }

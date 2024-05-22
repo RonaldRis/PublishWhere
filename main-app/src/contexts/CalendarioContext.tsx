@@ -148,8 +148,8 @@ const CalendarioProvider = ({ children }: { children: ReactNode }) => {
 
   const [isOpenModalNewPost, setIsOpenModalNewPost] = useState(false);
   const [daySelected, setDaySelected] = useState<dayjs.Dayjs>(dayjs());
-  // const [selectedEvent, setSelectedEvent] = useLocalStorage<IEventCalendar | null>("selectedEvent", null);
-  const [selectedEvent, setSelectedEvent] = useState<IEventCalendar | null>(null);
+  const [selectedEvent, setSelectedEvent] = useLocalStorage<IEventCalendar | null>("selectedEvent", null);
+  // const [selectedEvent, setSelectedEvent] = useState<IEventCalendar | null>(null);
 
   const [labels, setLabels] = useState<ILabelCalendar[]>([]);
   const [savedEvents, dispatchCalEvent] = useReducer(
@@ -212,7 +212,11 @@ const CalendarioProvider = ({ children }: { children: ReactNode }) => {
           }
         }) ?? [];
 
-        dispatchCalEvent({ type: "reset", payload: calendarEvents });
+        calendarEvents.forEach((evt) => {
+          dispatchCalEvent({ type: "push", payload: evt });
+        });
+
+        // dispatchCalEvent({ type: "reset", payload: calendarEvents });
 
       }
 

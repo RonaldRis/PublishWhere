@@ -10,9 +10,7 @@ export interface IPublicationPost {
     files: string[],
     marcaId: string,
     alreadyPosted: boolean,
-    isSchedule: boolean,
     programmedDate: Date,
-    programmedTime: Date,
     isPostingInProgress: boolean,
     socialMedia: {
         provider: string,
@@ -35,9 +33,7 @@ export interface IPublication {
     files: IFile[],
     marcaId: IMarca,
     alreadyPosted: boolean,
-    isSchedule: boolean,
     programmedDate: Date,
-    programmedTime: Date,
     isPostingInProgress: boolean,
     socialMedia: {
         provider: string,
@@ -56,9 +52,7 @@ const publicationDataSchema: Schema = new Schema(
         files: [{ type: Schema.Types.ObjectId, ref: 'File' }],
         marcaId: { type: Schema.Types.ObjectId, ref: 'Marca' },
         alreadyPosted: { type: Boolean, default: false },
-        isSchedule: { type: Boolean, default: false },
         programmedDate: { type: Date, default: new Date() },
-        programmedTime: { type: Date, default: new Date() }, //MAYBE
         isPostingInProgress: { type: Boolean, default: false },
 
         socialMedia: [{

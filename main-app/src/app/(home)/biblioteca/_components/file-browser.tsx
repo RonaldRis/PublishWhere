@@ -26,6 +26,8 @@ import { Button } from "@/components/ui/button";
 import { CalendarioContext } from "@/contexts/CalendarioContext";
 import UploadNewFileButton from "./UploadNewFileButton";
 import { Input } from "@/components/ui/input";
+import { getMediaUrl } from "@/lib/constantes";
+import axios from "axios";
 
 function Placeholder({ text }: { text: string }) {
   return (

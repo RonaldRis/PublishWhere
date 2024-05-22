@@ -7,7 +7,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 
-export function bytesToSize(bytes: number) {
+export function bytesToSize(bytes: number): string {
 
   const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
 
@@ -16,6 +16,11 @@ export function bytesToSize(bytes: number) {
   const i = parseInt(String(Math.floor(Math.log(bytes) / Math.log(1024))));
 
   return Math.round(bytes / Math.pow(1024, i)) + ' ' + sizes[i];
+}
+
+export function bytesToMB(bytes: number): number {
+
+ return Math.ceil(bytes / Math.pow(1024, 2));
 }
 
 

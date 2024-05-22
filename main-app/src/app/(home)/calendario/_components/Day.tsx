@@ -23,7 +23,7 @@ export default function Day({ day, rowIdx }: { day: dayjs.Dayjs; rowIdx: number 
     filteredEvents,
     setSelectedEvent,
     setSelectedFileList,
-    setSelectedRedesSocialesList
+    setSelectedRedesSocialesList,
   } = useContext(CalendarioContext);
 
   useEffect(() => {
@@ -40,6 +40,13 @@ export default function Day({ day, rowIdx }: { day: dayjs.Dayjs; rowIdx: number 
       ? "bg-blue-600 text-white rounded-full w-7"
       : "";
   }
+
+
+  const handlerDayClickOpenModal = () => {
+    setDaySelected(day);
+    setIsOpenModalNewPost(true);
+  }
+
   return (
     <div className="border border-gray-200 flex flex-col">
       <header className="flex flex-col items-center">
@@ -50,20 +57,14 @@ export default function Day({ day, rowIdx }: { day: dayjs.Dayjs; rowIdx: number 
         )}
         <p
           className={`text-sm p-1 my-1 text-center cursor-pointer ${getCurrentDayClass()}`}
-          onClick={() => {
-            setDaySelected(day);
-            setIsOpenModalNewPost(true);
-          }}
+         onClick={handlerDayClickOpenModal}
         >
           {day.format("DD")}
         </p>
       </header>
       <div
         className="flex-1 cursor-pointer"
-        onClick={() => {
-          setDaySelected(day);
-          setIsOpenModalNewPost(true);
-        }}
+        onClick={handlerDayClickOpenModal}
       >
         {dayEvents.map((evt, idx) => (
           <div
@@ -80,7 +81,7 @@ export default function Day({ day, rowIdx }: { day: dayjs.Dayjs; rowIdx: number 
             }
             className={`bg-${evt.label}-200 p-1 mr-3 text-gray-600 text-sm rounded mb-1 truncate`}
           >
-            <p>
+            <p className="text-xs">
               {evt.title}
             </p>
             {/* ICONS */}
@@ -100,7 +101,7 @@ export default function Day({ day, rowIdx }: { day: dayjs.Dayjs; rowIdx: number 
                       style={{ objectFit: "contain" }}
                     />
                   </HoverCardTrigger>
-                  <HoverCardContent>
+                  <HoverCardContent >
                     <Image
                       key={sm.socialMedia._id}
                       src={sm.socialMedia.thumbnail}
