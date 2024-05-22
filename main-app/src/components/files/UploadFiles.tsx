@@ -94,6 +94,7 @@ const IndividualUploadFile = ({
         type: file.type.startsWith("image") ? "image" : "video",
         bucketFileName: bucketFileName,
         alreadyUsed: false,
+        size: file.size,
       };
 
       const checksum = await computeSHA256(file);
