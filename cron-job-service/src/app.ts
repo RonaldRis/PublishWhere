@@ -22,8 +22,8 @@ app.get('/', (req, res) => {
   res.send('Cron Service Backend!');
 });
 
-cron.schedule('* * * * *', cronUpdateYoutubeTokens); //Every 20 minutes
-cron.schedule('*/30    * * * *', cronCheckPublishContent); //Every minute
+cron.schedule('*/20 * * * *', cronUpdateYoutubeTokens); //Every 20 minutes
+cron.schedule('*    * * * *', cronCheckPublishContent); //Every minute
 
 
 // Start the server
