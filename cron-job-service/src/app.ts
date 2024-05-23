@@ -22,7 +22,7 @@ app.get('/', (req, res) => {
   res.send('Cron Service Backend!');
 });
 
-cron.schedule('*/20 * * * *', cronUpdateYoutubeTokens); //Every 20 minutes
+cron.schedule('*/2 * * * *', cronUpdateYoutubeTokens); //Every 20 minutes
 cron.schedule('*    * * * *', cronCheckPublishContent); //Every minute
 
 
