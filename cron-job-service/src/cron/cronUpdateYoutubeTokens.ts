@@ -24,12 +24,14 @@ const cronUpdateYoutubeTokens = async () => {
     for (const oauthYoutubeChannel of allOauth) {
 
       const newAccessToken = await refreshAccessToken(oauthYoutubeChannel.refresh_token);
+      console.log("newAccessToken", newAccessToken);
       if (newAccessToken) {
         var oneHourLater = new Date();
         oneHourLater.setHours(oneHourLater.getHours() + 1);
         oneHourLater.setHours(oneHourLater.getMinutes() - 5);
         console.log("oneHourLater", oneHourLater);
-        await Oauth.updateOne({ _id: oauthYoutubeChannel._id }, { $set: { accessToken: newAccessToken.access_token, expires_in: oneHourLater } });
+        const responseUpdate = await Oauth.updateOne({ _id: oauthYoutubeChannel._id }, { $set: { accessToken: newAccessToken.access_token, expires_in: oneHourLater } });
+        console.log("responseUpdate", responseUpdate);
       }
     }
     // allOauth.forEach(async (oauthYoutubeChannel) => {
