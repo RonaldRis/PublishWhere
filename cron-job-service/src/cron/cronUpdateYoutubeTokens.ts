@@ -20,17 +20,29 @@ const cronUpdateYoutubeTokens = async () => {
   try {
     const allOauth = await Oauth.find({ provider: "youtube" });
     console.log("# youtube: ", allOauth.length);
-    allOauth.forEach(async (oauthYoutubeChannel) => {
-      console.log("HORA ACTUAL: ", new Date());
+    console.log("HORA ACTUAL: ", new Date());
+    for (const oauthYoutubeChannel of allOauth) {
 
       const newAccessToken = await refreshAccessToken(oauthYoutubeChannel.refresh_token);
       if (newAccessToken) {
         var oneHourLater = new Date();
         oneHourLater.setHours(oneHourLater.getHours() + 1);
+        oneHourLater.setHours(oneHourLater.getMinutes() - 5);
         console.log("oneHourLater", oneHourLater);
         await Oauth.updateOne({ _id: oauthYoutubeChannel._id }, { $set: { accessToken: newAccessToken.access_token, expires_in: oneHourLater } });
       }
-    });
+    }
+    // allOauth.forEach(async (oauthYoutubeChannel) => {
+    //   console.log("HORA ACTUAL: ", new Date());
+
+    //   const newAccessToken = await refreshAccessToken(oauthYoutubeChannel.refresh_token);
+    //   if (newAccessToken) {
+    //     var oneHourLater = new Date();
+    //     oneHourLater.setHours(oneHourLater.getHours() + 1);
+    //     console.log("oneHourLater", oneHourLater);
+    //     await Oauth.updateOne({ _id: oauthYoutubeChannel._id }, { $set: { accessToken: newAccessToken.access_token, expires_in: oneHourLater } });
+    //   }
+    // });
   } catch (err) {
     console.error(err);
   }
