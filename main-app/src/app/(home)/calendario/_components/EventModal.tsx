@@ -121,12 +121,11 @@ export default function EventModal() {
 
     console.log("calendarEvent", calendarEvent);
     console.log("selectedEvent", selectedEvent);
+    
+    dispatchCalEvent({ type: "push", payload: calendarEvent });
 
-    if (selectedEvent) {
-      dispatchCalEvent({ type: "update", payload: calendarEvent });
-    } else {
-      dispatchCalEvent({ type: "push", payload: calendarEvent });
-    }
+
+    //TODO: Distinguir cuando es un update y cuando es un create, preferentemente usar handlers distintos
 
     setIsOpenModalNewPost(false);
     setSelectedFileList([]);
