@@ -39,22 +39,46 @@ import { ISocialMediaAccount } from "shared-lib/models/socialMediaAccount.model"
 import { map } from "zod";
 import { labelsProviderToColor } from "@/lib/constantes";
 import Image from "next/image";
+import { deleteRedSocialAction } from "@/lib/actions/socialMediaAccount.actions";
 
 function RedSocialCardItem({ social }: { social: ISocialMediaAccount }) {
 
   const color = labelsProviderToColor[social.provider];
 
+  //Session
+  const { data: session } = useSession();
+  //Marca
+  const { marcaGlobalSeleccionada, updateMarcaGlobal } = useContext(MisMarcasContext);
+
+  const [isOpenModalDeleteRedSocial, setIsOpenModalDeleteRedSocial] = React.useState<boolean>(false);
+
+
   const handlerDeleteMarcaClick = async () => {
-    toast.info("No implementado aún");
-    //TODO: delete marca // Only admin
 
-    // const result = await deleteMarcaAction(social._id);
-    // if (!result.isOk) {
-    //   toast.error(result.message!);
-    //   return;
-    // }
+    // console.log("marcaGlobalSeleccionada",marcaGlobalSeleccionada);
+    // console.log("session?.user?.id",session?.user?.id);
 
-    // toast.success("Red social eliminada correctamente");
+    if (!marcaGlobalSeleccionada) {
+      toast.error("No hay marca seleccionada");
+      setIsOpenModalDeleteRedSocial(false);
+      return;
+    }
+
+
+    const result = await deleteRedSocialAction(marcaGlobalSeleccionada!._id, social._id, session?.user?.id!);
+    // console.log("result deleteRedSocialAction", result);
+    if (!result.isOk) {
+      toast.error(result.message!);
+      setIsOpenModalDeleteRedSocial(false);
+      return;
+    }
+
+    toast.success(result.message!);
+
+    setIsOpenModalDeleteRedSocial(false);
+
+    //Tengo que actualizar el UI
+    await updateMarcaGlobal(marcaGlobalSeleccionada._id);
   };
 
   return (
@@ -76,11 +100,47 @@ function RedSocialCardItem({ social }: { social: ISocialMediaAccount }) {
         </Link>
         <div className="relative w-full">
           <p className="text-center mx-6">{social.provider}</p>
-          <DeleteIcon
-            className="absolute right-2 top-0 cursor-pointer"
-            onClick={handlerDeleteMarcaClick}
-          />
+
+          {marcaGlobalSeleccionada && (
+            <>
+              {/* // Cambiar Nombre Dialog */}
+              <Dialog open={isOpenModalDeleteRedSocial} onOpenChange={setIsOpenModalDeleteRedSocial}>
+                <DialogTrigger asChild>
+                  <DeleteIcon
+                    className="absolute right-2 top-0 cursor-pointer"
+                  // onClick={handlerDeleteMarcaClick}
+                  />
+                </DialogTrigger>
+                <DialogContent className="sm:min-w-[600px]">
+                  <DialogHeader>
+                    <DialogTitle>
+                      Eliminar red social: {social.name + " - " + social.provider}
+                    </DialogTitle>
+                    <DialogDescription>
+                      <div>
+                        <br />
+                        <p>Se eliminarán todas las publicaciones que han sido hechas con esta red social. Si hay publicaciones programadas tamnbién se eliminarán y no serán publicadas</p>
+                        <br />
+                        <p>Si otra marca tiene esta red social, esa marca seguirá teniendo la red social y sus publicaciones</p>
+                      </div>
+                    </DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter>
+                    <Button
+                      variant="default"
+                      onClick={handlerDeleteMarcaClick}
+                    >
+                      Confirmar eliminar red social
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </>
+          )}
         </div>
+
+
+
       </CardContent>
     </Card>
   );

@@ -11,7 +11,7 @@ export async function postPublicationAction(oPublication: IPublicationPost): Pro
     try {
 
         const result = await Publication.create(oPublication);
-        const publicationDB = JSON.parse(JSON.stringify(result)) as IPublication;
+        var publicationDB = JSON.parse(JSON.stringify(result)) as IPublication;
         console.log("publication before sent to publish", publicationDB);
 
 
@@ -37,8 +37,11 @@ export async function postPublicationAction(oPublication: IPublicationPost): Pro
         }
         console.log("Fecha del futuro");
 
+
+        const result2 = await Publication.findById(publicationDB._id).populate('socialMedia.socialMedia').populate('files').populate('creatorId');
+
         return {
-            data: JSON.parse(JSON.stringify(result)) as IPublication,
+            data: JSON.parse(JSON.stringify(result2)) as IPublication,
             isOk: true,
             message: "Publicación programada correctamente"
         };

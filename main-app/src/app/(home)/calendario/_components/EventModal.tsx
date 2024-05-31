@@ -54,7 +54,12 @@ export default function EventModal() {
   const { data: session } = useSession();
 
   const [isPostingNow, setIsPostingNow] = useState(false);
-  const [scheduleDateTime, setScheduleDateTime] = useState(new Date());
+  var daySeletedWithTime = daySelected!.toDate();
+  daySeletedWithTime.setHours(new Date().getHours());
+  daySeletedWithTime.setMinutes(new Date().getMinutes());
+
+
+  const [scheduleDateTime, setScheduleDateTime] = useState(daySeletedWithTime);
   const [isUploading, setIsUploading] = useState(false);
   const [isLibraryOpen, setIsLibraryOpen] = useState(false);
   const [noErrors, setNoErrors] = useState(false);
@@ -96,7 +101,9 @@ export default function EventModal() {
       }))
     }
 
-    console.log("publication", publication);
+
+    // console.log("publication", publication);
+
 
 
 
@@ -111,6 +118,7 @@ export default function EventModal() {
 
 
 
+
     //////CODIGO UI
 
     const calendarEvent: IEventCalendar = {
@@ -119,8 +127,9 @@ export default function EventModal() {
       ...result.data as IPublication,
     }
 
-    console.log("calendarEvent", calendarEvent);
-    console.log("selectedEvent", selectedEvent);
+    // console.log("publication", result.data);
+    // console.log("calendarEvent", calendarEvent);
+    // console.log("selectedEvent", selectedEvent);
     
     dispatchCalEvent({ type: "push", payload: calendarEvent });
 
